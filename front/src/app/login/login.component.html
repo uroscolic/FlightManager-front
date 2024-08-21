@@ -1,0 +1,79 @@
+<!-- 
+<div>
+    <form class="login-card">
+      <div class="left">
+          <h2>Sign In</h2>
+          <label for="username">Username</label>
+          <input type="text" placeholder="Username">
+          <label for="password">Password</label>
+          <input type="password" placeholder="Password">
+          <div class="remember">
+              <input type="checkbox" id="remember-me">
+              <label for="remember-me">Remember Me</label>
+          </div>
+          <button>Sign In</button>
+      </div>
+      <div class="right">
+          <h3>Welcome to login</h3>
+          <p>Don't have an account?</p>
+          <a href="#">Sign Up</a>
+      </div>
+    </form>
+</div> -->
+
+
+<div class="container" #container>
+  <div class="form-container sign-up-container">
+    <form action="#">
+      <h1>Create Account</h1>
+      <div class="social-container">
+        <a href="#" class="social"><i class="fab fa-facebook-f"></i></a>
+        <a href="#" class="social"><i class="fab fa-google-plus-g"></i></a>
+        <a href="#" class="social"><i class="fab fa-linkedin-in"></i></a>
+      </div>
+      <input type="text" placeholder="Name" />
+      <input type="text" placeholder="Last Name" />
+      <input type="email" placeholder="Email" />
+      <input type="password" placeholder="Password" />
+      <button>Sign Up</button>
+    </form>
+  </div>
+  <div class="form-container sign-in-container">
+    <form [formGroup]="loginForm" (ngSubmit)="onLoginSubmit()">
+      <h1>Sign in</h1>
+      
+      <input type="email" placeholder="Email" formControlName ="email"/>
+      <input [type]="showPassword ? 'text' : 'password'" placeholder="Password" formControlName ="password" />
+      <div class="remember">
+        <input (click)="togglePasswordVisibility()" type="checkbox" id="show-password">
+        <label for="remember-me">Show password</label>
+      </div>
+      <div class="remember">
+        <input type="checkbox" id="remember-me">
+        <label for="remember-me">Remember me</label>
+      </div>
+      
+      <button type="submit">Sign In</button>
+      <!-- Login failure message -->
+    <div *ngIf="loginFailed" class="failed" role="alert">
+        Login failed. Please check your username and password.
+    </div>
+    
+    </form>
+    
+  </div>
+  <div class="overlay-container">
+    <div class="overlay">
+      <div class="overlay-panel overlay-left">
+        <h1>Welcome Back!</h1>
+        <p>To keep connected with us please login with your personal info</p>
+        <button class="ghost" (click)="signIn()">Sign In</button>
+      </div>
+      <div class="overlay-panel overlay-right">
+        <h1>Hello!</h1>
+        <p>Enter your personal details and start journey with us</p>
+        <button class="ghost" (click)="signUp()">Sign Up</button>
+      </div>
+    </div>
+  </div>
+</div>
