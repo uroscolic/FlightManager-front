@@ -1,29 +1,50 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { UserRole } from '../models/user.model';
+import { UserRole, UserViewModel } from '../models/user.model';
+import { environment } from '../../../environment/environment';
+import { LoginViewModel, SignUpViewModel } from '../models/loginSignUp.model';
+import { PageableResponse } from '../models/pageableResponse.model';
+
+const LOGIN = "/login";
+const CLIENT = "/client";
+const REGISTER = "/register";
+
 
 @Injectable({
   providedIn: 'root',
 })
 export class UserService {
 
-  // private apiUrl = 'http://localhost:8080/api/user';
+  private url: string = environment.userServiceUrl;
+  
 
-  // constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) { }
 
-  // getUsers(): Observable<any[]> {
-  //   return this.http.get<any[]>(this.apiUrl);
-  // }
-  constructor() { }
+  getUsers(): Observable<PageableResponse<UserViewModel[]>> {
 
-  getUsers() {
-    // Ovde bi trebalo da ide HTTP poziv prema serveru.
-    // Ovo je primer statičkih podataka.
-    return [
-      { id: 1, name: 'John Doe', role: UserRole.Client },
-      { id: 2, name: 'Jane Smith', role: UserRole.Manager },
-      { id: 3, name: 'Emily White', role: UserRole.Admin },
-    ];
+    console.log('getUsers');
+    // onaj init smeta da bi se koristio sessionStorage normalno
+    const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') : '';
+    console.log('token', token);
+    const headers = new HttpHeaders({
+      'Authorization': token ? `Bearer ${token}` : ''
+    });
+    return this.http.get<PageableResponse<UserViewModel[]>>(
+      this.url + CLIENT, 
+      { headers }
+    );
   }
+  login(request: LoginViewModel) {
+    return this.http.post<UserViewModel>(
+      this.url + LOGIN, request
+    )
+  }
+  signUp(request: SignUpViewModel) {
+    return this.http.post<UserViewModel>(
+      this.url + CLIENT + REGISTER, request
+    )
+  }
+
+
 }

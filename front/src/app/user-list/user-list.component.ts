@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../shared/services/user.service';
 import { CommonModule } from '@angular/common';
+import { Subscription } from 'rxjs';
+import { UserViewModel } from '../shared/models/user.model';
 
 @Component({
   selector: 'app-user-list',
@@ -10,16 +12,26 @@ import { CommonModule } from '@angular/common';
   imports: [CommonModule]
 })
 export class UserListComponent implements OnInit {
-  users: any[] = [];
+
+  users: UserViewModel[] = [];
+  subscriptions: Subscription[] = [];
 
   constructor(private userService: UserService) { }
 
+  // ovo da ne bude u initu
   ngOnInit(): void {
-    // this.userService.getUsers().subscribe(data => {
-    //   this.users = data;
-    // }, error => {
-    //   console.error('Error fetching users:', error);
-    // });
-    this.users = this.userService.getUsers();
+    this.subscriptions.push(this.userService.getUsers().subscribe(res => {
+
+      this.users = res.content;
+    }));
+
+  }
+
+  ngOnDestroy(): void {
+    this.subscriptions.forEach((sub) => {
+      if (sub && !sub.closed) {
+        sub.unsubscribe();
+      }
+    });
   }
 }

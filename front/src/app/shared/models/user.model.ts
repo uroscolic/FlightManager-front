@@ -4,7 +4,8 @@ export interface UserViewModel {
     lastName : string;
     email : string;
     password : string;
-    role : UserRole;
+    roleType : UserRole;
+    token: string;
 }
 
 export class ClientViewModel implements UserViewModel {
@@ -13,9 +14,10 @@ export class ClientViewModel implements UserViewModel {
     lastName: string;
     email: string;
     password: string;
-    role: UserRole;
+    roleType: UserRole;
     isBanned: boolean;
     numberOfBookings: number;
+    token: string;
     
     constructor(id: number, firstName: string, lastName: string, email: string, password: string, isBanned: boolean, numberOfBookings: number) {
         this.id = id;
@@ -25,7 +27,7 @@ export class ClientViewModel implements UserViewModel {
         this.password = password;
         this.isBanned = isBanned;
         this.numberOfBookings = numberOfBookings;
-        this.role = UserRole.Client
+        this.roleType = UserRole.Client
     }
 }
   
@@ -35,8 +37,9 @@ export class ManagerViewModel implements UserViewModel {
     lastName: string;
     email: string;
     password: string;
-    role: UserRole;
+    roleType: UserRole;
     isBanned: boolean;
+    token: string;
     
     constructor(id: number, firstName: string, lastName: string, email: string, password: string, isBanned: boolean) {
         this.id = id;
@@ -45,7 +48,7 @@ export class ManagerViewModel implements UserViewModel {
         this.email = email;
         this.password = password;
         this.isBanned = isBanned;
-        this.role = UserRole.Manager
+        this.roleType = UserRole.Manager
     }
 }
 
@@ -55,7 +58,8 @@ export class AdminViewModel implements UserViewModel {
     lastName: string;
     email: string;
     password: string;
-    role: UserRole;
+    roleType: UserRole;
+    token: string;
     
     constructor(id: number, firstName: string, lastName: string, email: string, password: string) {
         this.id = id;
@@ -63,7 +67,7 @@ export class AdminViewModel implements UserViewModel {
         this.lastName = lastName;
         this.email = email;
         this.password = password;
-        this.role = UserRole.Admin
+        this.roleType = UserRole.Admin
     }
 }
 
