@@ -1,0 +1,61 @@
+h1 {
+    padding: 0 1rem;
+}
+
+h2 {padding: 1rem;}
+
+
+
+mat-toolbar{
+    position:fixed;
+    top:0;
+    z-index: 2;
+    background: linear-gradient(to right, #ff2b2b, #ff8741);
+    color: white;    
+}
+
+mat-toolbar-a{
+    display: inline-block;
+    
+}
+
+
+.menu{
+    color:white;
+}
+
+mat-sidenav-container {
+    height:100%;
+}
+
+mat-sidenav {
+    padding-top: 3.5rem;
+    @media screen and (min-width: 600px) {
+      padding-top: 4rem;
+    }
+
+    .entry{
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding:0.75rem;
+    }
+
+    .helper{
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding:0.75rem;
+        color: red;
+    }
+
+    background-color: #fff8f0;
+  }
+
+mat-sidenav-content{
+    padding-top: 3.5rem;
+    @media screen and (min-width: 600px) {
+        padding-top: 4rem;
+    }
+    
+}
