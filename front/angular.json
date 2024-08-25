@@ -30,12 +30,7 @@
               "node_modules/@angular/material/prebuilt-themes/rose-red.css",
               "src/styles.css"
             ],
-            "scripts": [],
-            "server": "src/main.server.ts",
-            "prerender": true,
-            "ssr": {
-              "entry": "server.ts"
-            }
+            "scripts": []
           },
           "configurations": {
             "production": {
@@ -51,12 +46,19 @@
                   "maximumError": "4kB"
                 }
               ],
-              "outputHashing": "all"
+              "outputHashing": "all",
+              "server": "src/main.server.ts",
+              "ssr": {
+                "entry": "server.ts"
+              },
+              "prerender": true
             },
             "development": {
               "optimization": false,
               "extractLicenses": false,
-              "sourceMap": true
+              "sourceMap": true,
+              "prerender": false,
+              "ssr": false
             }
           },
           "defaultConfiguration": "production"
