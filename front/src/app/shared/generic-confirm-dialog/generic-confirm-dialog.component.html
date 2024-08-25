@@ -1,0 +1,13 @@
+<mat-card-title class="full-width" fxLayout="row">
+    <h3 class="title">{{ data.title }}</h3>
+</mat-card-title>
+<mat-dialog-content class="message" [innerHTML]="data.message">
+</mat-dialog-content>
+<mat-dialog-actions>
+    <div class="pt-1 row buttons" align="right">
+        <div class="col-sm-12">
+            <button type="submit" class="btn btn-primary left-button" (click)="dialogRef.close(true)">Confirm</button>
+            <button type="button" class="btn btn-light" (click)="dialogRef.close(false)">Cancel</button>
+        </div>
+    </div>
+</mat-dialog-actions>

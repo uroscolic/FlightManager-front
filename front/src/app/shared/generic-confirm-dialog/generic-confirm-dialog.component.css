@@ -1,0 +1,20 @@
+.title {
+    padding: 10px 0 0 10px;
+    margin: 5px;
+}
+
+.message {
+    font-size: 16px;
+}
+
+.buttons {
+    width: 100%;
+}
+
+.left-button {
+    color:white;
+    background-color: #ff2b2b;
+    border-color: #e41b1b;
+    box-shadow: 0 4px 6px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+    margin-right: 15px;
+}
