@@ -3,29 +3,121 @@ import { UserService } from '../shared/services/user.service';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
 import { UserViewModel } from '../shared/models/user.model';
+import { get } from 'http';
+import { ReactiveFormsModule } from '@angular/forms';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatIconModule } from '@angular/material/icon';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatListModule } from '@angular/material/list';
+import { RouterOutlet } from '@angular/router';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
+import { MatSort, MatSortModule } from '@angular/material/sort';
+import { ViewChild } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatDialog } from '@angular/material/dialog';
+import { GenericConfirmDialogComponent } from '../shared/generic-confirm-dialog/generic-confirm-dialog.component';
 
 @Component({
   selector: 'app-user-list',
   standalone: true,
   templateUrl: './user-list.component.html',
   styleUrls: ['./user-list.component.css'],
-  imports: [CommonModule]
+  imports: [
+    CommonModule,
+    ReactiveFormsModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatListModule,
+    RouterOutlet,
+    MatTableModule,
+    MatPaginatorModule,
+    MatSortModule, 
+  ]
 })
 export class UserListComponent implements OnInit {
-
-  users: UserViewModel[] = [];
+  displayedColumns: string[] = ['id', 'firstName', 'lastName', 'email', 'roleType', 'ban'];
+  dataSource: MatTableDataSource<UserViewModel> = new MatTableDataSource<UserViewModel>([]);
   subscriptions: Subscription[] = [];
+  
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private userService: UserService) { }
+  constructor(private dialog: MatDialog,private userService: UserService) {}
 
-  // ovo da ne bude u initu
   ngOnInit(): void {
-    this.subscriptions.push(this.userService.getUsers().subscribe(res => {
-
-      this.users = res.content;
-    }));
-
+    this.getUsers();
   }
+
+  getUsers() {
+    if (typeof window !== 'undefined' && window.sessionStorage) {
+      const token = sessionStorage.getItem('token');
+      
+      this.subscriptions.push(this.userService.getUsers().subscribe(res => {
+        this.dataSource.data = res.content;
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+      }));
+    } else {
+      console.error('sessionStorage is not available.');
+    }
+  }
+  toggleBan(user: UserViewModel): void {
+    if (user.banned) {
+
+      this.dialog.open(GenericConfirmDialogComponent, {
+        disableClose: true,
+        data: {
+          title: `Unban "${user.firstName} ${user.lastName}"`, 
+          message: `Are you sure you want to unban "${user.firstName} ${user.lastName}"?`,
+        }
+      }).afterClosed().subscribe((confirmed) => {
+        if (confirmed) {
+          this.subscriptions.push(this.userService.banUser(user).subscribe(
+            (res) => {
+              if (res) {
+                this.getUsers();
+              }
+            },
+            (error) => {
+              console.log('Error unbanning user:', error);
+            }
+          ));
+        }
+      });
+
+    } else {
+
+      this.dialog.open(GenericConfirmDialogComponent, {
+        disableClose: true,
+        data: {
+          title: `Ban "${user.firstName} ${user.lastName}"`,
+          message: `Are you sure you want to ban "${user.firstName} ${user.lastName}"?`,
+        }
+      }).afterClosed().subscribe((confirmed) => {
+        if (confirmed) {
+          this.subscriptions.push(this.userService.banUser(user).subscribe(
+            (res) => {
+              if (res) {
+                this.getUsers();
+              }
+            },
+            (error) => {
+              console.log('Error ban user:', error);
+            }
+          ));
+        }
+      });
+
+    }
+  }
+
+  
+
+
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => {

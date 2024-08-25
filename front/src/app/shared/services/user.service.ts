@@ -8,7 +8,10 @@ import { PageableResponse } from '../models/pageableResponse.model';
 
 const LOGIN = "/login";
 const CLIENT = "/client";
+const MANAGER = "/manager";
 const REGISTER = "/register";
+const ALL_USERS = "/admin/all-users";
+const BAN = "/ban";
 
 
 @Injectable({
@@ -23,10 +26,18 @@ export class UserService {
 
   getUsers(): Observable<PageableResponse<UserViewModel[]>> {
 
-    console.log('getUsers');
-    // onaj init smeta da bi se koristio sessionStorage normalno
     const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') : '';
-    console.log('token', token);
+    const headers = new HttpHeaders({
+      'Authorization': token ? `Bearer ${token}` : ''
+    });
+    return this.http.get<PageableResponse<UserViewModel[]>>(
+      this.url + ALL_USERS, 
+      { headers }
+    );
+  }
+
+  getClients(): Observable<PageableResponse<UserViewModel[]>> {
+    const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') : '';
     const headers = new HttpHeaders({
       'Authorization': token ? `Bearer ${token}` : ''
     });
@@ -35,6 +46,28 @@ export class UserService {
       { headers }
     );
   }
+
+  banUser(request: UserViewModel) {
+
+    const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') : '';
+    const headers = new HttpHeaders({
+      'Authorization': token ? `Bearer ${token}` : ''
+    });
+
+    const role = request.roleType === UserRole.Client ? CLIENT : MANAGER;
+    console.log(role);
+    request.banned = !request.banned;
+    console.log(request);
+    const a =  this.http.put<UserViewModel>(
+      this.url + role + BAN, request,
+      { headers }
+    );
+    console.log(a);
+    return a;
+    
+  }
+
+
   login(request: LoginViewModel) {
     return this.http.post<UserViewModel>(
       this.url + LOGIN, request

@@ -6,6 +6,7 @@ export interface UserViewModel {
     password : string;
     roleType : UserRole;
     token: string;
+    banned: boolean;
 }
 
 export class ClientViewModel implements UserViewModel {
@@ -15,17 +16,17 @@ export class ClientViewModel implements UserViewModel {
     email: string;
     password: string;
     roleType: UserRole;
-    isBanned: boolean;
+    banned: boolean;
     numberOfBookings: number;
     token: string;
     
-    constructor(id: number, firstName: string, lastName: string, email: string, password: string, isBanned: boolean, numberOfBookings: number) {
+    constructor(id: number, firstName: string, lastName: string, email: string, password: string, banned: boolean, numberOfBookings: number) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
-        this.isBanned = isBanned;
+        this.banned = banned;
         this.numberOfBookings = numberOfBookings;
         this.roleType = UserRole.Client
     }
@@ -38,16 +39,16 @@ export class ManagerViewModel implements UserViewModel {
     email: string;
     password: string;
     roleType: UserRole;
-    isBanned: boolean;
+    banned: boolean;
     token: string;
     
-    constructor(id: number, firstName: string, lastName: string, email: string, password: string, isBanned: boolean) {
+    constructor(id: number, firstName: string, lastName: string, email: string, password: string, banned: boolean) {
         this.id = id;
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
         this.password = password;
-        this.isBanned = isBanned;
+        this.banned = banned;
         this.roleType = UserRole.Manager
     }
 }
@@ -60,6 +61,7 @@ export class AdminViewModel implements UserViewModel {
     password: string;
     roleType: UserRole;
     token: string;
+    banned: boolean;
     
     constructor(id: number, firstName: string, lastName: string, email: string, password: string) {
         this.id = id;
@@ -68,6 +70,7 @@ export class AdminViewModel implements UserViewModel {
         this.email = email;
         this.password = password;
         this.roleType = UserRole.Admin
+        this.banned = false;
     }
 }
 
