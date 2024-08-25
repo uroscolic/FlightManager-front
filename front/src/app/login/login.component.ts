@@ -25,8 +25,11 @@ export class LoginComponent implements OnInit, OnDestroy {
   loginFailed: boolean = false;
   signUpForm!: FormGroup;
   signUpFailed: boolean = false;
+  showSignUpPassword: boolean = false;
   showPassword: boolean = false;
   loginForm!: FormGroup;
+  rememberMe: boolean = false;
+
   errorMessages = {
     email: [
       { type: 'required', message: 'Email is required' },
@@ -65,32 +68,50 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.loginFailed = false;
     this.signUpFailed = false;
     this.showPassword = false;
+    this.showSignUpPassword = false;
+    this.rememberMe = false;
   }
 
-  onLoginSubmit() : void {
+  onLoginSubmit(): void {
     if (this.loginForm.valid) {
       const loginEmail = this.loginForm.value.email;
       const loginPassword = this.loginForm.value.password;
-      const loginPost = <LoginViewModel>{
+      const loginPost: LoginViewModel = {
         email: loginEmail,
         password: loginPassword
-      }
-      console.log(loginPost);
+      };
+  
       this.subscriptions.push(this.userService.login(loginPost)
         .subscribe(
           response => {
             if (response) {
               this.loginFailed = false;
               this.loginForm.reset();
-              sessionStorage.setItem('id', response.id.toString());
-              sessionStorage.setItem('firstName', response.firstName.toString());
-              sessionStorage.setItem('lastName', response.lastName.toString());
-              sessionStorage.setItem('email', response.email.toString());
-              sessionStorage.setItem('roleType', response.roleType.toString());
-              sessionStorage.setItem('token', response.token.toString());
-
-              //this.router.navigate(['/users']);
-              console.log('Login successful:', response);
+              
+              // Clear sessionStorage
+              sessionStorage.clear();
+  
+              // Handle Remember Me
+              if (this.rememberMe) {
+                // Save to localStorage
+                localStorage.setItem('id', response.id.toString());
+                localStorage.setItem('firstName', response.firstName.toString());
+                localStorage.setItem('lastName', response.lastName.toString());
+                localStorage.setItem('email', response.email.toString());
+                localStorage.setItem('roleType', response.roleType.toString());
+                localStorage.setItem('token', response.token.toString());
+                localStorage.setItem('rememberMe', 'true');
+              } else {
+                // Save to sessionStorage
+                sessionStorage.setItem('id', response.id.toString());
+                sessionStorage.setItem('firstName', response.firstName.toString());
+                sessionStorage.setItem('lastName', response.lastName.toString());
+                sessionStorage.setItem('email', response.email.toString());
+                sessionStorage.setItem('roleType', response.roleType.toString());
+                sessionStorage.setItem('token', response.token.toString());
+              }
+  
+              this.router.navigate(['/navigation']);
             } else {
               this.loginFailed = true;
             }
@@ -100,7 +121,6 @@ export class LoginComponent implements OnInit, OnDestroy {
             this.loginFailed = true;
           }
         ));
-
     } else {
       this.loginFailed = true;
     }
@@ -145,6 +165,13 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   togglePasswordVisibility() : void {
     this.showPassword = !this.showPassword
+  }
+  toggleSignUpPasswordVisibility() : void {
+    this.showSignUpPassword = !this.showSignUpPassword
+  }
+
+  toggleRememberMe() : void {
+    this.rememberMe = !this.rememberMe;
   }
 
   ngOnDestroy(): void {
