@@ -64,4 +64,18 @@ export class FlightBookingService {
         { headers }
       );
   }
+
+  addCoupon(request: CouponViewModel) : Observable<CouponViewModel> {
+      
+    const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') : '';
+    const headers = new HttpHeaders({
+      'Authorization': token ? `Bearer ${token}` : ''
+    });
+
+    return this.http.post<CouponViewModel>(
+      this.url + COUPON,
+      request,
+      { headers }
+    );
+  }
 }

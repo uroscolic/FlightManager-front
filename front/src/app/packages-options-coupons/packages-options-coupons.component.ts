@@ -13,10 +13,12 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { GenericConfirmDialogComponent } from '../shared/generic-confirm-dialog/generic-confirm-dialog.component';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
 
 @Component({
   selector: 'app-packages-options-coupons',
@@ -34,7 +36,11 @@ import { GenericConfirmDialogComponent } from '../shared/generic-confirm-dialog/
     MatPaginatorModule,
     MatSortModule,
     NavigationComponent,
-    MatSlideToggleModule
+    MatSlideToggleModule,
+    MatFormFieldModule,
+    MatInputModule,
+    FormsModule
+  
   ],
   templateUrl: './packages-options-coupons.component.html',
   styleUrl: './packages-options-coupons.component.css'
@@ -44,13 +50,28 @@ export class PackagesOptionsCouponsComponent implements OnInit {
   displayedColumns: string[] = ['couponCode', 'discount', 'active'];
   dataSource: MatTableDataSource<CouponViewModel> = new MatTableDataSource<CouponViewModel>([]);
   subscriptions: Subscription[] = [];
-  
+
+  newCoupon: { couponCode: string; discount: number; active: boolean } = {
+    couponCode: '',
+    discount: 0,
+    active: false
+  };
+  newCouponForm!: FormGroup;
+
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private dialog: MatDialog, private flightBookingService:FlightBookingService) {}
+  constructor(private formBuilder: FormBuilder, private dialog: MatDialog, private flightBookingService:FlightBookingService) {}
 
   ngOnInit(): void {
+
+    this.newCouponForm = this.formBuilder.group({
+      couponCode: ['', Validators.required],
+      discount: ['', Validators.required],
+      // active: ['']
+    });
+
     this.getCoupons();
   }
 
@@ -89,6 +110,41 @@ export class PackagesOptionsCouponsComponent implements OnInit {
         ));
       }
     });
+  }
+
+  addCoupon() {
+    if(this.newCouponForm.valid) {
+
+      this.newCoupon.couponCode = this.newCouponForm.value.couponCode;
+      this.newCoupon.discount = this.newCouponForm.value.discount;
+      // this.newCoupon.active = this.newCouponForm.value.active;
+
+      this.dialog.open(GenericConfirmDialogComponent, {
+        disableClose: true,
+        data: {
+          title: 'Confirm',
+          message: `Are you sure you want to add this coupon?`
+        }
+      }).afterClosed().subscribe(result => {
+        if (result) {
+          this.subscriptions.push(this.flightBookingService.addCoupon(this.newCoupon).subscribe(
+            (res) => {
+              if (res) {
+                this.getCoupons();
+              }
+            },
+            (error) => {
+              console.log('Error adding coupon:', error);
+            }
+          ));
+        }
+      });
+    }
+    else {
+      console.log(this.newCoupon);
+      console.log(this.newCouponForm);
+      console.error('Invalid form');
+    }
   }
 
   getOptions() {

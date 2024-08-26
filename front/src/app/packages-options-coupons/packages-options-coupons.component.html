@@ -25,9 +25,30 @@
           <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
           <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
         </table>
-    
 
         <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
-      </div>
 
+    </div>
+    <div class="container" #container>
+        <div class="form-container add">
+            <h3>Add Coupon</h3>
+            <form (ngSubmit)="addCoupon()" [formGroup]="newCouponForm" >
+                <div>
+                    <mat-form-field appearance="fill">
+                    <mat-label>Coupon Code</mat-label>
+                    <input matInput name="couponCode" required formControlName="couponCode">
+                    </mat-form-field>
+                </div>
+                <div>
+                    <mat-form-field appearance="fill">
+                    <mat-label>Discount (%)</mat-label>
+                    <input matInput type="number" name="discount" required min="0" max="100" formControlName="discount">
+                    </mat-form-field>
+                </div>
+                <!-- <mat-slide-toggle [(ngModel)]="newCoupon.active" name="active">Active</mat-slide-toggle> -->
+        
+                <button mat-raised-button color="primary" type="submit">Add Coupon</button>
+            </form>
+        </div>
+    </div>
 </app-navigation>
