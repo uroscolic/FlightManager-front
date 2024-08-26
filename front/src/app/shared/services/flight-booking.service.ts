@@ -5,10 +5,12 @@ import { Observable } from 'rxjs';
 import { PageableResponse } from '../models/pageableResponse.model';
 import { OptionViewModel } from '../models/option.model';
 import { CouponViewModel } from '../models/coupon.model';
+import { PlaneViewModel } from '../models/plane.model';
 
 const OPTION = "/option";
 const PACKAGE = "/package";
 const COUPON = "/coupon";
+const PLANE = "/plane";
 
 @Injectable({
   providedIn: 'root'
@@ -22,7 +24,7 @@ export class FlightBookingService {
 
   getOptions() : Observable<PageableResponse<OptionViewModel[]>> {
 
-    const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') : '';
+    const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') || localStorage.getItem('token') || '' : '';
     const headers = new HttpHeaders({
       'Authorization': token ? `Bearer ${token}` : ''
     });
@@ -36,7 +38,7 @@ export class FlightBookingService {
 
   getCoupons() : Observable<PageableResponse<CouponViewModel[]>> {
 
-    const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') : '';
+    const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') || localStorage.getItem('token') || '' : '';
     const headers = new HttpHeaders({
       'Authorization': token ? `Bearer ${token}` : ''
     });
@@ -50,7 +52,7 @@ export class FlightBookingService {
 
   toggleCouponStatus(request: CouponViewModel) : Observable<CouponViewModel> {
       
-      const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') : '';
+    const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') || localStorage.getItem('token') || '' : '';
       const headers = new HttpHeaders({
         'Authorization': token ? `Bearer ${token}` : ''
       });
@@ -64,10 +66,22 @@ export class FlightBookingService {
         { headers }
       );
   }
+  getPlanes() : Observable<PageableResponse<PlaneViewModel[]>> {
+      
+    const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') || localStorage.getItem('token') || '' : '';
+    const headers = new HttpHeaders({
+      'Authorization': token ? `Bearer ${token}` : ''
+    });
+
+    return this.http.get<PageableResponse<PlaneViewModel[]>>(
+      this.url + PLANE,
+      { headers }
+    );
+  }
 
   addCoupon(request: CouponViewModel) : Observable<CouponViewModel> {
       
-    const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') : '';
+    const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') || localStorage.getItem('token') || '' : '';
     const headers = new HttpHeaders({
       'Authorization': token ? `Bearer ${token}` : ''
     });

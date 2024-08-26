@@ -1,12 +1,12 @@
 export interface PageableResponse<T> {
     content: T;
-    pageable: any; // Prilagodite prema potrebi
+    pageable: any; 
     last: boolean;
     totalElements: number;
     totalPages: number;
     size: number;
     number: number;
-    sort: any; // Prilagodite prema potrebi
+    sort: any; 
     first: boolean;
     numberOfElements: number;
     empty: boolean;

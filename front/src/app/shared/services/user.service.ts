@@ -26,8 +26,8 @@ export class UserService {
 
   getUsers(): Observable<PageableResponse<UserViewModel[]>> {
 
-    const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') : '';
-    const headers = new HttpHeaders({
+    const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') || localStorage.getItem('token') || '' : '';
+       const headers = new HttpHeaders({
       'Authorization': token ? `Bearer ${token}` : ''
     });
     return this.http.get<PageableResponse<UserViewModel[]>>(
@@ -37,7 +37,7 @@ export class UserService {
   }
 
   getClients(): Observable<PageableResponse<UserViewModel[]>> {
-    const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') : '';
+    const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') || localStorage.getItem('token') || '' : '';
     const headers = new HttpHeaders({
       'Authorization': token ? `Bearer ${token}` : ''
     });
@@ -49,7 +49,7 @@ export class UserService {
 
   banUser(request: UserViewModel) {
 
-    const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') : '';
+    const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') || localStorage.getItem('token') || '' : '';
     const headers = new HttpHeaders({
       'Authorization': token ? `Bearer ${token}` : ''
     });

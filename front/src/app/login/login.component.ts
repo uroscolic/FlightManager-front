@@ -50,6 +50,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     ]
   };
   errorMessage!: string;
+  errorMessageSignUp!: string;
 
   constructor(private formBuilder: FormBuilder, private userService: UserService, private router: Router) { }
 
@@ -66,12 +67,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       password: ['',[Validators.required, Validators.minLength(8)]]
     });
 
-    this.loginFailed = false;
-    this.signUpFailed = false;
-    this.showPassword = false;
-    this.showSignUpPassword = false;
-    this.loginAndRememberMe = false;
-    this.rememberMe = false;
+    this.resetData();
   }
 
   onLoginSubmit(): void {
@@ -96,21 +92,10 @@ export class LoginComponent implements OnInit, OnDestroy {
               // Handle Remember Me
               if (this.rememberMe) {
                 // Save to localStorage
-                localStorage.setItem('id', response.id.toString());
-                localStorage.setItem('firstName', response.firstName.toString());
-                localStorage.setItem('lastName', response.lastName.toString());
-                localStorage.setItem('email', response.email.toString());
-                localStorage.setItem('roleType', response.roleType.toString());
-                localStorage.setItem('token', response.token.toString());
-                localStorage.setItem('rememberMe', 'true');
+                this.saveUserDataToLocalStorage(response);
               } else {
                 // Save to sessionStorage
-                sessionStorage.setItem('id', response.id.toString());
-                sessionStorage.setItem('firstName', response.firstName.toString());
-                sessionStorage.setItem('lastName', response.lastName.toString());
-                sessionStorage.setItem('email', response.email.toString());
-                sessionStorage.setItem('roleType', response.roleType.toString());
-                sessionStorage.setItem('token', response.token.toString());
+                this.saveUserDataToSessionStorage(response);
               }
   
               this.router.navigate(['/navigation']);
@@ -120,6 +105,11 @@ export class LoginComponent implements OnInit, OnDestroy {
           },
           error => {
             console.error('Error during login:', error);
+            if (error.status === 500) {
+              this.errorMessage = 'Account with provided email and password is banned.';
+            } else {
+              this.errorMessage = 'An error occurred during log in. Please try again.';
+            }
             this.loginFailed = true;
           }
         ));
@@ -161,17 +151,8 @@ export class LoginComponent implements OnInit, OnDestroy {
                   if (loginResponse) {
                     this.loginFailed = false;
   
-                    
-                      // Save to localStorage
-                      localStorage.setItem('id', loginResponse.id.toString());
-                      localStorage.setItem('firstName', loginResponse.firstName.toString());
-                      localStorage.setItem('lastName', loginResponse.lastName.toString());
-                      localStorage.setItem('email', loginResponse.email.toString());
-                      localStorage.setItem('roleType', loginResponse.roleType.toString());
-                      localStorage.setItem('token', loginResponse.token.toString());
-                      localStorage.setItem('rememberMe', 'true');
-                  
-  
+                    this.saveUserDataToLocalStorage(loginResponse);
+      
                     this.router.navigate(['/navigation']);
                   } else {
                     this.loginFailed = true;
@@ -183,7 +164,6 @@ export class LoginComponent implements OnInit, OnDestroy {
                 }
               ));
             } else {
-              // If loginAndRememberMe is not selected, do not perform the login
               console.log('User signed up but opted not to log in immediately.');
             }
           } else {
@@ -191,13 +171,47 @@ export class LoginComponent implements OnInit, OnDestroy {
           }
         },
         error => {
+          
           console.error('Error during sign up:', error);
+          if (error.status === 500) {
+            this.errorMessageSignUp = 'Email is already registered. Please use a different email.';
+          } else {
+            this.errorMessageSignUp = 'An error occurred during sign up. Please try again.';
+          }
           this.signUpFailed = true;
         }
       ));
     } else {
       this.signUpFailed = true;
     }
+  }
+
+  saveUserDataToLocalStorage(response: any) {
+    localStorage.setItem('id', response.id.toString());
+    localStorage.setItem('firstName', response.firstName.toString());
+    localStorage.setItem('lastName', response.lastName.toString());
+    localStorage.setItem('email', response.email.toString());
+    localStorage.setItem('roleType', response.roleType.toString());
+    localStorage.setItem('token', response.token.toString());
+    localStorage.setItem('rememberMe', 'true');
+  }
+
+  saveUserDataToSessionStorage(response: any) {
+    sessionStorage.setItem('id', response.id.toString());
+    sessionStorage.setItem('firstName', response.firstName.toString());
+    sessionStorage.setItem('lastName', response.lastName.toString());
+    sessionStorage.setItem('email', response.email.toString());
+    sessionStorage.setItem('roleType', response.roleType.toString());
+    sessionStorage.setItem('token', response.token.toString());
+  }
+
+  resetData() {
+    this.loginFailed = false;
+    this.signUpFailed = false;
+    this.showPassword = false;
+    this.showSignUpPassword = false;
+    this.loginAndRememberMe = false;
+    this.rememberMe = false;
   }
 
   togglePasswordVisibility() : void {

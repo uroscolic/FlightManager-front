@@ -73,7 +73,7 @@
       <button>Sign Up</button>
 
       <div *ngIf="signUpFailed" class="failed" role="alert">
-        Sign up failed. Please check your credentials.
+        {{errorMessageSignUp}}
     </div>
     </form>
   </div>
@@ -114,7 +114,7 @@
       <button type="submit">Sign In</button>
       <!-- Login failure message -->
     <div *ngIf="loginFailed" class="failed" role="alert">
-        Login failed. Please check your email and password.
+        {{errorMessage}}
     </div>
     
     </form>
