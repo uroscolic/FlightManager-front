@@ -29,6 +29,7 @@ export class LoginComponent implements OnInit, OnDestroy {
   showPassword: boolean = false;
   loginForm!: FormGroup;
   rememberMe: boolean = false;
+  loginAndRememberMe: boolean = false;
 
   errorMessages = {
     email: [
@@ -69,6 +70,7 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.signUpFailed = false;
     this.showPassword = false;
     this.showSignUpPassword = false;
+    this.loginAndRememberMe = false;
     this.rememberMe = false;
   }
 
@@ -125,10 +127,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       this.loginFailed = true;
     }
   }
-
-  onSignUpSubmit() : void {
-    console.log(this.signUpForm.value);
-    console.log(this.signUpForm.valid);
+  onSignUpSubmit(): void {
     if (this.signUpForm.valid) {
       this.signUpFailed = false;
       const signUpFirstName = this.signUpForm.value.firstname;
@@ -140,23 +139,61 @@ export class LoginComponent implements OnInit, OnDestroy {
         lastName: signUpLastName,
         email: signUpEmail,
         password: signUpPassword
-      }
-
-      this.subscriptions.push(this.userService.signUp(signUpPost)
-        .subscribe(
-          response => {
-            if (response) {
-              this.signUpFailed = false;
-              this.signUpForm.reset();
-              console.log('Sign up successful:', response);
+      };
+  
+      this.subscriptions.push(this.userService.signUp(signUpPost).subscribe(
+        response => {
+          if (response) {
+            this.signUpFailed = false;
+            this.signUpForm.reset();
+            console.log('Sign up successful:', response);
+  
+            // Check if loginAndRememberMe is selected
+            if (this.loginAndRememberMe) {
+              // Automatski login nakon registracije
+              const loginPost: LoginViewModel = {
+                email: signUpEmail,
+                password: signUpPassword
+              };
+  
+              this.subscriptions.push(this.userService.login(loginPost).subscribe(
+                loginResponse => {
+                  if (loginResponse) {
+                    this.loginFailed = false;
+  
+                    
+                      // Save to localStorage
+                      localStorage.setItem('id', loginResponse.id.toString());
+                      localStorage.setItem('firstName', loginResponse.firstName.toString());
+                      localStorage.setItem('lastName', loginResponse.lastName.toString());
+                      localStorage.setItem('email', loginResponse.email.toString());
+                      localStorage.setItem('roleType', loginResponse.roleType.toString());
+                      localStorage.setItem('token', loginResponse.token.toString());
+                      localStorage.setItem('rememberMe', 'true');
+                  
+  
+                    this.router.navigate(['/navigation']);
+                  } else {
+                    this.loginFailed = true;
+                  }
+                },
+                error => {
+                  console.error('Error during login:', error);
+                  this.loginFailed = true;
+                }
+              ));
             } else {
-              this.signUpFailed = true;
+              // If loginAndRememberMe is not selected, do not perform the login
+              console.log('User signed up but opted not to log in immediately.');
             }
-          },
-          error => {
-            console.error('Error during sign up:', error);
+          } else {
             this.signUpFailed = true;
           }
+        },
+        error => {
+          console.error('Error during sign up:', error);
+          this.signUpFailed = true;
+        }
       ));
     } else {
       this.signUpFailed = true;
@@ -172,6 +209,10 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   toggleRememberMe() : void {
     this.rememberMe = !this.rememberMe;
+  }
+
+  toggleLoginAndRememberMe() : void {
+    this.loginAndRememberMe = !this.loginAndRememberMe;
   }
 
   ngOnDestroy(): void {
