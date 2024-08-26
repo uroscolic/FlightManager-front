@@ -55,15 +55,11 @@ export class UserService {
     });
 
     const role = request.roleType === UserRole.Client ? CLIENT : MANAGER;
-    console.log(role);
     request.banned = !request.banned;
-    console.log(request);
-    const a =  this.http.put<UserViewModel>(
+    return this.http.put<UserViewModel>(
       this.url + role + BAN, request,
       { headers }
     );
-    console.log(a);
-    return a;
     
   }
 

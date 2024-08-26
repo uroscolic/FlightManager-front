@@ -18,6 +18,7 @@ import { ViewChild } from '@angular/core';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { GenericConfirmDialogComponent } from '../shared/generic-confirm-dialog/generic-confirm-dialog.component';
+import { NavigationComponent } from "../navigation/navigation.component";
 
 @Component({
   selector: 'app-user-list',
@@ -35,8 +36,9 @@ import { GenericConfirmDialogComponent } from '../shared/generic-confirm-dialog/
     RouterOutlet,
     MatTableModule,
     MatPaginatorModule,
-    MatSortModule, 
-  ]
+    MatSortModule,
+    NavigationComponent
+]
 })
 export class UserListComponent implements OnInit {
   displayedColumns: string[] = ['id', 'firstName', 'lastName', 'email', 'roleType', 'ban'];
@@ -46,7 +48,7 @@ export class UserListComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private dialog: MatDialog,private userService: UserService) {}
+  constructor(private dialog: MatDialog, private userService: UserService) {}
 
   ngOnInit(): void {
     this.getUsers();
@@ -66,13 +68,12 @@ export class UserListComponent implements OnInit {
     }
   }
   toggleBan(user: UserViewModel): void {
-    if (user.banned) {
 
       this.dialog.open(GenericConfirmDialogComponent, {
         disableClose: true,
         data: {
-          title: `Unban "${user.firstName} ${user.lastName}"`, 
-          message: `Are you sure you want to unban "${user.firstName} ${user.lastName}"?`,
+          title: `${user.banned ? 'Unban' : 'Ban'} "${user.firstName} ${user.lastName}"`, 
+          message: `Are you sure you want to ${user.banned ? 'unban' : 'ban'} "${user.firstName} ${user.lastName}"?`,
         }
       }).afterClosed().subscribe((confirmed) => {
         if (confirmed) {
@@ -83,36 +84,12 @@ export class UserListComponent implements OnInit {
               }
             },
             (error) => {
-              console.log('Error unbanning user:', error);
+              console.log(`Error ${user.banned ? 'unbanning' : 'banning'} user:`, error);
             }
           ));
         }
       });
 
-    } else {
-
-      this.dialog.open(GenericConfirmDialogComponent, {
-        disableClose: true,
-        data: {
-          title: `Ban "${user.firstName} ${user.lastName}"`,
-          message: `Are you sure you want to ban "${user.firstName} ${user.lastName}"?`,
-        }
-      }).afterClosed().subscribe((confirmed) => {
-        if (confirmed) {
-          this.subscriptions.push(this.userService.banUser(user).subscribe(
-            (res) => {
-              if (res) {
-                this.getUsers();
-              }
-            },
-            (error) => {
-              console.log('Error ban user:', error);
-            }
-          ));
-        }
-      });
-
-    }
   }
 
   

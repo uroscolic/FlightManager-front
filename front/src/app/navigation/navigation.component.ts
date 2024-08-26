@@ -34,7 +34,7 @@ export class NavigationComponent {
   roleType: string = '';
 
   adminRoutes = [
-    { name: 'Dashboard', url: '/navigation', icon: 'home' },
+    { name: 'Home Page', url: '/navigation', icon: 'home' },
     { name: 'Users', url: '/users', icon: 'group' },
     { name: 'Airports and Planes', url: '/airports&planes', icon: 'connecting_airports' },
     { name: 'Packages, Options and Coupons', url: '/packages&options&coupons', icon: 'inventory' },
@@ -43,12 +43,12 @@ export class NavigationComponent {
   ];
 
   userRoutes = [
-    { name: 'Dashboard', url: '/navigation', icon: 'home' },
+    { name: 'Home Page', url: '/navigation', icon: 'home' },
     { name: 'My Tickets', url: '/tickets', icon: 'wallet' },
   ];
 
   managerRoutes = [
-    { name: 'Dashboard', url: '/navigation', icon: 'home' },
+    { name: 'Home Page', url: '/navigation', icon: 'home' },
     { name: 'Users', url: '/users', icon: 'group' },
     { name: 'Airports and Planes', url: '/airports&planes', icon: 'connecting_airports' },
     { name: 'Packages, Options and Coupons', url: '/packages&options&coupons', icon: 'inventory' },
