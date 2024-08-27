@@ -1,66 +1,96 @@
 <app-navigation>
+  <div>
+    <!-- Dropdown to choose the view -->
+    <mat-form-field appearance="fill">
+      <mat-label>Choose what to see</mat-label>
+      <mat-select [(value)]="selectedOption" (selectionChange)="resetForms();">
+        <mat-option value="coupons">Coupons</mat-option>
+        <mat-option value="options">Options</mat-option>
+        <mat-option value="packages">Packages</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
 
-    <div>
-      <mat-form-field appearance="fill">
-        <mat-label>Select View</mat-label>
-        <mat-select [(value)]="selectedOption">
-          <mat-option value="coupons">Coupons</mat-option>
-          <mat-option value="options">Options</mat-option>
-          <mat-option value="packages">Packages</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
+  <!-- Table to display selected data -->
+  <div class="mat-elevation-z8" *ngIf="selectedOption">
+    <table mat-table [dataSource]="getDataSource()" class="mat-table" matSort>
 
-    <div class="mat-elevation-z8">
-        <table mat-table [dataSource]="dataSource" class="mat-table" matSort>
-
-          <ng-container matColumnDef="couponCode">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Coupon Code </th>
-            <td mat-cell *matCellDef="let coupon"> {{coupon.couponCode}} </td>
+      <!-- Dynamic column definitions -->
+      <ng-container *ngFor="let column of getDisplayedColumns()" [matColumnDef]="column">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ getColumnLabel(column) }} </th>
+        <td mat-cell *matCellDef="let element">
+          <!-- Conditional rendering based on column name -->
+          <ng-container [ngSwitch]="column">
+            <!-- Display slide toggle for 'active' column -->
+            <mat-slide-toggle *ngSwitchCase="'active'" [checked]="element[column]" (change)="toggleCouponStatus(element)">
+              Active
+            </mat-slide-toggle>
+  
+            <!-- Default rendering for other columns -->
+            <ng-container *ngSwitchDefault>
+              {{ element[column] }}
+            </ng-container>
           </ng-container>
-    
+        </td>
+      </ng-container>
+  
+      
 
-          <ng-container matColumnDef="discount">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Discount </th>
-            <td mat-cell *matCellDef="let coupon"> {{coupon.discount}}% </td>
-          </ng-container>
-    
+      <!-- Header and Row Declarations -->
+      <tr mat-header-row *matHeaderRowDef="getDisplayedColumns()"></tr>
+      <tr mat-row *matRowDef="let row; columns: getDisplayedColumns();"></tr>
+    </table>
 
-          <ng-container matColumnDef="active">
-            <th mat-header-cell *matHeaderCellDef mat-sort-header> Active </th>
-            <td mat-cell *matCellDef="let coupon">  
-                <mat-slide-toggle [checked]="coupon.active" (click) = "toggleCouponStatus(coupon)"></mat-slide-toggle>
-            </td>
-          </ng-container>
-    
-    
-          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-          <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
-        </table>
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  </div>
 
-        <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
-
-    </div>
-    <div class="container" #container>
-        <div class="form-container add">
-            <h3>Add Coupon</h3>
-            <form (ngSubmit)="addCoupon()" [formGroup]="newCouponForm" >
-                <div>
-                    <mat-form-field appearance="fill">
-                    <mat-label>Coupon Code</mat-label>
-                    <input matInput name="couponCode" required formControlName="couponCode">
-                    </mat-form-field>
-                </div>
-                <div>
-                    <mat-form-field appearance="fill">
-                    <mat-label>Discount (%)</mat-label>
-                    <input matInput type="number" name="discount" required min="0" max="100" formControlName="discount">
-                    </mat-form-field>
-                </div>
-                <!-- <mat-slide-toggle [(ngModel)]="newCoupon.active" name="active">Active</mat-slide-toggle> -->
-        
-                <button mat-raised-button color="primary" type="submit">Add Coupon</button>
-            </form>
+  <!-- Form to add a new coupon -->
+  <div class="container" *ngIf="selectedOption">
+    <div class="form-container add">
+      <h3>Add {{ getItemName() }}</h3>
+      <form (ngSubmit)="getAction()" [formGroup]="getForm()">
+        <div *ngIf="selectedOption === 'coupons'">
+          <div>
+            <mat-form-field appearance="fill">
+              <mat-label>Coupon Code</mat-label>
+              <input matInput name="couponCode" required formControlName="couponCode">
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-form-field appearance="fill">
+              <mat-label>Discount (%)</mat-label>
+              <input matInput type="number" name="discount" required min="0" max="100" formControlName="discount">
+            </mat-form-field>
+          </div>
         </div>
+  
+        <div *ngIf="selectedOption === 'options'">
+          <div>
+            <mat-form-field appearance="fill">
+              <mat-label>Name</mat-label>
+              <input matInput name="name" required formControlName="name">
+            </mat-form-field>
+          </div>
+          <div>
+            <mat-form-field appearance="fill">
+              <mat-label>Price (€)</mat-label>
+              <input matInput type="number" name="price" required min="0" formControlName="price">
+            </mat-form-field>
+          </div>
+        </div>
+  
+        <div *ngIf="selectedOption === 'packages'">
+          <div>
+            <mat-form-field appearance="fill">
+              <mat-label>Name</mat-label>
+              <input matInput name="name" required formControlName="name">
+            </mat-form-field>
+          </div>
+        </div>
+  
+        <button mat-raised-button color="primary" type="submit">Add {{ getItemName() }}</button>
+      </form>
     </div>
+  </div>
+  
 </app-navigation>

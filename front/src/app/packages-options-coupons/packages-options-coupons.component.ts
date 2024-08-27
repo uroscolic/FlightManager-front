@@ -21,6 +21,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
+import { OptionViewModel, PackageViewModel } from '../shared/models/flight-booking.model';
 
 @Component({
   selector: 'app-packages-options-coupons',
@@ -52,19 +53,72 @@ import { MatOptionModule } from '@angular/material/core';
 export class PackagesOptionsCouponsComponent implements OnInit {
 
 
-  //TODO - kad se klikne cancel za promenu statusa, da se vrati na prethodno stanje
 
-  displayedColumns: string[] = ['couponCode', 'discount', 'active'];
-  dataSource: MatTableDataSource<CouponViewModel> = new MatTableDataSource<CouponViewModel>([]);
+  displayedCouponColumns: string[] = ['couponCode', 'discount', 'active'];
+  displayedOptionColumns: string[] = ['id', 'name', 'price'];
+  displayedPackageColumns: string[] = ['id', 'name'];
+
+  dataSourceCoupon: MatTableDataSource<CouponViewModel> = new MatTableDataSource<CouponViewModel>([]);
+  dataSourceOption: MatTableDataSource<OptionViewModel> = new MatTableDataSource<OptionViewModel>([]);
+  dataSourcePackage: MatTableDataSource<PackageViewModel> = new MatTableDataSource<PackageViewModel>([]);
+
+  columnMappings: { [key: string]: string } = {
+    couponCode: 'Coupon Code',
+    discount: 'Discount (%)',
+    active: 'Active',
+    id: 'ID',
+    name: 'Name',
+    price: 'Price (€)'
+  };
+
+  itemConfig: { [key: string]: any } = {
+    coupons: {
+      itemName: 'Coupon',
+      dataSource: this.dataSourceCoupon,
+      action: () => this.addCoupon(),
+      displayedColumns: ['couponCode', 'discount', 'active']
+    },
+    options: {
+      itemName: 'Option',
+      dataSource: this.dataSourceOption,
+      action: () => this.addOption(),
+      displayedColumns: ['id', 'name', 'price']
+    },
+    packages: {
+      itemName: 'Package',
+      dataSource: this.dataSourcePackage,
+      action: () => this.addPackage(),
+      displayedColumns: ['id', 'name']
+    }
+  };
+  
+  
   subscriptions: Subscription[] = [];
   selectedOption: string = 'coupons';
+
+  dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
 
   newCoupon: { couponCode: string; discount: number; active: boolean } = {
     couponCode: '',
     discount: 0,
     active: false
   };
-  newCouponForm!: FormGroup;
+
+  newOption: { id: number, name: string; price: number } = {
+    id: -1,
+    name: '',
+    price: 0
+  };
+
+  newPackage: { id: number, name: string } = {
+    id: -1,
+    name: ''
+  };
+
+
+  couponForm: FormGroup;
+  optionForm: FormGroup;
+  packageForm: FormGroup;
 
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
@@ -74,23 +128,78 @@ export class PackagesOptionsCouponsComponent implements OnInit {
 
   ngOnInit(): void {
 
-    this.newCouponForm = this.formBuilder.group({
-      couponCode: ['', Validators.required],
-      discount: ['', Validators.required],
-      // active: ['']
-    });
+    this.initializeForms();
 
     this.getCoupons();
+    this.getOptions();
+    this.getPackages();
   }
+
+  getForm() {
+    switch (this.selectedOption) {
+      case 'coupons':
+        return this.couponForm;
+      case 'options':
+        return this.optionForm;
+      case 'packages':
+        return this.packageForm;
+      default:
+        return this.couponForm;
+    }
+  }
+
+
+  initializeForms() {
+    this.couponForm = this.formBuilder.group({
+      couponCode: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9]*$')]],
+      discount: ['', [Validators.required, Validators.min(0), Validators.max(100)]],
+      //active: [false]
+    });
+
+    this.optionForm = this.formBuilder.group({
+      name: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9]*$')]],
+      price: ['', [Validators.required, Validators.min(0)]]
+    });
+
+    this.packageForm = this.formBuilder.group({
+      name: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9]*$')]]
+    });
+  }
+
+  resetForms() {
+    this.couponForm.reset();
+    this.optionForm.reset();
+    this.packageForm.reset();
+  }
+
+  getColumnLabel(column: string): string {
+    return this.columnMappings[column] || column;
+  }
+
+  getItemName(): string {
+    return this.itemConfig[this.selectedOption].itemName;
+  }
+
+  getDataSource() {
+    return this.itemConfig[this.selectedOption].dataSource;
+  }
+
+  getAction() {
+    this.itemConfig[this.selectedOption].action();
+  }
+
+  getDisplayedColumns() {
+    return this.itemConfig[this.selectedOption].displayedColumns;
+  }
+
 
   getCoupons() {
     if (typeof window !== 'undefined' && window.sessionStorage) {
-      const token = sessionStorage.getItem('token');
       
       this.subscriptions.push(this.flightBookingService.getCoupons().subscribe(res => {
-        this.dataSource.data = res.content;
-        this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort;
+        this.dataSourceCoupon.data = res.content;
+        this.dataSourceCoupon.paginator = this.paginator;
+        this.dataSourceCoupon.sort = this.sort;
       }));
     } else {
       console.error('sessionStorage is not available.');
@@ -117,15 +226,18 @@ export class PackagesOptionsCouponsComponent implements OnInit {
           }
         ));
       }
+      else {
+        this.getCoupons();
+      }
     });
   }
 
   addCoupon() {
-    if(this.newCouponForm.valid) {
+    if(this.couponForm.valid) {
 
-      this.newCoupon.couponCode = this.newCouponForm.value.couponCode;
-      this.newCoupon.discount = this.newCouponForm.value.discount;
-      // this.newCoupon.active = this.newCouponForm.value.active;
+      this.newCoupon.couponCode = this.couponForm.value.couponCode;
+      this.newCoupon.discount = this.couponForm.value.discount;
+      // this.newCoupon.active = this.couponForm.value.active;
 
       this.dialog.open(GenericConfirmDialogComponent, {
         disableClose: true,
@@ -139,10 +251,12 @@ export class PackagesOptionsCouponsComponent implements OnInit {
             (res) => {
               if (res) {
                 this.getCoupons();
+                this.couponForm.reset();
               }
             },
             (error) => {
               console.log('Error adding coupon:', error);
+              this.couponForm.reset();
             }
           ));
         }
@@ -150,17 +264,88 @@ export class PackagesOptionsCouponsComponent implements OnInit {
     }
     else {
       console.log(this.newCoupon);
-      console.log(this.newCouponForm);
+      console.log(this.couponForm);
       console.error('Invalid form');
+    }
+    
+  }
+
+  addOption() {
+    if(this.optionForm.valid) {
+
+      this.newOption.name = this.optionForm.value.name;
+      this.newOption.price = this.optionForm.value.price;
+
+      this.dialog.open(GenericConfirmDialogComponent, {
+        disableClose: true,
+        data: {
+          title: 'Confirm',
+          message: `Are you sure you want to add this option?`
+        }
+      }).afterClosed().subscribe(result => {
+        if (result) {
+          this.subscriptions.push(this.flightBookingService.addOption(this.newOption).subscribe(
+            (res) => {
+              if (res) {
+                this.getOptions();
+                this.optionForm.reset();
+              }
+            },
+            (error) => {
+              console.log('Error adding option:', error);
+              this.optionForm.reset();
+            }
+          ));
+        }
+      });
+    }
+    
+  }
+
+  addPackage() {
+    if(this.packageForm.valid) {
+
+      this.newPackage.name = this.packageForm.value.name;
+
+      this.dialog.open(GenericConfirmDialogComponent, {
+        disableClose: true,
+        data: {
+          title: 'Confirm',
+          message: `Are you sure you want to add this package?`
+        }
+      }).afterClosed().subscribe(result => {
+        if (result) {
+          this.subscriptions.push(this.flightBookingService.addPackage(this.newPackage).subscribe(
+            (res) => {
+              if (res) {
+                this.getPackages();
+                this.packageForm.reset();
+              }
+            },
+            (error) => {
+              console.log('Error adding package:', error);
+              this.packageForm.reset();
+            }
+          ));
+        }
+      });
     }
   }
 
   getOptions() {
-    // Get options
+    this.subscriptions.push(this.flightBookingService.getOptions().subscribe(res => {
+      this.dataSourceOption.data = res.content;
+      this.dataSourceOption.paginator = this.paginator;
+      this.dataSourceOption.sort = this.sort;
+    }));
   }
 
   getPackages() {
-    // Get packages
+    this.subscriptions.push(this.flightBookingService.getPackages().subscribe(res => {
+      this.dataSourcePackage.data = res.content;
+      this.dataSourcePackage.paginator = this.paginator;
+      this.dataSourcePackage.sort = this.sort;
+    }));
   }
 
 }
