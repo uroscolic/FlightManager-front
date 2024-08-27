@@ -6,6 +6,7 @@ import { PageableResponse } from '../models/pageableResponse.model';
 import { OptionViewModel } from '../models/option.model';
 import { CouponViewModel } from '../models/coupon.model';
 import { PlaneViewModel } from '../models/plane.model';
+import { UtilityService } from './utility.service';
 
 const OPTION = "/option";
 const PACKAGE = "/package";
@@ -18,17 +19,14 @@ const PLANE = "/plane";
 export class FlightBookingService {
 
   private url: string = environment.flightBookingServiceUrl;
+  
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private utilityService: UtilityService) { }
 
 
   getOptions() : Observable<PageableResponse<OptionViewModel[]>> {
 
-    const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') || localStorage.getItem('token') || '' : '';
-    const headers = new HttpHeaders({
-      'Authorization': token ? `Bearer ${token}` : ''
-    });
-
+    const headers = this.utilityService.getHeaders();
 
     return this.http.get<PageableResponse<OptionViewModel[]>>(
       this.url + OPTION,
@@ -38,10 +36,7 @@ export class FlightBookingService {
 
   getCoupons() : Observable<PageableResponse<CouponViewModel[]>> {
 
-    const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') || localStorage.getItem('token') || '' : '';
-    const headers = new HttpHeaders({
-      'Authorization': token ? `Bearer ${token}` : ''
-    });
+    const headers = this.utilityService.getHeaders();
 
     return this.http.get<PageableResponse<CouponViewModel[]>>(
       this.url + COUPON,
@@ -52,26 +47,20 @@ export class FlightBookingService {
 
   toggleCouponStatus(request: CouponViewModel) : Observable<CouponViewModel> {
       
-    const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') || localStorage.getItem('token') || '' : '';
-      const headers = new HttpHeaders({
-        'Authorization': token ? `Bearer ${token}` : ''
-      });
+    const headers = this.utilityService.getHeaders();
 
-      request.active = !request.active;
-      console.log(request);
+    request.active = !request.active;
+    console.log(request);
 
-      return this.http.put<CouponViewModel>(
-        this.url + COUPON + `/${request.couponCode}`,
-        request,
-        { headers }
-      );
+    return this.http.put<CouponViewModel>(
+      this.url + COUPON + `/${request.couponCode}`,
+      request,
+      { headers }
+    );
   }
   getPlanes() : Observable<PageableResponse<PlaneViewModel[]>> {
       
-    const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') || localStorage.getItem('token') || '' : '';
-    const headers = new HttpHeaders({
-      'Authorization': token ? `Bearer ${token}` : ''
-    });
+    const headers = this.utilityService.getHeaders();
 
     return this.http.get<PageableResponse<PlaneViewModel[]>>(
       this.url + PLANE,
@@ -81,10 +70,7 @@ export class FlightBookingService {
 
   addCoupon(request: CouponViewModel) : Observable<CouponViewModel> {
       
-    const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') || localStorage.getItem('token') || '' : '';
-    const headers = new HttpHeaders({
-      'Authorization': token ? `Bearer ${token}` : ''
-    });
+    const headers = this.utilityService.getHeaders();
 
     return this.http.post<CouponViewModel>(
       this.url + COUPON,

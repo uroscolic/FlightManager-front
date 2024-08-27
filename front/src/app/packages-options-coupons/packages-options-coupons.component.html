@@ -1,4 +1,16 @@
 <app-navigation>
+
+    <div>
+      <mat-form-field appearance="fill">
+        <mat-label>Select View</mat-label>
+        <mat-select [(value)]="selectedOption">
+          <mat-option value="coupons">Coupons</mat-option>
+          <mat-option value="options">Options</mat-option>
+          <mat-option value="packages">Packages</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
     <div class="mat-elevation-z8">
         <table mat-table [dataSource]="dataSource" class="mat-table" matSort>
 

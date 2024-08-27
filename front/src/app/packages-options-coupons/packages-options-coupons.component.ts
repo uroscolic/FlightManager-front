@@ -19,6 +19,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { GenericConfirmDialogComponent } from '../shared/generic-confirm-dialog/generic-confirm-dialog.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
 
 @Component({
   selector: 'app-packages-options-coupons',
@@ -39,7 +41,9 @@ import { MatInputModule } from '@angular/material/input';
     MatSlideToggleModule,
     MatFormFieldModule,
     MatInputModule,
-    FormsModule
+    FormsModule,
+    MatSelectModule,
+    MatOptionModule
   
   ],
   templateUrl: './packages-options-coupons.component.html',
@@ -47,9 +51,13 @@ import { MatInputModule } from '@angular/material/input';
 })
 export class PackagesOptionsCouponsComponent implements OnInit {
 
+
+  //TODO - kad se klikne cancel za promenu statusa, da se vrati na prethodno stanje
+
   displayedColumns: string[] = ['couponCode', 'discount', 'active'];
   dataSource: MatTableDataSource<CouponViewModel> = new MatTableDataSource<CouponViewModel>([]);
   subscriptions: Subscription[] = [];
+  selectedOption: string = 'coupons';
 
   newCoupon: { couponCode: string; discount: number; active: boolean } = {
     couponCode: '',

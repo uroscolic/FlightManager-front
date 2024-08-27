@@ -5,6 +5,7 @@ import { UserRole, UserViewModel } from '../models/user.model';
 import { environment } from '../../../environment/environment';
 import { LoginViewModel, SignUpViewModel } from '../models/loginSignUp.model';
 import { PageableResponse } from '../models/pageableResponse.model';
+import { UtilityService } from './utility.service';
 
 const LOGIN = "/login";
 const CLIENT = "/client";
@@ -21,15 +22,11 @@ export class UserService {
 
   private url: string = environment.userServiceUrl;
   
-
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient, private utilityService: UtilityService) { }
 
   getUsers(): Observable<PageableResponse<UserViewModel[]>> {
 
-    const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') || localStorage.getItem('token') || '' : '';
-       const headers = new HttpHeaders({
-      'Authorization': token ? `Bearer ${token}` : ''
-    });
+    const headers = this.utilityService.getHeaders();
     return this.http.get<PageableResponse<UserViewModel[]>>(
       this.url + ALL_USERS, 
       { headers }
@@ -37,10 +34,7 @@ export class UserService {
   }
 
   getClients(): Observable<PageableResponse<UserViewModel[]>> {
-    const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') || localStorage.getItem('token') || '' : '';
-    const headers = new HttpHeaders({
-      'Authorization': token ? `Bearer ${token}` : ''
-    });
+    const headers = this.utilityService.getHeaders();
     return this.http.get<PageableResponse<UserViewModel[]>>(
       this.url + CLIENT, 
       { headers }
@@ -49,10 +43,7 @@ export class UserService {
 
   banUser(request: UserViewModel) {
 
-    const token = typeof window !== 'undefined' ? sessionStorage.getItem('token') || localStorage.getItem('token') || '' : '';
-    const headers = new HttpHeaders({
-      'Authorization': token ? `Bearer ${token}` : ''
-    });
+    const headers = this.utilityService.getHeaders();
 
     const role = request.roleType === UserRole.Client ? CLIENT : MANAGER;
     request.banned = !request.banned;
