@@ -18,7 +18,11 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { GenericConfirmDialogComponent } from '../shared/generic-confirm-dialog/generic-confirm-dialog.component';
 import { NavigationComponent } from "../navigation/navigation.component";
-import { PlaneViewModel } from '../shared/models/plane.model';
+import { PlaneViewModel,AirportViewModel } from '../shared/models/flight-booking.model';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+import { UploadImageComponent } from '../upload-image/upload-image.component';
+
 
 @Component({
   selector: 'app-airports-planes',
@@ -35,7 +39,10 @@ import { PlaneViewModel } from '../shared/models/plane.model';
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
-    NavigationComponent
+    NavigationComponent,
+    MatSelectModule,
+    MatOptionModule,
+    UploadImageComponent
     
   ],
   templateUrl: './airports-planes.component.html',
@@ -44,12 +51,17 @@ import { PlaneViewModel } from '../shared/models/plane.model';
 export class AirportsPlanesComponent implements OnInit {
   displayedColumns: string[] = ['id', 'name', 'economySeats', 'businessSeats', 'firstClassSeats'];
   dataSource: MatTableDataSource<PlaneViewModel> = new MatTableDataSource<PlaneViewModel>([]);
+
+  displayedColumnsAirport: string[] = ['id', 'name', 'locationId', 'country', 'city', 'shortName'];
+  dataSourceAirport: MatTableDataSource<AirportViewModel> = new MatTableDataSource<AirportViewModel>([]);
   subscriptions: Subscription[] = [];
   
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   constructor(private dialog: MatDialog, private flightBookingService:FlightBookingService) {}
+
+  selectedOption: string = 'planes';
 
   ngOnInit(): void {
     this.getPlanes();
@@ -62,6 +74,20 @@ export class AirportsPlanesComponent implements OnInit {
         this.dataSource.data = res.content;
         this.dataSource.paginator = this.paginator;
         this.dataSource.sort = this.sort;
+      }));
+    } else {
+      console.error('sessionStorage is not available.');
+    }
+  }
+
+  getAirports() {
+    if (typeof window !== 'undefined' && window.sessionStorage) {
+      const token = sessionStorage.getItem('token');
+      
+      this.subscriptions.push(this.flightBookingService.getAirports().subscribe(res => {
+        this.dataSourceAirport.data = res.content;
+        this.dataSourceAirport.paginator = this.paginator;
+        this.dataSourceAirport.sort = this.sort;
       }));
     } else {
       console.error('sessionStorage is not available.');

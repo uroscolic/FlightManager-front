@@ -1,6 +1,16 @@
 
 <app-navigation>
 
+    <div>
+      <mat-form-field appearance="fill">
+        <mat-label>Select View</mat-label>
+        <mat-select [(value)]="selectedOption">
+          <mat-option value="planes">Planes</mat-option>
+          <mat-option value="airplanes">Airplanes</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+
     <div class="mat-elevation-z8">
       <table mat-table [dataSource]="dataSource" class="mat-table" matSort>
         <!-- ID Column -->
@@ -41,4 +51,7 @@
       <!-- Paginator -->
       <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
     </div>
+    <br>
+    <br>
+    <app-upload-image></app-upload-image>
   </app-navigation>

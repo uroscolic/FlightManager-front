@@ -32,6 +32,7 @@ export class NavigationComponent {
   firstName: string = '';
   lastName: string = '';
   roleType: string = '';
+  roleString: string = '';
 
   adminRoutes = [
     { name: 'Home Page', url: '/navigation', icon: 'home' },
@@ -88,18 +89,20 @@ export class NavigationComponent {
         this.lastName = localStorage.getItem('lastName') || '';
         this.roleType = localStorage.getItem('roleType') || '';
       }
-    
-      this.setRoutes();
+
+      this.setRoutesAndRoleString();
     }
   }
 
-  setRoutes() {
+  setRoutesAndRoleString() {
 
     switch (this.roleType) {
       case 'ROLE_ADMIN':
+        this.roleString = '(Admin)';
         this.routes = this.adminRoutes;
         break;
       case 'ROLE_MANAGER':
+        this.roleString = '(Manager)';
         this.routes = this.managerRoutes;
         break;
       default:

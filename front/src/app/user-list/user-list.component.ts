@@ -19,6 +19,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { GenericConfirmDialogComponent } from '../shared/generic-confirm-dialog/generic-confirm-dialog.component';
 import { NavigationComponent } from "../navigation/navigation.component";
+import { LoginComponent } from '../login/login.component';
 
 @Component({
   selector: 'app-user-list',
@@ -37,7 +38,8 @@ import { NavigationComponent } from "../navigation/navigation.component";
     MatTableModule,
     MatPaginatorModule,
     MatSortModule,
-    NavigationComponent
+    NavigationComponent,
+    LoginComponent
 ]
 })
 export class UserListComponent implements OnInit {
@@ -48,10 +50,13 @@ export class UserListComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
+  currentRole: string = '';
+
   constructor(private dialog: MatDialog, private userService: UserService) {}
 
   ngOnInit(): void {
-    this.getUsers();
+    this.currentRole = sessionStorage.getItem('roleType') || localStorage.getItem('roleType') || '';
+    this.currentRole === 'ROLE_ADMIN' ? this.getUsers() : this.getClients();
   }
 
   getUsers() {
@@ -67,6 +72,21 @@ export class UserListComponent implements OnInit {
       console.error('sessionStorage is not available.');
     }
   }
+
+  getClients() {
+    if (typeof window !== 'undefined' && window.sessionStorage) {
+      const token = sessionStorage.getItem('token');
+      
+      this.subscriptions.push(this.userService.getClients().subscribe(res => {
+        this.dataSource.data = res.content;
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort;
+      }));
+    } else {
+      console.error('sessionStorage is not available.');
+    }
+  }
+
   toggleBan(user: UserViewModel): void {
 
       this.dialog.open(GenericConfirmDialogComponent, {
