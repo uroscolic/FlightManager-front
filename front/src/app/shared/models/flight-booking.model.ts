@@ -29,6 +29,12 @@ export class OptionViewModel{
 export class PackageViewModel{
     id: number;
     name: string;
+    price: number;
+}
+
+export class OptionForPackageViewModel{
+    option: OptionViewModel;
+    _package: PackageViewModel;
 }
 
 export enum Class {
