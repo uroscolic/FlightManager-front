@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../../environment/environment';
-import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { PageableResponse } from '../models/pageableResponse.model';
 
 import { UtilityService } from './utility.service';
-import { OptionViewModel, PackageViewModel, PlaneViewModel } from '../models/flight-booking.model';
+import { LocationViewModel, OptionForPackageViewModel, OptionViewModel, PackageViewModel, PlaneViewModel } from '../models/flight-booking.model';
 import { CouponViewModel } from '../models/coupon.model';
 import { AirportViewModel } from '../models/flight-booking.model';
 
@@ -15,6 +15,8 @@ const PACKAGE = "/package";
 const COUPON = "/coupon";
 const PLANE = "/plane";
 const AIRPORT = "/airport";
+const LOCATION = "/location";
+const OPTIONS_FOR_PACKAGES = "/options-for-packages";
 
 @Injectable({
   providedIn: 'root'
@@ -83,6 +85,28 @@ export class FlightBookingService {
     );
   }
 
+  getOptionsForPackage(_package: PackageViewModel) : Observable<PageableResponse<OptionForPackageViewModel[]>> {
+          
+    const headers = this.utilityService.getHeaders();
+    const params = new HttpParams().set('packageName', _package.name);
+
+    return this.http.get<PageableResponse<OptionForPackageViewModel[]>>(
+      this.url + OPTIONS_FOR_PACKAGES,
+      { headers, params }
+    );
+  } 
+
+  getLocationByCityAndCountry(city: string, country: string) : Observable<LocationViewModel> {
+          
+      const headers = this.utilityService.getHeaders();
+  
+      return this.http.get<LocationViewModel>(
+        this.url + LOCATION + `/${city}/${country}`,
+        { headers}
+      );
+  }
+
+
   // PUT requests
 
   toggleCouponStatus(request: CouponViewModel) : Observable<CouponViewModel> {
@@ -132,5 +156,36 @@ export class FlightBookingService {
       request,
       { headers }
     );
+  }
+
+  addOptionForPackage(request: OptionForPackageViewModel) : Observable<OptionForPackageViewModel> {
+        
+    const headers = this.utilityService.getHeaders();
+    return this.http.post<OptionForPackageViewModel>(
+      this.url + OPTIONS_FOR_PACKAGES,
+      request,
+      { headers }
+    );
+  }
+  addPlane(request: PlaneViewModel) : Observable<PlaneViewModel> {
+        
+      const headers = this.utilityService.getHeaders();
+  
+      return this.http.post<PlaneViewModel>(
+        this.url + PLANE,
+        request,
+        { headers }
+      );
+  }
+
+  addAirport(request: AirportViewModel) : Observable<AirportViewModel> {
+        
+      const headers = this.utilityService.getHeaders();
+  
+      return this.http.post<AirportViewModel>(
+        this.url + AIRPORT,
+        request,
+        { headers }
+      );
   }
 }

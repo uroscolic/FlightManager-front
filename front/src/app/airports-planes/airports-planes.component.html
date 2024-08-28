@@ -1,57 +1,69 @@
 
 <app-navigation>
 
-    <div>
+    <div class="container">
       <mat-form-field appearance="fill">
-        <mat-label>Select View</mat-label>
-        <mat-select [(value)]="selectedOption">
+        <mat-label>Choose what to see</mat-label>
+        <mat-select [(value)]="selectedOption" (selectionChange)="resetForms();">
           <mat-option value="planes">Planes</mat-option>
-          <mat-option value="airplanes">Airplanes</mat-option>
+          <mat-option value="airports">Airports</mat-option>
         </mat-select>
       </mat-form-field>
     </div>
 
-    <div class="mat-elevation-z8">
-      <table mat-table [dataSource]="dataSource" class="mat-table" matSort>
+    <div class="mat-elevation-z8" *ngIf="selectedOption">
+      <table mat-table [dataSource]="getDataSource()" class="mat-table" matSort>
         <!-- ID Column -->
-        <ng-container matColumnDef="id">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> ID </th>
-          <td mat-cell *matCellDef="let plane"> {{plane.id}} </td>
-        </ng-container>
-  
-        <!-- First Name Column -->
-        <ng-container matColumnDef="name">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Name </th>
-          <td mat-cell *matCellDef="let plane"> {{plane.name}} </td>
-        </ng-container>
-  
-        <!-- Last Name Column -->
-        <ng-container matColumnDef="economySeats">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Economy Seats </th>
-          <td mat-cell *matCellDef="let plane"> {{plane.economySeats}} </td>
-        </ng-container>
-  
-        <!-- Email Column -->
-        <ng-container matColumnDef="businessSeats">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Business Seats </th>
-          <td mat-cell *matCellDef="let plane"> {{plane.businessSeats}} </td>
-        </ng-container>
-  
-        <!-- Role Column -->
-        <ng-container matColumnDef="firstClassSeats">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> First Class Seats </th>
-          <td mat-cell *matCellDef="let plane"> {{plane.firstClassSeats}} </td>
+        <ng-container *ngFor="let column of getDisplayedColumns()" [matColumnDef]="column">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ getColumnDisplayName(column) }} </th>
+          <td mat-cell *matCellDef="let element">
+            {{ getValueFromPath(element, column) }}
+          </td>
         </ng-container>
   
         <!-- Header and Row Declarations -->
-        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+        <tr mat-header-row *matHeaderRowDef="getDisplayedColumns()"></tr>
+        <tr mat-row *matRowDef="let row; columns: getDisplayedColumns();"></tr>
       </table>
   
       <!-- Paginator -->
       <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
     </div>
-    <br>
-    <br>
-    <app-upload-image></app-upload-image>
+    
+    <div class="container" *ngIf="selectedOption">
+      <div class="form-container add">
+        <h3>Add {{ getItemName() }}</h3>
+        <form (ngSubmit)="getAction()" [formGroup]="getForm()">
+          <div *ngIf="selectedOption === 'planes'">
+            <div *ngFor="let plane of planeFields">
+              <mat-form-field appearance="fill">
+                <mat-label>{{plane.label}}</mat-label>
+                <input matInput [type]="plane.type" [name]="plane.name" [formControlName]="plane.name">
+                <mat-error *ngIf="getForm().get(plane.name)?.hasError('required')">
+                  {{plane.label}} is required
+                </mat-error>
+                <mat-error *ngIf="getForm().get(plane.name)?.hasError('pattern')">
+                  {{plane.label}} is not valid
+                </mat-error>
+                <mat-error *ngIf="getForm().get(plane.name)?.hasError('min')">
+                  {{plane.label}} must be > 0
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+    
+          <div *ngIf="selectedOption === 'airports'">
+            <div *ngFor="let airport of airportFields">
+              <mat-form-field appearance="fill">
+                <mat-label>{{airport.label}}</mat-label>
+                <input matInput [type]="airport.type" [name]="airport.name" required [formControlName]="airport.name">
+              </mat-form-field>
+            </div>
+          </div>
+    
+          <button mat-raised-button color="primary" type="submit">Add {{ getItemName() }}</button>
+        </form>
+      </div>
+    </div>
+
   </app-navigation>
