@@ -3,7 +3,7 @@
     <!-- Dropdown to choose the view -->
     <mat-form-field appearance="fill">
       <mat-label>Choose what to see</mat-label>
-      <mat-select [(value)]="selectedOption" (selectionChange)="resetForms();">
+      <mat-select [(value)]="selectedItem" (selectionChange)="resetForms();">
         <mat-option value="coupons">Coupons</mat-option>
         <mat-option value="options">Options</mat-option>
         <mat-option value="packages">Packages</mat-option>
@@ -12,7 +12,7 @@
   </div>
 
   <!-- Table to display selected data -->
-  <div class="mat-elevation-z8" *ngIf="selectedOption">
+  <div class="mat-elevation-z8" *ngIf="selectedItem">
     <table mat-table [dataSource]="getDataSource()" class="mat-table" matSort>
 
       <!-- Dynamic column definitions -->
@@ -22,14 +22,15 @@
           <!-- Conditional rendering based on column name -->
           <ng-container [ngSwitch]="column">
             <!-- Display slide toggle for 'active' column -->
-            <mat-slide-toggle *ngSwitchCase="'active'" [checked]="element[column]" (change)="toggleCouponStatus(element)">
+            <mat-slide-toggle *ngSwitchCase="'active'" [checked]="element[column]"
+              (change)="toggleCouponStatus(element)">
               Active
             </mat-slide-toggle>
             <ng-container *ngSwitchCase="'options'">
               <ng-container *ngIf="optionsForPackage[element.id]">
                 {{ getOptionsAsString(element.id) }}
               </ng-container>
-              
+
               <span *ngIf="!optionsForPackage[element.id]">No options available</span>
             </ng-container>
             <ng-container *ngSwitchDefault>
@@ -38,8 +39,8 @@
           </ng-container>
         </td>
       </ng-container>
-  
-      
+
+
 
       <!-- Header and Row Declarations -->
       <tr mat-header-row *matHeaderRowDef="getDisplayedColumns()"></tr>
@@ -50,11 +51,11 @@
   </div>
 
   <!-- Form to add a new coupon -->
-  <div class="container" *ngIf="selectedOption">
+  <div class="container" *ngIf="selectedItem">
     <div class="form-container add">
       <h3>Add {{ getItemName() }}</h3>
       <form (ngSubmit)="getAction()" [formGroup]="getForm()">
-        <div *ngIf="selectedOption === 'coupons'">
+        <div *ngIf="selectedItem === 'coupons'">
           <div *ngFor="let coupon of couponFields">
             <mat-form-field appearance="fill">
               <mat-label>{{coupon.label}}</mat-label>
@@ -62,8 +63,8 @@
             </mat-form-field>
           </div>
         </div>
-  
-        <div *ngIf="selectedOption === 'options'">
+
+        <div *ngIf="selectedItem === 'options'">
           <div *ngFor="let option of optionFields">
             <mat-form-field appearance="fill">
               <mat-label>{{option.label}}</mat-label>
@@ -71,27 +72,32 @@
             </mat-form-field>
           </div>
         </div>
-  
-        <div *ngIf="selectedOption === 'packages'">
-          <div class = "lista">
+
+        <div *ngIf="selectedItem === 'packages'">
+          <div class="lista">
             <mat-form-field appearance="fill">
               <mat-label>Name</mat-label>
               <input matInput name="name" required formControlName="name">
             </mat-form-field>
-            <mat-action-list>
+            <mat-form-field>
               <mat-label>Options</mat-label>
-              <mat-list-item *ngFor="let option of dataSourceOption.data">
-                <mat-checkbox (change)="toggleOptionSelection(option)" [checked]="optionsForNewPackage.includes(option)">
+              <mat-select formControlName="options" required multiple="true">
+                <mat-option *ngFor="let option of dataSourceOption.data" [value]="option"
+                  (onSelectionChange)="toggleOptionSelection(option)">
                   {{ option.name }} ({{ option.price }}€)
-                </mat-checkbox>
-              </mat-list-item>
-            </mat-action-list>
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+
           </div>
+
         </div>
-  
         <button mat-raised-button color="primary" type="submit">Add {{ getItemName() }}</button>
+        <div *ngIf="addingFailed" class="failed" role="alert">
+          {{errorMessage}}
+        </div>
       </form>
     </div>
   </div>
-  
+
 </app-navigation>

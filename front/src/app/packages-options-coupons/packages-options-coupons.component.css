@@ -1,13 +1,14 @@
 .container {
   margin-top: 30px;
   display: flex;
-  justify-content: center; 
+  justify-content: center;
 }
 
 .form-container.add {
   width: 100%;
-  max-width: 600px; 
+  max-width: 600px;
   text-align: center;
+  /* Align the form contents to the left */
 }
 
 .form-container.add h3 {
@@ -18,12 +19,22 @@ button:focus {
   outline: none;
 }
 
-/* popraviti */
+.failed {
+  color: rgb(255, 0, 0);
+  font-size: 13px;
+  font-weight: bold;
+  margin-top: 12px;
+}
+
+mat-form-field {
+  width: 100%;
+  max-width: 600px;
+  /* Isto kao i forma ispod */
+}
 
 .lista {
   display: flex;
-  flex-direction: column; /* Arrange items in a column */
-  align-items: flex-start; /* Align items to the start of the container */
-  margin-top: 20px; /* Add some spacing at the top */
+  flex-direction: column;
+  text-align: left;
+  margin-top: 20px;
 }
-

@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, ElementRef,OnInit, OnDestroy, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnInit, OnDestroy, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { LoginViewModel } from '../shared/models/loginSignUp.model';
 import { UserService } from '../shared/services/user.service';
@@ -56,15 +56,15 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.loginForm = this.formBuilder.group({
-      email: ['',[Validators.required, Validators.email]],
-      password: ['',[Validators.required,Validators.minLength(8)]]
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(8)]]
     });
 
     this.signUpForm = this.formBuilder.group({
-      firstname: ['',[Validators.required, Validators.minLength(2), Validators.pattern('^[a-zA-Z]+$')]],
-      lastname: ['',[Validators.required, Validators.minLength(2)]], 
-      email: ['',[Validators.required, Validators.email]],
-      password: ['',[Validators.required, Validators.minLength(8)]]
+      firstname: ['', [Validators.required, Validators.minLength(2), Validators.pattern('^[a-zA-Z]+$')]],
+      lastname: ['', [Validators.required, Validators.minLength(2)]],
+      email: ['', [Validators.required, Validators.email]],
+      password: ['', [Validators.required, Validators.minLength(8)]]
     });
 
     this.resetData();
@@ -78,17 +78,17 @@ export class LoginComponent implements OnInit, OnDestroy {
         email: loginEmail,
         password: loginPassword
       };
-  
+
       this.subscriptions.push(this.userService.login(loginPost)
         .subscribe(
           response => {
             if (response) {
               this.loginFailed = false;
               this.loginForm.reset();
-              
+
               // Clear sessionStorage
               sessionStorage.clear();
-  
+
               // Handle Remember Me
               if (this.rememberMe) {
                 // Save to localStorage
@@ -97,7 +97,7 @@ export class LoginComponent implements OnInit, OnDestroy {
                 // Save to sessionStorage
                 this.saveUserDataToSessionStorage(response);
               }
-  
+
               this.router.navigate(['/navigation']);
             } else {
               this.loginFailed = true;
@@ -130,14 +130,14 @@ export class LoginComponent implements OnInit, OnDestroy {
         email: signUpEmail,
         password: signUpPassword
       };
-  
+
       this.subscriptions.push(this.userService.signUp(signUpPost).subscribe(
         response => {
           if (response) {
             this.signUpFailed = false;
             this.signUpForm.reset();
             console.log('Sign up successful:', response);
-  
+
             // Check if loginAndRememberMe is selected
             if (this.loginAndRememberMe) {
               // Automatski login nakon registracije
@@ -145,14 +145,14 @@ export class LoginComponent implements OnInit, OnDestroy {
                 email: signUpEmail,
                 password: signUpPassword
               };
-  
+
               this.subscriptions.push(this.userService.login(loginPost).subscribe(
                 loginResponse => {
                   if (loginResponse) {
                     this.loginFailed = false;
-  
+
                     this.saveUserDataToLocalStorage(loginResponse);
-      
+
                     this.router.navigate(['/navigation']);
                   } else {
                     this.loginFailed = true;
@@ -171,7 +171,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           }
         },
         error => {
-          
+
           console.error('Error during sign up:', error);
           if (error.status === 500) {
             this.errorMessageSignUp = 'Email is already registered. Please use a different email.';
@@ -214,18 +214,18 @@ export class LoginComponent implements OnInit, OnDestroy {
     this.rememberMe = false;
   }
 
-  togglePasswordVisibility() : void {
+  togglePasswordVisibility(): void {
     this.showPassword = !this.showPassword
   }
-  toggleSignUpPasswordVisibility() : void {
+  toggleSignUpPasswordVisibility(): void {
     this.showSignUpPassword = !this.showSignUpPassword
   }
 
-  toggleRememberMe() : void {
+  toggleRememberMe(): void {
     this.rememberMe = !this.rememberMe;
   }
 
-  toggleLoginAndRememberMe() : void {
+  toggleLoginAndRememberMe(): void {
     this.loginAndRememberMe = !this.loginAndRememberMe;
   }
 

@@ -24,6 +24,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { OptionForPackageViewModel, OptionViewModel, PackageViewModel } from '../shared/models/flight-booking.model';
 import { get } from 'http';
+import e from 'express';
 
 
 @Component({
@@ -48,8 +49,8 @@ import { get } from 'http';
     FormsModule,
     MatSelectModule,
     MatOptionModule,
-    MatCheckboxModule 
-  
+    MatCheckboxModule
+
   ],
   templateUrl: './packages-options-coupons.component.html',
   styleUrl: './packages-options-coupons.component.css'
@@ -96,10 +97,12 @@ export class PackagesOptionsCouponsComponent implements OnInit {
       displayedColumns: ['id', 'name', 'price', 'options']
     }
   };
-  
-  
+
+
   subscriptions: Subscription[] = [];
-  selectedOption: string = 'coupons';
+  selectedItem: string = 'coupons';
+  errorMessage!: string;
+  addingFailed: boolean = false;
 
   optionsForNewPackage: OptionViewModel[] = [];
   optionsForPackage: { [key: string]: OptionViewModel[] } = {}
@@ -107,18 +110,18 @@ export class PackagesOptionsCouponsComponent implements OnInit {
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
 
   couponFields = [
-    {label : 'Coupon Code', name: 'couponCode', type: 'text'},
-    {label : 'Discount (%)', name: 'discount', type: 'number'},
+    { label: 'Coupon Code', name: 'couponCode', type: 'text' },
+    { label: 'Discount (%)', name: 'discount', type: 'number' },
   ];
 
   optionFields = [
-    {label : 'Name', name: 'name', type: 'text'},
-    {label : 'Price (€)', name: 'price', type: 'number'},
+    { label: 'Name', name: 'name', type: 'text' },
+    { label: 'Price (€)', name: 'price', type: 'number' },
   ];
 
   packageFields = [
-    {label : 'Name', name: 'name', type: 'text'},
-    {label : 'Options', name: 'options', type: 'text'},
+    { label: 'Name', name: 'name', type: 'text' },
+    { label: 'Options', name: 'options', type: 'text' },
   ];
 
   newCoupon: { couponCode: string; discount: number; active: boolean } = {
@@ -148,7 +151,7 @@ export class PackagesOptionsCouponsComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private formBuilder: FormBuilder, private dialog: MatDialog, private flightBookingService:FlightBookingService) {}
+  constructor(private formBuilder: FormBuilder, private dialog: MatDialog, private flightBookingService: FlightBookingService) { }
 
   ngOnInit(): void {
 
@@ -161,7 +164,7 @@ export class PackagesOptionsCouponsComponent implements OnInit {
   }
 
   getForm() {
-    switch (this.selectedOption) {
+    switch (this.selectedItem) {
       case 'coupons':
         return this.couponForm;
       case 'options':
@@ -188,7 +191,7 @@ export class PackagesOptionsCouponsComponent implements OnInit {
 
     this.packageForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9]*$')]],
-      //opcije
+      options: ['', [Validators.required]]
     });
   }
 
@@ -196,6 +199,7 @@ export class PackagesOptionsCouponsComponent implements OnInit {
     this.couponForm.reset();
     this.optionForm.reset();
     this.resetPackageForm();
+    this.addingFailed = false;
   }
 
   resetPackageForm() {
@@ -208,25 +212,25 @@ export class PackagesOptionsCouponsComponent implements OnInit {
   }
 
   getItemName(): string {
-    return this.itemConfig[this.selectedOption].itemName;
+    return this.itemConfig[this.selectedItem].itemName;
   }
 
   getDataSource() {
-    return this.itemConfig[this.selectedOption].dataSource;
+    return this.itemConfig[this.selectedItem].dataSource;
   }
 
   getAction() {
-    this.itemConfig[this.selectedOption].action();
+    this.itemConfig[this.selectedItem].action();
   }
 
   getDisplayedColumns() {
-    return this.itemConfig[this.selectedOption].displayedColumns;
+    return this.itemConfig[this.selectedItem].displayedColumns;
   }
 
 
   getCoupons() {
     if (typeof window !== 'undefined' && window.sessionStorage) {
-      
+
       this.subscriptions.push(this.flightBookingService.getCoupons().subscribe(res => {
         this.dataSourceCoupon.data = res.content;
         this.dataSourceCoupon.paginator = this.paginator;
@@ -263,9 +267,18 @@ export class PackagesOptionsCouponsComponent implements OnInit {
     });
   }
 
-  addCoupon() {
-    if(this.couponForm.valid) {
+  toggleOptionSelection(option: OptionViewModel) {
+    if (this.optionsForNewPackage.includes(option)) {
+      this.optionsForNewPackage = this.optionsForNewPackage.filter(o => o !== option);
+    }
+    else {
+      this.optionsForNewPackage.push(option);
+    }
+  }
 
+  addCoupon() {
+    if (this.couponForm.valid) {
+      this.addingFailed = false;
       this.newCoupon.couponCode = this.couponForm.value.couponCode;
       this.newCoupon.discount = this.couponForm.value.discount;
       // this.newCoupon.active = this.couponForm.value.active;
@@ -294,14 +307,14 @@ export class PackagesOptionsCouponsComponent implements OnInit {
       });
     }
     else {
-      console.error('Invalid form');
+      this.errorMessage = 'Invalid input. Please try again.';
     }
-    
+
   }
 
   addOption() {
-    if(this.optionForm.valid) {
-
+    if (this.optionForm.valid) {
+      this.addingFailed = false;
       this.newOption.name = this.optionForm.value.name;
       this.newOption.price = this.optionForm.value.price;
 
@@ -321,27 +334,26 @@ export class PackagesOptionsCouponsComponent implements OnInit {
               }
             },
             (error) => {
-              console.log('Error adding option:', error);
+              if (error.status === 500) {
+                this.errorMessage = 'Option with this name already exists.';
+              }
+              else {
+                this.errorMessage = 'An error occurred during adding option. Please try again.';
+              }
+              this.addingFailed = true;
               this.optionForm.reset();
             }
           ));
         }
       });
-    } 
+    }
   }
 
-  toggleOptionSelection(option: OptionViewModel) {
-    if(this.optionsForNewPackage.includes(option)) {
-      this.optionsForNewPackage = this.optionsForNewPackage.filter(o => o !== option);
-    }
-    else {
-      this.optionsForNewPackage.push(option);
-    }
-  }
+
 
   addPackage() {
-    if(this.packageForm.valid) {
-
+    if (this.packageForm.valid) {
+      this.addingFailed = false;
       this.newPackage.name = this.packageForm.value.name;
       this.newPackage.price = this.optionsForNewPackage.reduce((acc, curr) => acc + curr.price, 0);
 
@@ -364,8 +376,13 @@ export class PackagesOptionsCouponsComponent implements OnInit {
               }
             },
             (error) => {
-              console.log('Error adding package:', error);
+              if (error.status === 500) {
+                this.errorMessage = 'Package with this name already exists.';
+              } else {
+                this.errorMessage = 'An error occurred during adding package. Please try again.';
+              }
               this.resetPackageForm();
+              this.addingFailed = true;
             }
           ));
         }
@@ -386,27 +403,32 @@ export class PackagesOptionsCouponsComponent implements OnInit {
         }
       },
       (error) => {
-        console.log('Error adding options to package:', error);
+        console.log('Error adding option to package:', error);
         this.resetPackageForm();
       }
     ));
   }
 
   getOptionsForPackage(_package: PackageViewModel) {
-    this.subscriptions.push(this.flightBookingService.getOptionsForPackage(_package).subscribe(res => {
-      const optionsGroupedByPackageId = res.content.reduce((acc: { [key: string]: OptionViewModel[] }, curr: OptionForPackageViewModel) => {
-        const packageId = curr._package.id;
-        if (!acc[packageId]) {
-          acc[packageId] = [];
-        }
-        acc[packageId].push(curr.option);
-        return acc;
-      }, {});
+    this.subscriptions.push(this.flightBookingService.getOptionsForPackage(_package).subscribe(
+      res => {
+        res.content.forEach((curr: OptionForPackageViewModel) => {
+          const packageId = curr._package.id;
   
-      // Update the optionsForPackage property
-      this.optionsForPackage = optionsGroupedByPackageId;
-      // If you need to refresh the table or any related UI, trigger it here
-    }));
+          if (!this.optionsForPackage[packageId]) {
+            this.optionsForPackage[packageId] = [];
+          }
+  
+          const existingOption = this.optionsForPackage[packageId].find(option => option.id === curr.option.id);
+          if (!existingOption) {
+            this.optionsForPackage[packageId].push(curr.option);
+          }
+        });
+      },
+      error => {
+        console.error('Error fetching options for package:', error);
+      }
+    ));
   }
 
   getOptions() {
@@ -433,7 +455,7 @@ export class PackagesOptionsCouponsComponent implements OnInit {
         this.getOptionsForPackage(_package);
       }
     }));
-    
+
   }
 
 }
