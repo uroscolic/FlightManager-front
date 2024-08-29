@@ -17,7 +17,7 @@ import { MatTableDataSource } from '@angular/material/table';
 import { MatDialog } from '@angular/material/dialog';
 import { GenericConfirmDialogComponent } from '../shared/generic-confirm-dialog/generic-confirm-dialog.component';
 import { NavigationComponent } from "../navigation/navigation.component";
-import { PlaneViewModel,AirportViewModel, LocationViewModel } from '../shared/models/flight-booking.model';
+import { PlaneViewModel, AirportViewModel, LocationViewModel } from '../shared/models/flight-booking.model';
 import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { UploadImageComponent } from '../upload-image/upload-image.component';
@@ -49,7 +49,7 @@ import { error } from 'console';
     MatSelectModule,
     MatOptionModule,
     UploadImageComponent
-    
+
   ],
   templateUrl: './airports-planes.component.html',
   styleUrl: './airports-planes.component.css'
@@ -57,10 +57,11 @@ import { error } from 'console';
 export class AirportsPlanesComponent implements OnInit {
   displayedPlaneColumns: string[] = ['id', 'name', 'economySeats', 'businessSeats', 'firstClassSeats'];
   displayedAirportColumns: string[] = ['id', 'name', 'city', 'country'];
-  
+
   dataSourcePlane: MatTableDataSource<PlaneViewModel> = new MatTableDataSource<PlaneViewModel>([]);
   dataSourceAirport: MatTableDataSource<AirportViewModel> = new MatTableDataSource<AirportViewModel>([]);
-  
+  dataSourceLocation: MatTableDataSource<LocationViewModel> = new MatTableDataSource<LocationViewModel>([]);
+
   columnMappings: { [key: string]: string } = {
     id: 'Id',
     name: 'Name',
@@ -69,17 +70,17 @@ export class AirportsPlanesComponent implements OnInit {
     firstClassSeats: 'First Class Seats',
     city: 'City',
     country: 'Country',
-  };  
+  };
 
   itemConfig: { [key: string]: any } = {
     planes: {
-      itemName: 'Planes',
+      itemName: 'Plane',
       displayedColumns: ['id', 'name', 'economySeats', 'businessSeats', 'firstClassSeats'],
       dataSource: this.dataSourcePlane,
       action: () => this.addPlane(),
     },
     airports: {
-      itemName: 'Airports',
+      itemName: 'Airport',
       displayedColumns: ['id', 'name', 'location.city', 'location.country'],
       dataSource: this.dataSourceAirport,
       action: () => this.addAirport(),
@@ -89,20 +90,21 @@ export class AirportsPlanesComponent implements OnInit {
 
 
   subscriptions: Subscription[] = [];
-  selectedOption: string = 'planes';
+  selectedItem: string = 'planes';
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
+  selectedLocation: LocationViewModel = { id: -1, country: '', city: '', shortName: '', imagePath: '' };
 
-  newPlane: { id: number, name: string, economySeats: number, businessSeats: number, firstClassSeats: number } = { 
-    id: -1, 
+  newPlane: { id: number, name: string, economySeats: number, businessSeats: number, firstClassSeats: number } = {
+    id: -1,
     name: '',
     economySeats: 0,
-    businessSeats: 0, 
-    firstClassSeats: 0 
+    businessSeats: 0,
+    firstClassSeats: 0
   };
 
   newAirport: { id: number, name: string, location: LocationViewModel } = {
-    id: -1, 
+    id: -1,
     name: '',
     location: {
       id: -1,
@@ -114,16 +116,16 @@ export class AirportsPlanesComponent implements OnInit {
   };
 
   planeFields = [
-    {label: 'Name', name: 'name', type: 'text'},
-    {label: 'Economy Seats', name: 'economySeats', type: 'number'},
-    {label: 'Business Seats', name: 'businessSeats', type: 'number'},
-    {label: 'First Class Seats', name: 'firstClassSeats', type: 'number'}
+    { label: 'Name', name: 'name', type: 'text' },
+    { label: 'Economy Seats', name: 'economySeats', type: 'number' },
+    { label: 'Business Seats', name: 'businessSeats', type: 'number' },
+    { label: 'First Class Seats', name: 'firstClassSeats', type: 'number' }
   ];
 
   airportFields = [
-    {label: 'Name', name: 'name', type: 'text'},
-    {label: 'City', name: 'city', type: 'text'},
-    {label: 'Country', name: 'country', type: 'text'},
+    { label: 'Name', name: 'name', type: 'text' },
+    { label: 'City', name: 'city', type: 'text' },
+    { label: 'Country', name: 'country', type: 'text' },
   ];
 
 
@@ -134,7 +136,7 @@ export class AirportsPlanesComponent implements OnInit {
   planeForm: FormGroup;
   airportForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private dialog: MatDialog, private flightBookingService:FlightBookingService) {}
+  constructor(private formBuilder: FormBuilder, private dialog: MatDialog, private flightBookingService: FlightBookingService) { }
 
 
   ngOnInit(): void {
@@ -143,10 +145,11 @@ export class AirportsPlanesComponent implements OnInit {
 
     this.getPlanes();
     this.getAirports();
+    this.getLocations();
   }
 
   getForm() {
-    switch (this.selectedOption) {
+    switch (this.selectedItem) {
       case 'planes':
         return this.planeForm;
       case 'airports':
@@ -163,11 +166,10 @@ export class AirportsPlanesComponent implements OnInit {
       businessSeats: ['', [Validators.required, Validators.min(0)]],
       firstClassSeats: ['', [Validators.required, Validators.min(0)]]
     });
-  
+
     this.airportForm = this.formBuilder.group({
       name: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9]*$')]],
-      country: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9]*$')]],
-      city: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9]*$')]],
+      location: ['', [Validators.required]]
     });
   }
 
@@ -197,24 +199,24 @@ export class AirportsPlanesComponent implements OnInit {
   }
 
   getItemName(): string {
-    return this.itemConfig[this.selectedOption].itemName;
+    return this.itemConfig[this.selectedItem].itemName;
   }
 
   getDataSource() {
-    return this.itemConfig[this.selectedOption].dataSource;
+    return this.itemConfig[this.selectedItem].dataSource;
   }
 
   getAction() {
-    this.itemConfig[this.selectedOption].action();
+    this.itemConfig[this.selectedItem].action();
   }
 
   getDisplayedColumns() {
-    return this.itemConfig[this.selectedOption].displayedColumns;
+    return this.itemConfig[this.selectedItem].displayedColumns;
   }
 
   addPlane() {
-     if(this.planeForm.valid) {
-       
+    if (this.planeForm.valid) {
+
       this.newPlane.name = this.planeForm.value.name;
       this.newPlane.economySeats = this.planeForm.value.economySeats;
       this.newPlane.businessSeats = this.planeForm.value.businessSeats;
@@ -228,46 +230,34 @@ export class AirportsPlanesComponent implements OnInit {
         if (result) {
           this.subscriptions.push(this.flightBookingService.addPlane(this.newPlane).subscribe(
             (res) => {
-            if(res) {
-              this.getPlanes();
+              if (res) {
+                this.getPlanes();
+                this.planeForm.reset();
+              }
+            },
+            (error) => {
+              console.log('Error adding plane:', error);
               this.planeForm.reset();
             }
-          },
-          (error) => {
-            console.log('Error adding plane:', error);
-            this.planeForm.reset();
-          }
-        ));  
-      }
-    });
-  }
-  else {
-    console.log("error");
-    
-    console.log(this.newPlane);
-    console.log(this.planeForm.value);
-    console.error('Invalid form');
-  }
-
-}
-
-addAirport() {
-
-    if(this.airportForm.valid) {
-      this.newAirport.name = this.airportForm.value.name;
-      const city = this.airportForm.value.city;
-      const country = this.airportForm.value.country;
-      this.subscriptions.push(this.flightBookingService.getLocationByCityAndCountry(city, country).subscribe(
-        (res) => {
-          if(res) {
-            this.newAirport.location = res;
-            console.log('Location:', this.newAirport.location);
-          }
-        },
-        (error) => {
-          console.log('Error getting location:', error);
+          ));
         }
-      ));
+      });
+    }
+    else {
+      console.log("error");
+
+      console.log(this.newPlane);
+      console.log(this.planeForm.value);
+      console.error('Invalid form');
+    }
+
+  }
+
+  addAirport() {
+
+    if (this.airportForm.valid) {
+      this.newAirport.name = this.airportForm.value.name;
+      this.newAirport.location = this.selectedLocation;
 
       this.dialog.open(GenericConfirmDialogComponent, {
         data: {
@@ -278,30 +268,30 @@ addAirport() {
         if (result) {
           this.subscriptions.push(this.flightBookingService.addAirport(this.newAirport).subscribe(
             (res) => {
-            if(res) {
-              this.getAirports();
+              if (res) {
+                this.getAirports();
+                this.airportForm.reset();
+              }
+            },
+            (error) => {
+              console.log('Error adding airport:', error);
               this.airportForm.reset();
             }
-          },
-          (error) => {
-            console.log('Error adding airport:', error);
-            this.airportForm.reset();
-          }
-        ));  
-      }
-    });
+          ));
+        }
+      });
+    }
+    else {
+      console.log(this.newAirport);
+      console.log(this.airportForm);
+      console.error('Invalid form');
+    }
   }
-  else {
-    console.log(this.newAirport);
-    console.log(this.airportForm);
-    console.error('Invalid form');
-  }
-}
 
   getPlanes() {
     if (typeof window !== 'undefined' && window.sessionStorage) {
       const token = sessionStorage.getItem('token');
-      
+
       this.subscriptions.push(this.flightBookingService.getPlanes().subscribe(res => {
         this.dataSourcePlane.data = res.content;
         this.dataSourcePlane.paginator = this.paginator;
@@ -312,12 +302,24 @@ addAirport() {
     }
   }
 
+  getLocations() {
+    if (typeof window !== 'undefined' && window.sessionStorage) {
+
+      this.subscriptions.push(this.flightBookingService.getLocations().subscribe(res => {
+        this.dataSourceLocation.data = res.content;
+        this.dataSourceLocation.paginator = this.paginator;
+        this.dataSourceLocation.sort = this.sort;
+      }));
+    } else {
+      console.error('sessionStorage is not available.');
+    }
+  }
+
   getAirports() {
     if (typeof window !== 'undefined' && window.sessionStorage) {
       const token = sessionStorage.getItem('token');
-      
+
       this.subscriptions.push(this.flightBookingService.getAirports().subscribe(res => {
-        console.log('Airports data:', res.content); 
         this.dataSourceAirport.data = res.content;
         this.dataSourceAirport.paginator = this.paginator;
         this.dataSourceAirport.sort = this.sort;
@@ -325,5 +327,10 @@ addAirport() {
     } else {
       console.error('sessionStorage is not available.');
     }
+  }
+
+  toggleSelectedLocation(location: LocationViewModel) {
+    this.selectedLocation = location;
+    this.airportForm.get('location')?.setValue(location);
   }
 }

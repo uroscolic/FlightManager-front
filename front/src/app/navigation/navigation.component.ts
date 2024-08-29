@@ -66,7 +66,7 @@ export class NavigationComponent {
   routes: any[] = this.userRoutes;
 
   get loggedIn(): boolean {
-    if(this.rememberMeChecked) {
+    if (this.rememberMeChecked) {
       return this.firstName !== '' && this.lastName !== '' && !!localStorage.getItem('token');
     }
     return this.firstName !== '' && this.lastName !== '' && !!sessionStorage.getItem('token');
@@ -78,13 +78,12 @@ export class NavigationComponent {
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
-      if(!this.rememberMeChecked) {
+      if (!this.rememberMeChecked) {
         this.firstName = sessionStorage.getItem('firstName') || '';
         this.lastName = sessionStorage.getItem('lastName') || '';
         this.roleType = sessionStorage.getItem('roleType') || '';
       }
-      else
-      {
+      else {
         this.firstName = localStorage.getItem('firstName') || '';
         this.lastName = localStorage.getItem('lastName') || '';
         this.roleType = localStorage.getItem('roleType') || '';
@@ -131,35 +130,35 @@ export class NavigationComponent {
 
       if (confirmed) {
         console.log(this.rememberMeChecked);
-        if(!this.rememberMeChecked) {
-        sessionStorage.removeItem('roleType');
-        sessionStorage.removeItem('lastName');
-        sessionStorage.removeItem('firstName');
-        sessionStorage.removeItem('email');
-        sessionStorage.removeItem('token');
-        sessionStorage.removeItem('id');
-        this.firstName = '';
-        this.lastName = '';
-        this.roleType = '';
-        this.routes = this.userRoutes;
-        this.router.navigate(['/navigation']);
+        if (!this.rememberMeChecked) {
+          sessionStorage.removeItem('roleType');
+          sessionStorage.removeItem('lastName');
+          sessionStorage.removeItem('firstName');
+          sessionStorage.removeItem('email');
+          sessionStorage.removeItem('token');
+          sessionStorage.removeItem('id');
+          this.firstName = '';
+          this.lastName = '';
+          this.roleType = '';
+          this.routes = this.userRoutes;
+          this.router.navigate(['/navigation']);
+        }
+        else {
+          localStorage.removeItem('roleType');
+          localStorage.removeItem('lastName');
+          localStorage.removeItem('firstName');
+          localStorage.removeItem('email');
+          localStorage.removeItem('token');
+          localStorage.removeItem('id');
+          localStorage.removeItem('rememberMe');
+          this.firstName = '';
+          this.lastName = '';
+          this.roleType = '';
+          this.routes = this.userRoutes;
+          this.router.navigate(['/navigation']);
+        }
       }
-      else {
-        localStorage.removeItem('roleType');
-        localStorage.removeItem('lastName');
-        localStorage.removeItem('firstName');
-        localStorage.removeItem('email');
-        localStorage.removeItem('token');
-        localStorage.removeItem('id');
-        localStorage.removeItem('rememberMe');
-        this.firstName = '';
-        this.lastName = '';
-        this.roleType = '';
-        this.routes = this.userRoutes;
-        this.router.navigate(['/navigation']);
-    }
-    }
-  });
+    });
 
   }
 

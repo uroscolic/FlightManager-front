@@ -74,6 +74,15 @@ export class FlightBookingService {
     );
   }
 
+  getLocations() : Observable<PageableResponse<LocationViewModel[]>> {
+          
+      const headers = this.utilityService.getHeaders();
+  
+      return this.http.get<PageableResponse<LocationViewModel[]>>(
+        this.url + LOCATION,
+        { headers }
+      );
+  }
 
   getPlanes() : Observable<PageableResponse<PlaneViewModel[]>> {
       

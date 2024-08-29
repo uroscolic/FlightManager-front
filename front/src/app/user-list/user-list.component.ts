@@ -40,19 +40,19 @@ import { LoginComponent } from '../login/login.component';
     MatSortModule,
     NavigationComponent,
     LoginComponent
-]
+  ]
 })
 export class UserListComponent implements OnInit {
   displayedColumns: string[] = ['id', 'firstName', 'lastName', 'email', 'roleType', 'ban'];
   dataSource: MatTableDataSource<UserViewModel> = new MatTableDataSource<UserViewModel>([]);
   subscriptions: Subscription[] = [];
-  
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
   currentRole: string = '';
 
-  constructor(private dialog: MatDialog, private userService: UserService) {}
+  constructor(private dialog: MatDialog, private userService: UserService) { }
 
   ngOnInit(): void {
     this.currentRole = sessionStorage.getItem('roleType') || localStorage.getItem('roleType') || '';
@@ -62,7 +62,7 @@ export class UserListComponent implements OnInit {
   getUsers() {
     if (typeof window !== 'undefined' && window.sessionStorage) {
       const token = sessionStorage.getItem('token');
-      
+
       this.subscriptions.push(this.userService.getUsers().subscribe(res => {
         this.dataSource.data = res.content;
         this.dataSource.paginator = this.paginator;
@@ -76,7 +76,7 @@ export class UserListComponent implements OnInit {
   getClients() {
     if (typeof window !== 'undefined' && window.sessionStorage) {
       const token = sessionStorage.getItem('token');
-      
+
       this.subscriptions.push(this.userService.getClients().subscribe(res => {
         this.dataSource.data = res.content;
         this.dataSource.paginator = this.paginator;
@@ -89,30 +89,30 @@ export class UserListComponent implements OnInit {
 
   toggleBan(user: UserViewModel): void {
 
-      this.dialog.open(GenericConfirmDialogComponent, {
-        disableClose: true,
-        data: {
-          title: `${user.banned ? 'Unban' : 'Ban'} "${user.firstName} ${user.lastName}"`, 
-          message: `Are you sure you want to ${user.banned ? 'unban' : 'ban'} "${user.firstName} ${user.lastName}"?`,
-        }
-      }).afterClosed().subscribe((confirmed) => {
-        if (confirmed) {
-          this.subscriptions.push(this.userService.banUser(user).subscribe(
-            (res) => {
-              if (res) {
-                this.getUsers();
-              }
-            },
-            (error) => {
-              console.log(`Error ${user.banned ? 'unbanning' : 'banning'} user:`, error);
+    this.dialog.open(GenericConfirmDialogComponent, {
+      disableClose: true,
+      data: {
+        title: `${user.banned ? 'Unban' : 'Ban'} "${user.firstName} ${user.lastName}"`,
+        message: `Are you sure you want to ${user.banned ? 'unban' : 'ban'} "${user.firstName} ${user.lastName}"?`,
+      }
+    }).afterClosed().subscribe((confirmed) => {
+      if (confirmed) {
+        this.subscriptions.push(this.userService.banUser(user).subscribe(
+          (res) => {
+            if (res) {
+              this.getUsers();
             }
-          ));
-        }
-      });
+          },
+          (error) => {
+            console.log(`Error ${user.banned ? 'unbanning' : 'banning'} user:`, error);
+          }
+        ));
+      }
+    });
 
   }
 
-  
+
 
 
 

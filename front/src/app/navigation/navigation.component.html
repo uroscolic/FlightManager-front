@@ -1,23 +1,23 @@
 <mat-toolbar>
-    <button mat-icon-button aria-label="Menu icon" (click)="toggleMenu()">
-      <mat-icon class="menu">menu</mat-icon>
-    </button>
-    <h1>Flight Manager</h1>
-    
-  </mat-toolbar>
+  <button mat-icon-button aria-label="Menu icon" (click)="toggleMenu()">
+    <mat-icon class="menu">menu</mat-icon>
+  </button>
+  <h1>Flight Manager</h1>
 
-  <mat-sidenav-container autosize>
-    <mat-sidenav role="navigation" #sidenav mode="side">
-        
+</mat-toolbar>
+
+<mat-sidenav-container autosize>
+  <mat-sidenav role="navigation" #sidenav mode="side">
+
     <mat-nav-list *ngIf="loggedIn">
-        <span class="helper">
-            <mat-icon>account_circle</mat-icon>
-            <span>{{firstName}} {{lastName}} {{roleString}}</span>
-          </span>
+      <span class="helper">
+        <mat-icon>account_circle</mat-icon>
+        <span>{{firstName}} {{lastName}} {{roleString}}</span>
+      </span>
     </mat-nav-list>
 
     <mat-nav-list *ngFor="let item of routes">
-      
+
       <a mat-list-item (click)="navigateTo(item.url)">
         <span class="entry">
           <mat-icon>{{item.icon}}</mat-icon>
@@ -25,27 +25,27 @@
         </span>
       </a>
     </mat-nav-list>
-   
+
     <mat-nav-list *ngIf="loggedIn">
-        <a (click)="logOut()">
-            <span class="helper">
-                <mat-icon>logout</mat-icon>
-                <span>Log out</span>
-            </span>
-        </a>
+      <a (click)="logOut()">
+        <span class="helper">
+          <mat-icon>logout</mat-icon>
+          <span>Log out</span>
+        </span>
+      </a>
     </mat-nav-list>
 
     <mat-nav-list *ngIf="!loggedIn">
       <a (click)="navigateTo(login.url)">
-          <span class="helper">
-              <mat-icon>{{login.icon}}</mat-icon>
-              <span>{{login.name}}</span>
-          </span>
+        <span class="helper">
+          <mat-icon>{{login.icon}}</mat-icon>
+          <span>{{login.name}}</span>
+        </span>
       </a>
-  </mat-nav-list>
+    </mat-nav-list>
 
-    </mat-sidenav>
-    <mat-sidenav-content>
-      <ng-content></ng-content>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <ng-content></ng-content>
+  </mat-sidenav-content>
+</mat-sidenav-container>

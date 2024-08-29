@@ -1,69 +1,78 @@
-
 <app-navigation>
 
-    <div class="container">
-      <mat-form-field appearance="fill">
-        <mat-label>Choose what to see</mat-label>
-        <mat-select [(value)]="selectedOption" (selectionChange)="resetForms();">
-          <mat-option value="planes">Planes</mat-option>
-          <mat-option value="airports">Airports</mat-option>
-        </mat-select>
-      </mat-form-field>
-    </div>
+  <div class="container">
+    <mat-form-field appearance="fill">
+      <mat-label>Choose what to see</mat-label>
+      <mat-select [(value)]="selectedItem" (selectionChange)="resetForms();">
+        <mat-option value="planes">Planes</mat-option>
+        <mat-option value="airports">Airports</mat-option>
+      </mat-select>
+    </mat-form-field>
+  </div>
 
-    <div class="mat-elevation-z8" *ngIf="selectedOption">
-      <table mat-table [dataSource]="getDataSource()" class="mat-table" matSort>
-        <!-- ID Column -->
-        <ng-container *ngFor="let column of getDisplayedColumns()" [matColumnDef]="column">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ getColumnDisplayName(column) }} </th>
-          <td mat-cell *matCellDef="let element">
-            {{ getValueFromPath(element, column) }}
-          </td>
-        </ng-container>
-  
-        <!-- Header and Row Declarations -->
-        <tr mat-header-row *matHeaderRowDef="getDisplayedColumns()"></tr>
-        <tr mat-row *matRowDef="let row; columns: getDisplayedColumns();"></tr>
-      </table>
-  
-      <!-- Paginator -->
-      <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
-    </div>
-    
-    <div class="container" *ngIf="selectedOption">
-      <div class="form-container add">
-        <h3>Add {{ getItemName() }}</h3>
-        <form (ngSubmit)="getAction()" [formGroup]="getForm()">
-          <div *ngIf="selectedOption === 'planes'">
-            <div *ngFor="let plane of planeFields">
-              <mat-form-field appearance="fill">
-                <mat-label>{{plane.label}}</mat-label>
-                <input matInput [type]="plane.type" [name]="plane.name" [formControlName]="plane.name">
-                <mat-error *ngIf="getForm().get(plane.name)?.hasError('required')">
-                  {{plane.label}} is required
-                </mat-error>
-                <mat-error *ngIf="getForm().get(plane.name)?.hasError('pattern')">
-                  {{plane.label}} is not valid
-                </mat-error>
-                <mat-error *ngIf="getForm().get(plane.name)?.hasError('min')">
-                  {{plane.label}} must be > 0
-                </mat-error>
-              </mat-form-field>
-            </div>
-          </div>
-    
-          <div *ngIf="selectedOption === 'airports'">
-            <div *ngFor="let airport of airportFields">
-              <mat-form-field appearance="fill">
-                <mat-label>{{airport.label}}</mat-label>
-                <input matInput [type]="airport.type" [name]="airport.name" required [formControlName]="airport.name">
-              </mat-form-field>
-            </div>
-          </div>
-    
-          <button mat-raised-button color="primary" type="submit">Add {{ getItemName() }}</button>
-        </form>
-      </div>
-    </div>
+  <div class="mat-elevation-z8" *ngIf="selectedItem">
+    <table mat-table [dataSource]="getDataSource()" class="mat-table" matSort>
+      <!-- ID Column -->
+      <ng-container *ngFor="let column of getDisplayedColumns()" [matColumnDef]="column">
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ getColumnDisplayName(column) }} </th>
+        <td mat-cell *matCellDef="let element">
+          {{ getValueFromPath(element, column) }}
+        </td>
+      </ng-container>
 
-  </app-navigation>
+      <!-- Header and Row Declarations -->
+      <tr mat-header-row *matHeaderRowDef="getDisplayedColumns()"></tr>
+      <tr mat-row *matRowDef="let row; columns: getDisplayedColumns();"></tr>
+    </table>
+
+    <!-- Paginator -->
+    <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+  </div>
+
+  <div class="container" *ngIf="selectedItem">
+    <div class="form-container add">
+      <h3>Add {{ getItemName() }}</h3>
+      <form (ngSubmit)="getAction()" [formGroup]="getForm()">
+        <div *ngIf="selectedItem === 'planes'">
+          <div *ngFor="let plane of planeFields">
+            <mat-form-field appearance="fill">
+              <mat-label>{{plane.label}}</mat-label>
+              <input matInput [type]="plane.type" [name]="plane.name" [formControlName]="plane.name">
+              <mat-error *ngIf="getForm().get(plane.name)?.hasError('required')">
+                {{plane.label}} is required
+              </mat-error>
+              <mat-error *ngIf="getForm().get(plane.name)?.hasError('pattern')">
+                {{plane.label}} is not valid
+              </mat-error>
+              <mat-error *ngIf="getForm().get(plane.name)?.hasError('min')">
+                {{plane.label}} must be > 0
+              </mat-error>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <div *ngIf="selectedItem === 'airports'">
+          <div class="lista">
+            <mat-form-field appearance="fill">
+              <mat-label>Name</mat-label>
+              <input matInput name="name" required formControlName="name">
+            </mat-form-field>
+
+            <mat-form-field>
+              <mat-label>Location</mat-label>
+              <mat-select formControlName="location" required>
+                <mat-option *ngFor="let location of dataSourceLocation.data" [value]="location"
+                  (onSelectionChange)="toggleSelectedLocation(location)">
+                  {{ location.city }}, {{ location.country }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+        <button mat-raised-button color="primary" type="submit">Add {{ getItemName() }}</button>
+      </form>
+    </div>
+  </div>
+
+</app-navigation>
