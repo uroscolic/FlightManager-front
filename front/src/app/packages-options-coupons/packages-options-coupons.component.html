@@ -24,7 +24,6 @@
             <!-- Display slide toggle for 'active' column -->
             <mat-slide-toggle *ngSwitchCase="'active'" [checked]="element[column]"
               (change)="toggleCouponStatus(element)">
-              Active
             </mat-slide-toggle>
             <ng-container *ngSwitchCase="'options'">
               <ng-container *ngIf="optionsForPackage[element.id]">

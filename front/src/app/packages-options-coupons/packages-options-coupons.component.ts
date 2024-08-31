@@ -57,12 +57,6 @@ import e from 'express';
 })
 export class PackagesOptionsCouponsComponent implements OnInit {
 
-
-
-  displayedCouponColumns: string[] = ['couponCode', 'discount', 'active'];
-  displayedOptionColumns: string[] = ['id', 'name', 'price'];
-  displayedPackageColumns: string[] = ['id', 'name', 'price', 'options'];
-
   dataSourceCoupon: MatTableDataSource<CouponViewModel> = new MatTableDataSource<CouponViewModel>([]);
   dataSourceOption: MatTableDataSource<OptionViewModel> = new MatTableDataSource<OptionViewModel>([]);
   dataSourcePackage: MatTableDataSource<PackageViewModel> = new MatTableDataSource<PackageViewModel>([]);
@@ -241,6 +235,56 @@ export class PackagesOptionsCouponsComponent implements OnInit {
     }
   }
 
+
+  getOptionsForPackage(_package: PackageViewModel) {
+    this.subscriptions.push(this.flightBookingService.getOptionsForPackage(_package).subscribe(
+      res => {
+        res.content.forEach((curr: OptionForPackageViewModel) => {
+          const packageId = curr._package.id;
+  
+          if (!this.optionsForPackage[packageId]) {
+            this.optionsForPackage[packageId] = [];
+          }
+  
+          const existingOption = this.optionsForPackage[packageId].find(option => option.id === curr.option.id);
+          if (!existingOption) {
+            this.optionsForPackage[packageId].push(curr.option);
+          }
+        });
+      },
+      error => {
+        console.error('Error fetching options for package:', error);
+      }
+    ));
+  }
+
+  getOptions() {
+    this.subscriptions.push(this.flightBookingService.getOptions().subscribe(res => {
+      this.dataSourceOption.data = res.content;
+      this.dataSourceOption.paginator = this.paginator;
+      this.dataSourceOption.sort = this.sort;
+    }));
+  }
+
+  getOptionsAsString(packageId: number): string {
+    const options = this.optionsForPackage[packageId];
+    return options ? options.map(option => option.name).join(', ') : '';
+  }
+
+  getPackages() {
+    this.subscriptions.push(this.flightBookingService.getPackages().subscribe(res => {
+      const packages = res.content;
+      this.dataSourcePackage.data = res.content;
+      this.dataSourcePackage.paginator = this.paginator;
+      this.dataSourcePackage.sort = this.sort;
+
+      for (const _package of packages) {
+        this.getOptionsForPackage(_package);
+      }
+    }));
+
+  }
+  
   toggleCouponStatus(coupon: CouponViewModel) {
     this.dialog.open(GenericConfirmDialogComponent, {
       disableClose: true,
@@ -409,53 +453,6 @@ export class PackagesOptionsCouponsComponent implements OnInit {
     ));
   }
 
-  getOptionsForPackage(_package: PackageViewModel) {
-    this.subscriptions.push(this.flightBookingService.getOptionsForPackage(_package).subscribe(
-      res => {
-        res.content.forEach((curr: OptionForPackageViewModel) => {
-          const packageId = curr._package.id;
   
-          if (!this.optionsForPackage[packageId]) {
-            this.optionsForPackage[packageId] = [];
-          }
-  
-          const existingOption = this.optionsForPackage[packageId].find(option => option.id === curr.option.id);
-          if (!existingOption) {
-            this.optionsForPackage[packageId].push(curr.option);
-          }
-        });
-      },
-      error => {
-        console.error('Error fetching options for package:', error);
-      }
-    ));
-  }
-
-  getOptions() {
-    this.subscriptions.push(this.flightBookingService.getOptions().subscribe(res => {
-      this.dataSourceOption.data = res.content;
-      this.dataSourceOption.paginator = this.paginator;
-      this.dataSourceOption.sort = this.sort;
-    }));
-  }
-
-  getOptionsAsString(packageId: number): string {
-    const options = this.optionsForPackage[packageId];
-    return options ? options.map(option => option.name).join(', ') : '';
-  }
-
-  getPackages() {
-    this.subscriptions.push(this.flightBookingService.getPackages().subscribe(res => {
-      const packages = res.content;
-      this.dataSourcePackage.data = res.content;
-      this.dataSourcePackage.paginator = this.paginator;
-      this.dataSourcePackage.sort = this.sort;
-
-      for (const _package of packages) {
-        this.getOptionsForPackage(_package);
-      }
-    }));
-
-  }
 
 }

@@ -48,6 +48,10 @@ export class NavigationComponent {
     { name: 'My Tickets', url: '/tickets', icon: 'wallet' },
   ];
 
+  notLoggedInRoutes = [
+    { name: 'Home Page', url: '/navigation', icon: 'home' },
+  ];
+
   managerRoutes = [
     { name: 'Home Page', url: '/navigation', icon: 'home' },
     { name: 'Users', url: '/users', icon: 'group' },
@@ -55,6 +59,7 @@ export class NavigationComponent {
     { name: 'Packages, Options and Coupons', url: '/packages&options&coupons', icon: 'inventory' },
     { name: 'Flights and Locations', url: '/flights&locations', icon: 'map' },
     { name: 'Tickets and Passengers', url: '/tickets&passengers', icon: 'airplane_ticket' },
+    { name: 'Change Password', url: '/change-password', icon: 'lock' }
   ];
 
   login = {
@@ -104,8 +109,12 @@ export class NavigationComponent {
         this.roleString = '(Manager)';
         this.routes = this.managerRoutes;
         break;
-      default:
+      case 'ROLE_USER':
+        this.roleString = '';
         this.routes = this.userRoutes;
+        break;
+      default:
+        this.routes = this.notLoggedInRoutes;
         break;
     }
   }
