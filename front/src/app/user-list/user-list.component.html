@@ -51,4 +51,39 @@
     <!-- Paginator -->
     <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
   </div>
+
+  <div class="container" *ngIf="isAdmin()">
+
+    <div class="lista">
+      <div class="form-container add">
+        <h3>Add Manager</h3>
+        <form [formGroup]="managerForm">
+
+          <mat-form-field appearance="fill">
+            <mat-label>First Name</mat-label>
+            <input matInput name="firstName" required formControlName="firstName">
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Last Name</mat-label>
+            <input matInput name="lastName" required formControlName="lastName">
+          </mat-form-field>
+
+          <mat-form-field appearance="fill">
+            <mat-label>Email</mat-label>
+            <input matInput name="email" required formControlName="email">
+          </mat-form-field>
+
+          <button mat-raised-button color="primary" (click)="addManager()">Add Manager</button>
+        </form>
+      </div>
+
+      <mat-card *ngIf="generatedPassword">
+        <mat-card-content>
+          <p><strong>Password: </strong> {{ generatedPassword }}</p>
+        </mat-card-content>
+      </mat-card>
+    </div>
+  </div>
+
 </app-navigation>

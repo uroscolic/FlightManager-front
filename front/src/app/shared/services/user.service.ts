@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { UserRole, UserViewModel } from '../models/user.model';
+import { UserChangePasswordModel, UserRole, UserViewModel } from '../models/user.model';
 import { environment } from '../../../environment/environment';
 import { LoginViewModel, SignUpViewModel } from '../models/loginSignUp.model';
 import { PageableResponse } from '../models/pageableResponse.model';
@@ -41,6 +41,23 @@ export class UserService {
     );
   }
 
+  addManager(request: UserViewModel) {
+    const headers = this.utilityService.getHeaders();
+    return this.http.post<UserViewModel>(
+      this.url + MANAGER + REGISTER, request,
+      { headers }
+    );
+  }
+
+  changeManagerPassword(request: UserChangePasswordModel) {
+    const headers = this.utilityService.getHeaders();
+    return this.http.put<UserViewModel>(
+      this.url + MANAGER + "/change-password", request, 
+      { headers }
+    );
+  }
+
+
   banUser(request: UserViewModel) {
 
     const headers = this.utilityService.getHeaders();
@@ -53,7 +70,6 @@ export class UserService {
     );
     
   }
-
 
   login(request: LoginViewModel) {
     return this.http.post<UserViewModel>(

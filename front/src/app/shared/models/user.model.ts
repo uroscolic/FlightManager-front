@@ -74,6 +74,12 @@ export class AdminViewModel implements UserViewModel {
     }
 }
 
+export class UserChangePasswordModel {
+    id: number;
+    oldPassword: string;
+    newPassword: string;
+}
+
 
 export enum UserRole {
     Admin = 'ROLE_ADMIN',

@@ -1,128 +1,35 @@
-/* General Styling
-body {
-    background-color: #ffffff;
-    font-family: Arial, sans-serif;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    flex-direction: column;
-    min-height: 100vh;
-    margin: 0;
-    padding: 20px;
-  }
-  
+.container {
+  margin-top: 30px;
+  display: flex;
+  justify-content: center;
+}
 
-  ::ng-deep {
+.form-container.add {
+  width: 100%;
+  max-width: 600px;
+  text-align: center;
+}
 
-    .mat-elevation-z8 {
-      background-color: #ffffff;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      padding: 16px;
-      margin: 20px;
-    }
-  
+.form-container.add h3 {
+  text-align: center;
+}
 
-    .mat-table thead.mat-header-row {
-      background-color: #ff2b2b !important;
-      color: #ffffff;
-    }
-  
-    .mat-table th.mat-header-cell {
-      color: #ffffff !important;
-      font-weight: bold;
-      text-transform: uppercase;
-    }
-  
-    .mat-sort-header-button {
-      color: #ffffff !important;
-    }
-  
+button:focus {
+  outline: none;
+}
 
-    .mat-table tr.mat-row {
-      transition: background-color 0.3s ease;
-    }
-  
-    .mat-table tr.mat-row:nth-child(even) {
-      background-color: #ffffff;
-    }
-  
-    .mat-table tr.mat-row:hover {
-      background-color: #ffffff;
-    }
-  
-  
-    .mat-paginator {
-      background-color: #ffffff;
-      border-top: 1px solid #ddd;
-      margin-top: 10px;
-    }
-  
-    .mat-paginator .mat-paginator-range-label,
-    .mat-paginator .mat-button,
-    .mat-paginator .mat-icon-button {
-      color: #333 !important;
-    }
-  
-    .mat-paginator .mat-paginator-range-actions .mat-icon-button {
-      color: #ff4b2b !important;
-    }
-  
-    .mat-paginator .mat-paginator-range-actions .mat-icon-button:hover {
-      color: #ff8741 !important;
-    }
-  }
-  
-  .ban-button {
-    color: #a91111;
-    background-color: #ffffff;
-    border: none;
-  }
+.lista {
+  display: flex;
+  flex-direction: column;
+}
 
-  .ban-button:hover {
-    color: #ffffff;
-    background-color: #a91111;
-    border-radius: 5px;
-  }
+mat-form-field {
+  width: 100%;
+  max-width: 600px;
+}
 
-  .unban-button {
-    color: #1a951a;
-    background-color: #ffffff;
-    border: none;
-  }
-  
-  .unban-button:hover {
-    color: #ffffff;
-    background-color: #1a951a;
-    border-radius: 5px;
-  }
-
-  
-  .search-bar {
-    width: 100%;
-    max-width: 300px;
-    padding: 10px;
-    border-radius: 25px;
-    border: 1px solid #ddd;
-    margin-bottom: 20px;
-    font-size: 14px;
-    background-color: #ffffff;
-    transition: border-color 0.3s ease;
-  }
-  
-  .search-bar:focus {
-    border-color: #ff2b2b;
-    outline: none;
-  }
-  
-  @media (max-width: 768px) {
-    .mat-elevation-z8 {
-      width: 100%;
-      padding: 10px;
-    }
-  
-    .mat-table th.mat-header-cell, .mat-table td.mat-cell {
-      font-size: 14px;
-    }
-  }
-   */
+mat-card {
+  margin-top: 10px;
+  width: 100%;
+  max-width: 600px;
+}

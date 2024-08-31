@@ -2,9 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../shared/services/user.service';
 import { CommonModule } from '@angular/common';
 import { Subscription } from 'rxjs';
-import { UserViewModel } from '../shared/models/user.model';
+import { UserRole, UserViewModel } from '../shared/models/user.model';
 import { get } from 'http';
-import { ReactiveFormsModule } from '@angular/forms';
+import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -20,6 +20,11 @@ import { MatDialog } from '@angular/material/dialog';
 import { GenericConfirmDialogComponent } from '../shared/generic-confirm-dialog/generic-confirm-dialog.component';
 import { NavigationComponent } from "../navigation/navigation.component";
 import { LoginComponent } from '../login/login.component';
+import { MatInputModule } from '@angular/material/input';
+import { MatOptionModule } from '@angular/material/core';
+import { MatCardModule } from '@angular/material/card';
+
+
 
 @Component({
   selector: 'app-user-list',
@@ -39,7 +44,10 @@ import { LoginComponent } from '../login/login.component';
     MatPaginatorModule,
     MatSortModule,
     NavigationComponent,
-    LoginComponent
+    LoginComponent,
+    MatInputModule,
+    MatOptionModule,
+    MatCardModule
   ]
 })
 export class UserListComponent implements OnInit {
@@ -51,12 +59,29 @@ export class UserListComponent implements OnInit {
   @ViewChild(MatSort) sort!: MatSort;
 
   currentRole: string = '';
+  generatedPassword: string = '';
 
-  constructor(private dialog: MatDialog, private userService: UserService) { }
+  constructor(private dialog: MatDialog, private userService: UserService, private formBuilder: FormBuilder) { }
+
+  managerForm: FormGroup;
 
   ngOnInit(): void {
     this.currentRole = sessionStorage.getItem('roleType') || localStorage.getItem('roleType') || '';
     this.currentRole === 'ROLE_ADMIN' ? this.getUsers() : this.getClients();
+    this.initializeForms();
+    this.managerForm.valueChanges.subscribe(() => {
+      this.generatePassword();
+    });
+  }
+
+  initializeForms() {
+    this.managerForm = this.formBuilder.group({
+      firstName: ['', [Validators.required, Validators.minLength(2), Validators.pattern('^[a-zA-Z]+$')]],
+      lastName: ['', [Validators.required, Validators.minLength(2)]],
+      email: ['', [Validators.required, Validators.email]]
+
+    });
+
   }
 
   getUsers() {
@@ -112,9 +137,70 @@ export class UserListComponent implements OnInit {
 
   }
 
+  addManager() {
+    if (this.managerForm.valid) {
+      const request: UserViewModel = {
+        firstName: this.managerForm.value.firstName,
+        lastName: this.managerForm.value.lastName,
+        email: this.managerForm.value.email,
+        roleType: UserRole.Manager,
+        banned: false,
+        password: this.generatedPassword,
+        id: -1,
+        token: ''
+      };
 
+      this.dialog.open(GenericConfirmDialogComponent, {
 
+        disableClose: true,
+        data: {
+          title: `Add Manager`,
+          message: `Are you sure you want to add a new manager?`,
+        }
+      }).afterClosed().subscribe((confirmed) => {
+        if (confirmed) {
+          this.subscriptions.push(this.userService.addManager(request).subscribe(
+            (res) => {
+              if (res) {
+                this.getUsers();
+                this.managerForm.reset();
+                this.generatedPassword = '';
+              }
+            },
+            (error) => {
+              console.log('Error adding manager:', error);
+              this.managerForm.reset();
+              this.generatedPassword = '';
+            }
+          ));
+        }
+      });
+    }
+  }
 
+  isAdmin(): boolean {
+    return this.currentRole === 'ROLE_ADMIN';
+  }
+
+  generatePassword() {
+    if (this.managerForm.valid) {
+      this.generatedPassword = this.createRandomPassword();
+    } else {
+      this.generatedPassword = '';
+    }
+  }
+
+  createRandomPassword(): string {
+
+    const length = 12;
+    const charset = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+    let password = '';
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * charset.length);
+      password += charset[randomIndex];
+    }
+    return password;
+  }
 
   ngOnDestroy(): void {
     this.subscriptions.forEach((sub) => {
