@@ -1,5 +1,5 @@
 import { CommonModule } from '@angular/common';
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup, FormsModule, ReactiveFormsModule, Validators } from '@angular/forms';
 import { Subscription } from 'rxjs';
 import { MatButtonModule } from '@angular/material/button';
@@ -48,7 +48,7 @@ import { GenericConfirmDialogComponent } from '../shared/generic-confirm-dialog/
   templateUrl: './flights-locations.component.html',
   styleUrl: './flights-locations.component.css'
 })
-export class FlightsLocationsComponent implements OnInit {
+export class FlightsLocationsComponent implements OnInit, AfterViewInit {
 
   displayedColumnsFlights: string[] = ['id', 'plane', 'origin', 'destination', 'gate', 'departureTime', 'arrivalTime', 'price', 'availableEconomySeats', 'availableBusinessSeats', 'availableFirstClassSeats', 'actions'];
   displayedColumnsLocations: string[] = ['id', 'country', 'city', 'shortName', 'imagePath', 'actions'];
@@ -64,14 +64,15 @@ export class FlightsLocationsComponent implements OnInit {
     gate: 'Gate',
     departureTime: 'Departure Time',
     arrivalTime: 'Arrival Time',
-    price: 'Price',
+    price: 'Price (€)',
     availableEconomySeats: 'Available Economy Seats',
     availableBusinessSeats: 'Available Business Seats',
     availableFirstClassSeats: 'Available First Class Seats',
     country: 'Country',
     city: 'City',
     shortName: 'Short Name',
-    imagePath: 'Image'
+    imagePath: 'Image',
+    actions: 'Actions'
 
   };
 
@@ -136,7 +137,6 @@ export class FlightsLocationsComponent implements OnInit {
     }
   };
 
-  dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
 
   newLocation: {id: number, country: string, city: string, shortName: string, imagePath: string } = { 
     id: -1,
@@ -208,8 +208,35 @@ export class FlightsLocationsComponent implements OnInit {
   ];
 
 
-  @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatPaginator, {static: false}) paginatorLocation: MatPaginator;
+  @ViewChild(MatPaginator, {static: false}) paginatorFlight: MatPaginator;
+  @ViewChild(MatSort, {static: false}) sortFlight: MatSort;
+  @ViewChild(MatSort, {static: false}) sortLocation: MatSort;
+  
+  // @ViewChild(MatPaginator, {static: false})
+  // set paginatorLocation(value: MatPaginator) {
+  //   if (this.dataSourceLocations){
+  //     this.dataSourceLocations.paginator = value;
+  //   }
+  // }
+  // @ViewChild(MatPaginator, {static: false})
+  // set paginatorFlight(value: MatPaginator) {
+  //   if (this.dataSourceFlights){
+  //     this.dataSourceFlights.paginator = value;
+  //   }
+  // }
+  // @ViewChild(MatSort, {static: false})
+  // set sortFlight(value: MatSort) {
+  //   if (this.dataSourceFlights){
+  //     this.dataSourceFlights.sort = value;
+  //   }
+  // }
+  // @ViewChild(MatSort, {static: false})
+  // set sortLocation(value: MatSort) {
+  //   if (this.dataSourceLocations){
+  //     this.dataSourceLocations.sort = value;
+  //   }
+  // }
 
   flightForm: FormGroup;
   locationForm: FormGroup;
@@ -223,6 +250,36 @@ export class FlightsLocationsComponent implements OnInit {
 
     this.getLocations();
     this.getFlights();
+  }
+  
+  ngAfterViewInit(): void {
+    // setTimeout(() => this.dataSource.paginator = this.paginator);
+
+      // this.dataSourceFlights.paginator = this.paginatorFlight;
+      // this.dataSourceFlights.sort = this.sortFlight;
+      // this.dataSourceLocations.paginator = this.paginatorLocation;
+      // this.dataSourceLocations.sort = this.sortLocation;
+      // console.log('PaginatorLocation reference:', this.paginatorLocation);
+      // if (this.paginatorLocation) {
+      //   this.dataSourceLocations.paginator = this.paginatorLocation;
+      //   this.dataSourceLocations.sort = this.sortLocation;
+      // } else {
+      //   console.error('PaginatorLocation is not available.');
+      // }
+      // console.log(this.dataSourceLocations.paginator);
+      // console.log(this.dataSourceFlights.paginator);
+  
+
+
+
+  }
+
+  getColumnValue(element: any, column: string): string {
+    const formatter = this.columnFormatters[column];
+    if (formatter) {
+      return formatter(element);
+    }
+    return element[column];
   }
 
   getForm() {
@@ -241,7 +298,7 @@ export class FlightsLocationsComponent implements OnInit {
       plane: ['',Validators.required],
       origin: ['',Validators.required],
       destination: ['',Validators.required],
-      gate: ['',[Validators.required, Validators.pattern('^[a-zA-Z0-9]*$')]],
+      gate: ['',[Validators.required, Validators.pattern('^[a-zA-Z0-9- ]*$')]],
       departureTime: ['',Validators.required],
       arrivalTime: ['',Validators.required],
       price: ['',Validators.required, Validators.min(0)],
@@ -251,9 +308,9 @@ export class FlightsLocationsComponent implements OnInit {
     });
 
     this.locationForm = this.formBuilder.group({
-      country: ['',[Validators.required, Validators.pattern('^[a-zA-Z0-9]*$')]],
-      city: ['',[Validators.required, Validators.pattern('^[a-zA-Z0-9]*$')]],
-      shortName: ['',[Validators.required, Validators.pattern('^[a-zA-Z0-9]*$')]],
+      country: ['',[Validators.required, Validators.pattern('^[a-zA-Z0-9 ]*$')]],
+      city: ['',[Validators.required, Validators.pattern('^[a-zA-Z0-9 ]*$')]],
+      shortName: ['',[Validators.required, Validators.pattern('^[a-zA-Z0-9-]*$')]],
       imagePath: ['',Validators.required]
     });
   } 
@@ -400,34 +457,27 @@ export class FlightsLocationsComponent implements OnInit {
     });
     
   }
+  else {
+    this.errorMessage = 'Please fill in all required fields.';
+
+  }
 }
 
-  getLocations() {
-    if (typeof window !== 'undefined' && window.sessionStorage) {
+getLocations() {
+  this.subscriptions.push(this.flightBookingService.getLocations().subscribe(res => {
+    this.dataSourceLocations.data = res.content;
+    this.dataSourceLocations.paginator = this.paginatorLocation;
+    this.dataSourceLocations.sort = this.sortLocation;
+  }));
+}
 
-      this.subscriptions.push(this.flightBookingService.getLocations().subscribe(res => {
-        this.dataSourceLocations.data = res.content;
-        this.dataSourceLocations.paginator = this.paginator;
-        this.dataSourceLocations.sort = this.sort;
-      }));
-    } else {
-      console.error('sessionStorage is not available.');
-    }
-    
-  }
-
-  getFlights() {
-    if (typeof window !== 'undefined' && window.sessionStorage) {
-
-      this.subscriptions.push(this.flightBookingService.getFlights().subscribe(res => {
-        this.dataSourceFlights.data = res.content;
-        this.dataSourceFlights.paginator = this.paginator;
-        this.dataSourceFlights.sort = this.sort;
-      }));
-    } else {
-      console.error('sessionStorage is not available.');
-    }
-  }
+getFlights() {
+  this.subscriptions.push(this.flightBookingService.getFlights().subscribe(res => {
+    this.dataSourceFlights.data = res.content;
+    this.dataSourceFlights.paginator = this.paginatorFlight;
+    this.dataSourceFlights.sort = this.sortFlight;
+  }));
+}
 
   toggleSelectedPlane(plane: PlaneViewModel) {
     this.selectedPlane = plane;

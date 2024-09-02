@@ -179,12 +179,12 @@ export class PackagesOptionsCouponsComponent implements OnInit {
     });
 
     this.optionForm = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9]*$')]],
+      name: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9 ]*$')]],
       price: ['', [Validators.required, Validators.min(0)]]
     });
 
     this.packageForm = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9]*$')]],
+      name: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9 ]*$')]],
       options: ['', [Validators.required]]
     });
   }
@@ -241,11 +241,11 @@ export class PackagesOptionsCouponsComponent implements OnInit {
       res => {
         res.content.forEach((curr: OptionForPackageViewModel) => {
           const packageId = curr._package.id;
-  
+
           if (!this.optionsForPackage[packageId]) {
             this.optionsForPackage[packageId] = [];
           }
-  
+
           const existingOption = this.optionsForPackage[packageId].find(option => option.id === curr.option.id);
           if (!existingOption) {
             this.optionsForPackage[packageId].push(curr.option);
@@ -284,7 +284,7 @@ export class PackagesOptionsCouponsComponent implements OnInit {
     }));
 
   }
-  
+
   toggleCouponStatus(coupon: CouponViewModel) {
     this.dialog.open(GenericConfirmDialogComponent, {
       disableClose: true,
@@ -453,6 +453,6 @@ export class PackagesOptionsCouponsComponent implements OnInit {
     ));
   }
 
-  
+
 
 }

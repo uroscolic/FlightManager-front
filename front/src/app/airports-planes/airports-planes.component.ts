@@ -87,7 +87,7 @@ export class AirportsPlanesComponent implements OnInit {
     }
   };
 
-  
+
 
   subscriptions: Subscription[] = [];
   selectedItem: string = 'planes';
@@ -161,14 +161,14 @@ export class AirportsPlanesComponent implements OnInit {
 
   initializeForms() {
     this.planeForm = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9]*$')]],
+      name: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9 ]*$')]],
       economySeats: ['', [Validators.required, Validators.min(0)]],
       businessSeats: ['', [Validators.required, Validators.min(0)]],
       firstClassSeats: ['', [Validators.required, Validators.min(0)]]
     });
 
     this.airportForm = this.formBuilder.group({
-      name: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9]*$')]],
+      name: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9 ]*$')]],
       location: ['', [Validators.required]]
     });
   }
