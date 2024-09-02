@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { PageableResponse } from '../models/pageableResponse.model';
 
 import { UtilityService } from './utility.service';
-import { LocationViewModel, OptionForPackageViewModel, OptionViewModel, PackageViewModel, PassengerViewModel, PlaneViewModel, TicketViewModel } from '../models/flight-booking.model';
+import { FlightViewModel, LocationViewModel, OptionForPackageViewModel, OptionViewModel, PackageViewModel, PassengerViewModel, PlaneViewModel, TicketViewModel } from '../models/flight-booking.model';
 import { CouponViewModel } from '../models/coupon.model';
 import { AirportViewModel } from '../models/flight-booking.model';
 
@@ -140,6 +140,16 @@ export class FlightBookingService {
     );
   }
 
+  getFlights(): Observable<PageableResponse<FlightViewModel[]>> {
+
+    const headers = this.utilityService.getHeaders();
+
+    return this.http.get<PageableResponse<FlightViewModel[]>>(
+      this.url + FLIGHT,
+      { headers }
+    );
+  }
+
   // PUT requests
 
   toggleCouponStatus(request: CouponViewModel): Observable<CouponViewModel> {
@@ -220,4 +230,49 @@ export class FlightBookingService {
       { headers }
     );
   }
+
+  addFlight(request: FlightViewModel): Observable<FlightViewModel> {
+
+    const headers = this.utilityService.getHeaders();
+
+    return this.http.post<FlightViewModel>(
+      this.url + FLIGHT,
+      request,
+      { headers }
+    );
+  }
+
+  addPassenger(request: PassengerViewModel): Observable<PassengerViewModel> {
+
+    const headers = this.utilityService.getHeaders();
+
+    return this.http.post<PassengerViewModel>(
+      this.url + PASSENGER,
+      request,
+      { headers }
+    );
+  }
+  addLocation(request: LocationViewModel): Observable<LocationViewModel> {
+
+    const headers = this.utilityService.getHeaders();
+
+    return this.http.post<LocationViewModel>(
+      this.url + LOCATION,
+      request,
+      { headers }
+    );
+  }
+
+  addTicket(request: TicketViewModel): Observable<TicketViewModel> {
+
+    const headers = this.utilityService.getHeaders();
+
+    return this.http.post<TicketViewModel>(
+      this.url + TICKET,
+      request,
+      { headers }
+    );
+  }
+
+
 }
