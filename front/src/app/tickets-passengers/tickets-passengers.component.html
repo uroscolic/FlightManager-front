@@ -29,4 +29,10 @@
     
       <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
     </div>
+
+
+    
+      <ng-container *ngFor="let ticket of getTikets()">
+        <app-ticket-panel [ticket]="ticket"></app-ticket-panel>
+      </ng-container>
   </app-navigation>

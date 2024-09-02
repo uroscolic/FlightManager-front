@@ -69,9 +69,9 @@ export class TicketViewModel{
     owner: PassengerViewModel;
     passenger: PassengerViewModel;
     seatNumber: number;
-    class: Class;
+    ticketClass: Class;
     isReturn: boolean;
-    package: PackageViewModel;
+    _package: PackageViewModel;
     flight: FlightViewModel;
     returnFlight?: FlightViewModel;
     totalPrice: number;

@@ -20,6 +20,7 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { PassengerViewModel, TicketViewModel } from '../shared/models/flight-booking.model';
 import { FlightBookingService } from '../shared/services/flight-booking.service';
 import { MatDialog } from '@angular/material/dialog';
+import { TicketPanelComponent } from '../ticket-panel/ticket-panel.component';
 import { Subscription } from 'rxjs';
 import { get } from 'http';
 
@@ -45,7 +46,8 @@ import { get } from 'http';
     FormsModule,
     MatSelectModule,
     MatOptionModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    TicketPanelComponent
   ],
   templateUrl: './tickets-passengers.component.html',
   styleUrl: './tickets-passengers.component.css'
@@ -92,7 +94,7 @@ export class TicketsPassengersComponent implements OnInit {
     'package': (element: any) => element._package.name,
     'flightId': (element: any) => element.flight.id,
     'returnFlightId': (element: any) => element.returnFlight? element.returnFlight.id : 'N/A',  
-    'class': (element: any) => element.class === 'ECONOMY' ? 'Economy' : 'Business'
+    'class': (element: any) => element.ticketClass === 'ECONOMY' ? 'Economy' :  element.ticketClass === 'BUSINESS' ? 'Business' : 'First Class' 
   };
 
 
@@ -130,6 +132,10 @@ export class TicketsPassengersComponent implements OnInit {
       return formatter(element);
     }
     return element[column];
+  }
+
+  getTikets() : TicketViewModel[] {
+    return this.dataSourceTickets.data;
   }
 
   getTickets() {
