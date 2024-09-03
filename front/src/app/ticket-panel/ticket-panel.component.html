@@ -2,8 +2,9 @@
     <mat-expansion-panel>
         <mat-expansion-panel-header>
             <mat-panel-title>
+                <mat-icon>flight</mat-icon>
                 <!-- Display the time before the expansion icon -->
-                Ticket ID: {{ ticket.id }}
+                 Ticket ID: {{ ticket.id }}
             </mat-panel-title>
             <div class="mat-expansion-panel-header-description">
                 <!-- Display the ticket ID -->
@@ -21,8 +22,8 @@
                 <p>Owner: {{ticket.owner.firstName}} {{ticket.owner.lastName}}</p>
                 <p>Passenger: {{ticket.passenger.firstName}} {{ticket.passenger.lastName}}</p>
                 <p>Flight: {{ticket.flight.destination.location.country}} - {{ticket.flight.origin.location.city}}</p>
-                <p>Departure: {{ticket.flight.departureTime | date: 'dd/MM/yyyy HH:mm'}}</p>
-                <p>Arrival: {{ticket.flight.arrivalTime | date: 'dd/MM/yyyy HH:mm'}}</p>
+                <p>Departure: {{ticket.flight.departureTime | date: 'medium'}}</p>
+                <p>Arrival: {{ticket.flight.arrivalTime | date: 'medium'}}</p>
                 <p>Seat Number: {{ticket.seatNumber}}</p>
                 <p>Gate: {{ticket.flight.gate}}</p>
                 <p>Class: {{ticket.ticketClass}}</p>

@@ -4,6 +4,7 @@ import { MatExpansionModule } from '@angular/material/expansion';  // Import Mat
 import { MatFormFieldModule } from '@angular/material/form-field';  // Import MatFormFieldModule
 import { MatInputModule } from '@angular/material/input';  // Import MatInp
 import { CommonModule } from '@angular/common';
+import { MatIcon } from '@angular/material/icon';
 
 
 @Component({
@@ -14,6 +15,7 @@ import { CommonModule } from '@angular/common';
     MatExpansionModule,
     MatFormFieldModule,
     MatInputModule,
+    MatIcon,
   ],
   templateUrl: './ticket-panel.component.html',
   styleUrl: './ticket-panel.component.css'

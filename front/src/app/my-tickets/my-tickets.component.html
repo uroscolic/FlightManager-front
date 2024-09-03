@@ -1,0 +1,8 @@
+<app-navigation>
+    <div class="container">
+        <h3>My Tickets</h3>
+        <ng-container *ngFor="let ticket of allTickets()">
+            <app-ticket-panel [ticket]="ticket"></app-ticket-panel>
+          </ng-container>
+    </div>
+</app-navigation>

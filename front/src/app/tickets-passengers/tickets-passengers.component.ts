@@ -134,14 +134,11 @@ export class TicketsPassengersComponent implements OnInit {
     return element[column];
   }
 
-  getTikets() : TicketViewModel[] {
-    return this.dataSourceTickets.data;
-  }
 
   getTickets() {
     if (typeof window !== 'undefined' && window.sessionStorage) {
 
-      this.subscriptions.push(this.flightBookingService.getTickets().subscribe(res => {
+      this.subscriptions.push(this.flightBookingService.getTickets("uroscolic02@gmail.com").subscribe(res => {
         this.dataSourceTickets.data = res.content;
         console.log(this.dataSourceTickets.data);
         this.dataSourceTickets.paginator = this.paginator;

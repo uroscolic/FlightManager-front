@@ -109,7 +109,7 @@ export class NavigationComponent {
         this.roleString = '(Manager)';
         this.routes = this.managerRoutes;
         break;
-      case 'ROLE_USER':
+      case 'ROLE_CLIENT':
         this.roleString = '';
         this.routes = this.userRoutes;
         break;
