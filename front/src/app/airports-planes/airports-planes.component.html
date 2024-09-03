@@ -67,8 +67,7 @@
             <mat-form-field>
               <mat-label>Location</mat-label>
               <mat-select formControlName="location" required>
-                <mat-option *ngFor="let location of dataSourceLocation.data" [value]="location"
-                  (onSelectionChange)="toggleSelectedLocation(location)">
+                <mat-option *ngFor="let location of locations" [value]="location">
                   {{ location.city }}, {{ location.country }}
                 </mat-option>
               </mat-select>

@@ -60,7 +60,7 @@ export class AirportsPlanesComponent implements OnInit {
 
   dataSourcePlane: MatTableDataSource<PlaneViewModel> = new MatTableDataSource<PlaneViewModel>([]);
   dataSourceAirport: MatTableDataSource<AirportViewModel> = new MatTableDataSource<AirportViewModel>([]);
-  dataSourceLocation: MatTableDataSource<LocationViewModel> = new MatTableDataSource<LocationViewModel>([]);
+  locations: LocationViewModel[] = [];
 
   columnMappings: { [key: string]: string } = {
     id: 'Id',
@@ -93,7 +93,6 @@ export class AirportsPlanesComponent implements OnInit {
   selectedItem: string = 'planes';
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
-  selectedLocation: LocationViewModel = { id: -1, country: '', city: '', shortName: '', imagePath: '' };
 
   newPlane: { id: number, name: string, economySeats: number, businessSeats: number, firstClassSeats: number } = {
     id: -1,
@@ -257,7 +256,7 @@ export class AirportsPlanesComponent implements OnInit {
 
     if (this.airportForm.valid) {
       this.newAirport.name = this.airportForm.value.name;
-      this.newAirport.location = this.selectedLocation;
+      this.newAirport.location = this.airportForm.value.location;
 
       this.dialog.open(GenericConfirmDialogComponent, {
         data: {
@@ -303,16 +302,9 @@ export class AirportsPlanesComponent implements OnInit {
   }
 
   getLocations() {
-    if (typeof window !== 'undefined' && window.sessionStorage) {
-
-      this.subscriptions.push(this.flightBookingService.getLocations().subscribe(res => {
-        this.dataSourceLocation.data = res.content;
-        this.dataSourceLocation.paginator = this.paginator;
-        this.dataSourceLocation.sort = this.sort;
-      }));
-    } else {
-      console.error('sessionStorage is not available.');
-    }
+    this.subscriptions.push(this.flightBookingService.getLocations().subscribe(res => {
+      this.locations = res.content;
+    }));
   }
 
   getAirports() {
@@ -329,8 +321,4 @@ export class AirportsPlanesComponent implements OnInit {
     }
   }
 
-  toggleSelectedLocation(location: LocationViewModel) {
-    this.selectedLocation = location;
-    this.airportForm.get('location')?.setValue(location);
-  }
 }

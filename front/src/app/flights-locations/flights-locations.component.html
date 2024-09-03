@@ -33,21 +33,82 @@
     <div class="form-container add">
       <h3>Add {{ getItemName() }}</h3>
       <form (ngSubmit)="getAction()" [formGroup]="getForm()">
+
         <div *ngIf="selectedItem === 'flights'">
-          <div *ngFor="let flight of flightFields">
+          <div class="lista">
             <mat-form-field appearance="fill">
-              <mat-label>{{flight.label}}</mat-label>
-              <input matInput [type]="flight.type" [name]="flight.name" [formControlName]="flight.name">
-              <mat-error *ngIf="getForm().get(flight.name)?.hasError('required')">
-                {{flight.label}} is required
-              </mat-error>
-              <mat-error *ngIf="getForm().get(flight.name)?.hasError('pattern')">
-                {{flight.label}} is not valid
-              </mat-error>
-              <mat-error *ngIf="getForm().get(flight.name)?.hasError('min')">
-                {{flight.label}} must be > 0
+              <mat-label>Plane</mat-label>
+              <mat-select formControlName="plane" required>
+                <mat-option *ngFor="let plane of planes" [value]="plane">
+                  {{ plane.name }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="getForm().get('plane')?.hasError('required')">
+                Plane is required
               </mat-error>
             </mat-form-field>
+            <mat-form-field appearance="fill">
+              <mat-label>Origin</mat-label>
+              <mat-select formControlName="origin" required>
+                <mat-option *ngFor="let origin of airports" [value]="origin">
+                  {{ origin.name }} - {{origin.location.city}},  {{origin.location.country}} ({{ origin.location.shortName }})
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="getForm().get('origin')?.hasError('required')">
+                Origin is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+              <mat-label>Destination</mat-label>
+              <mat-select formControlName="destination" required>
+                <mat-option *ngFor="let destination of airports" [value]="destination">
+                  {{ destination.name }} - {{destination.location.city}},  {{destination.location.country}} ({{ destination.location.shortName }})
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="getForm().get('destination')?.hasError('required')">
+                Destination is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+              <mat-label>Gate</mat-label>
+              <input matInput name="gate" required formControlName="gate">
+              <mat-error *ngIf="getForm().get('gate')?.hasError('required')">
+                Gate is required
+              </mat-error>
+              <mat-error *ngIf="getForm().get('gate')?.hasError('pattern')">
+                Gate is invalid
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+              <mat-label>Price</mat-label>
+              <input matInput name="price" type="number" required formControlName="price">
+              <mat-error *ngIf="getForm().get('price')?.hasError('required')">
+                Price is required
+              </mat-error>
+              <mat-error *ngIf="getForm().get('price')?.hasError('min')">
+                Price must not be lower than 0
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+              <mat-label>Departure</mat-label>
+              <input matInput name="departureTime" type="datetime-local" required formControlName="departureTime">
+              <mat-error *ngIf="getForm().get('departureTime')?.hasError('required')">
+                Departure is required
+              </mat-error>
+            </mat-form-field>
+
+            <mat-form-field appearance="fill">
+              <mat-label>Arrival</mat-label>
+              <input matInput name="arrivalTime" type="datetime-local" required formControlName="arrivalTime">
+              <mat-error *ngIf="getForm().get('arrivalTime')?.hasError('required')">
+                Arrival is required
+              </mat-error>
+            </mat-form-field>
+
           </div>
         </div>
 
@@ -71,25 +132,18 @@
               <mat-label>Image Path</mat-label>
               <input matInput name="imagePath" required formControlName="imagePath">
             </mat-form-field>
+            <!-- <app-upload-image (change)="onFileChanged($event)"></app-upload-image>
+            <input type="hidden" formControlName="imagePath"> -->
 
-            <!-- <div *ngIf="selectedItem === 'locations'">
-                <div *ngFor="let location of locationFields">
-                  <mat-form-field appearance="fill">
-                    <mat-label>{{location.label}}</mat-label>
-                    <input matInput [type]="location.type" [name]="location.name" [formControlName]="location.name">
-                    <mat-error *ngIf="getForm().get(location.name)?.hasError('required')">
-                      {{location.label}} is required
-                    </mat-error>
-                    <mat-error *ngIf="getForm().get(location.name)?.hasError('pattern')">
-                      {{location.label}} is not valid
-                    </mat-error>
-                  </mat-form-field>
-                </div>
-            </div> -->
           </div>
         </div>
 
+        <mat-error *ngIf="addingFailed">
+          {{ errorMessage}}
+        </mat-error>
+
         <button mat-raised-button color="primary" type="submit">Add {{ getItemName() }}</button>
+
       </form>
     </div>
   </div>
