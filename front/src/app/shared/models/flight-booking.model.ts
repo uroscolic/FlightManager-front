@@ -9,7 +9,6 @@ export class LocationViewModel{
     country: string;
     city: string;
     shortName: string;
-    imagePath: string;
 }
 
 export class PlaneViewModel{

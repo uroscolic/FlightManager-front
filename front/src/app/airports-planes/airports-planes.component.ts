@@ -109,8 +109,7 @@ export class AirportsPlanesComponent implements OnInit {
       id: -1,
       country: '',
       city: '',
-      shortName: '',
-      imagePath: ''
+      shortName: ''
     }
   };
 

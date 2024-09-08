@@ -52,7 +52,7 @@ import { GenericConfirmDialogComponent } from '../shared/generic-confirm-dialog/
 export class FlightsLocationsComponent implements OnInit, AfterViewInit {
 
   displayedColumnsFlights: string[] = ['id', 'plane', 'origin', 'destination', 'gate', 'departureTime', 'arrivalTime', 'price', 'availableEconomySeats', 'availableBusinessSeats', 'availableFirstClassSeats', 'actions'];
-  displayedColumnsLocations: string[] = ['id', 'country', 'city', 'shortName', 'imagePath', 'actions'];
+  displayedColumnsLocations: string[] = ['id', 'country', 'city', 'shortName', 'actions'];
 
   dataSourceFlights: MatTableDataSource<FlightViewModel> = new MatTableDataSource<FlightViewModel>();
   dataSourceLocations: MatTableDataSource<LocationViewModel> = new MatTableDataSource<LocationViewModel>();
@@ -72,7 +72,6 @@ export class FlightsLocationsComponent implements OnInit, AfterViewInit {
     country: 'Country',
     city: 'City',
     shortName: 'Short Name',
-    imagePath: 'Image',
     actions: 'Actions'
 
   };
@@ -95,7 +94,7 @@ export class FlightsLocationsComponent implements OnInit, AfterViewInit {
     locations: {
       itemName: 'Location',
       dataSource: this.dataSourceLocations,
-      displayedColumns: ['id', 'country', 'city', 'shortName', 'imagePath', 'actions'],
+      displayedColumns: ['id', 'country', 'city', 'shortName', 'actions'],
       action: () => this.addLocation()
     }
   };
@@ -112,12 +111,11 @@ export class FlightsLocationsComponent implements OnInit, AfterViewInit {
 
 
 
-  newLocation: { id: number, country: string, city: string, shortName: string, imagePath: string } = {
+  newLocation: { id: number, country: string, city: string, shortName: string } = {
     id: -1,
     country: '',
     city: '',
-    shortName: '',
-    imagePath: ''
+    shortName: ''
   };
 
   newFlight: { id: number, plane: PlaneViewModel, origin: AirportViewModel, destination: AirportViewModel, gate: string, departureTime: Date, arrivalTime: Date, price: number, availableEconomySeats: number, availableBusinessSeats: number, availableFirstClassSeats: number } = {
@@ -137,8 +135,7 @@ export class FlightsLocationsComponent implements OnInit, AfterViewInit {
         id: -1,
         country: '',
         city: '',
-        shortName: '',
-        imagePath: ''
+        shortName: ''
       }
     },
     destination: {
@@ -148,8 +145,7 @@ export class FlightsLocationsComponent implements OnInit, AfterViewInit {
         id: -1,
         country: '',
         city: '',
-        shortName: '',
-        imagePath: ''
+        shortName: ''
       }
     },
     gate: '',
@@ -164,8 +160,7 @@ export class FlightsLocationsComponent implements OnInit, AfterViewInit {
   locationFields: [
     { label: 'Country', name: 'country', type: 'text' },
     { label: 'City', name: 'city', type: 'text' },
-    { label: 'Short Name', name: 'shortName', type: 'text' },
-    { label: 'Image Path', name: 'imagePath', type: 'text' }
+    { label: 'Short Name', name: 'shortName', type: 'text' }
   ];
 
   flightFields: [
@@ -286,8 +281,7 @@ export class FlightsLocationsComponent implements OnInit, AfterViewInit {
     this.locationForm = this.formBuilder.group({
       country: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9 ]*$')]],
       city: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9 ]*$')]],
-      shortName: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9-]*$')]],
-      imagePath: ['', Validators.required]
+      shortName: ['', [Validators.required, Validators.pattern('^[a-zA-Z0-9-]*$')]]
     });
   }
 
@@ -313,8 +307,7 @@ export class FlightsLocationsComponent implements OnInit, AfterViewInit {
         id: -1,
         country: '',
         city: '',
-        shortName: '',
-        imagePath: ''
+        shortName: ''
       }
     };
     this.destinationForNewFlight = {
@@ -324,8 +317,7 @@ export class FlightsLocationsComponent implements OnInit, AfterViewInit {
         id: -1,
         country: '',
         city: '',
-        shortName: '',
-        imagePath: ''
+        shortName: ''
       }
     };
   }
@@ -431,7 +423,6 @@ export class FlightsLocationsComponent implements OnInit, AfterViewInit {
       this.newLocation.country = this.locationForm.value.country;
       this.newLocation.city = this.locationForm.value.city;
       this.newLocation.shortName = this.locationForm.value.shortName;
-      this.newLocation.imagePath = this.locationForm.value.imagePath;
       this.dialog.open(GenericConfirmDialogComponent, {
         disableClose: true,
         data: {
