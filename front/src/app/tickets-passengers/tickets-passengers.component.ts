@@ -9,7 +9,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { NavigationComponent } from '../navigation/navigation.component';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -22,7 +22,8 @@ import { FlightBookingService } from '../shared/services/flight-booking.service'
 import { MatDialog } from '@angular/material/dialog';
 import { TicketPanelComponent } from '../ticket-panel/ticket-panel.component';
 import { Subscription } from 'rxjs';
-import { get } from 'http';
+
+const HOME = '/home';
 
 @Component({
   selector: 'app-tickets-passengers',
@@ -99,6 +100,7 @@ export class TicketsPassengersComponent implements OnInit {
 
 
   subscriptions: Subscription[] = [];
+  currentRole: string = '';
   selectedItem: string = 'passengers';
 
   dataSource: MatTableDataSource<any> = new MatTableDataSource<any>([]);
@@ -106,10 +108,12 @@ export class TicketsPassengersComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private dialog: MatDialog, private flightBookingService: FlightBookingService) { }
+  constructor(private dialog: MatDialog, private flightBookingService: FlightBookingService, private router: Router) { }
 
 
   ngOnInit(): void {
+    this.currentRole = sessionStorage.getItem('roleType') || localStorage.getItem('roleType') || '';
+    this.currentRole !== 'ROLE_ADMIN' && this.currentRole !== 'ROLE_MANAGER' ? this.router.navigate([HOME]) : null;
     this.getTickets();
     this.getPassengers();
   }
@@ -138,7 +142,7 @@ export class TicketsPassengersComponent implements OnInit {
   getTickets() {
     if (typeof window !== 'undefined' && window.sessionStorage) {
 
-      this.subscriptions.push(this.flightBookingService.getTickets("uroscolic02@gmail.com").subscribe(res => {
+      this.subscriptions.push(this.flightBookingService.allTickets().subscribe(res => {
         this.dataSourceTickets.data = res.content;
         console.log(this.dataSourceTickets.data);
         this.dataSourceTickets.paginator = this.paginator;

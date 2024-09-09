@@ -10,7 +10,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSort, MatSortModule } from '@angular/material/sort';
 import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { NavigationComponent } from '../navigation/navigation.component';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -21,6 +21,8 @@ import { AirportViewModel, FlightViewModel, LocationViewModel, PlaneViewModel } 
 import { MatDialog } from '@angular/material/dialog';
 import { FlightBookingService } from '../shared/services/flight-booking.service';
 import { GenericConfirmDialogComponent } from '../shared/generic-confirm-dialog/generic-confirm-dialog.component';
+
+const HOME = '/home';
 
 @Component({
   selector: 'app-flights-locations',
@@ -52,7 +54,7 @@ import { GenericConfirmDialogComponent } from '../shared/generic-confirm-dialog/
 export class FlightsLocationsComponent implements OnInit, AfterViewInit {
 
   displayedColumnsFlights: string[] = ['id', 'plane', 'origin', 'destination', 'gate', 'departureTime', 'arrivalTime', 'price', 'availableEconomySeats', 'availableBusinessSeats', 'availableFirstClassSeats', 'actions'];
-  displayedColumnsLocations: string[] = ['id', 'country', 'city', 'shortName', 'actions'];
+  displayedColumnsLocations: string[] = ['id', 'country', 'city', 'shortName'];
 
   dataSourceFlights: MatTableDataSource<FlightViewModel> = new MatTableDataSource<FlightViewModel>();
   dataSourceLocations: MatTableDataSource<LocationViewModel> = new MatTableDataSource<LocationViewModel>();
@@ -94,7 +96,7 @@ export class FlightsLocationsComponent implements OnInit, AfterViewInit {
     locations: {
       itemName: 'Location',
       dataSource: this.dataSourceLocations,
-      displayedColumns: ['id', 'country', 'city', 'shortName', 'actions'],
+      displayedColumns: ['id', 'country', 'city', 'shortName'],
       action: () => this.addLocation()
     }
   };
@@ -107,7 +109,7 @@ export class FlightsLocationsComponent implements OnInit, AfterViewInit {
   planeForNewFlight: PlaneViewModel;
   originForNewFlight: AirportViewModel;
   destinationForNewFlight: AirportViewModel;
-
+  currentRole: string = '';
 
 
 
@@ -214,9 +216,11 @@ export class FlightsLocationsComponent implements OnInit, AfterViewInit {
   locationForm: FormGroup;
 
 
-  constructor(private datePipe: DatePipe, private formBuilder: FormBuilder, private dialog: MatDialog, private flightBookingService: FlightBookingService) { }
+  constructor(private datePipe: DatePipe, private router : Router, private formBuilder: FormBuilder, private dialog: MatDialog, private flightBookingService: FlightBookingService) { }
 
   ngOnInit(): void {
+    this.currentRole = sessionStorage.getItem('roleType') || localStorage.getItem('roleType') || '';
+    this.currentRole !== 'ROLE_ADMIN' && this.currentRole !== 'ROLE_MANAGER' ? this.router.navigate([HOME]) : null;
 
     this.initializeForms();
 
@@ -325,6 +329,10 @@ export class FlightsLocationsComponent implements OnInit, AfterViewInit {
 
   getColumnLabel(column: string): string {
     return this.columnMappings[column] || column;
+  }
+
+  editFlight(flight: FlightViewModel) {
+    this.router.navigate(['edit-flight', flight.id]);
   }
 
   getItemName(): string {

@@ -9,18 +9,20 @@ import { FlightsLocationsComponent } from './flights-locations/flights-locations
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { MyTicketsComponent } from './my-tickets/my-tickets.component';
 import { EditAirportComponent } from './edit-airport/edit-airport.component';
+import { EditFlightComponent } from './edit-flight/edit-flight.component';
 
 export const routes: Routes = [
-    {path: '', redirectTo : 'navigation', pathMatch: 'full'},
+    {path: '', redirectTo : 'home', pathMatch: 'full'},
     {path: 'users', component: UserListComponent},
     {path : 'login' , component: LoginComponent},
-    {path : 'navigation', component: NavigationComponent},
+    {path : 'home', component: NavigationComponent},
     {path: 'packages&options&coupons', component: PackagesOptionsCouponsComponent},
     {path: 'airports&planes', component: AirportsPlanesComponent},
     {path: 'edit-airport/:id', component: EditAirportComponent},
     {path: 'tickets&passengers', component: TicketsPassengersComponent},
     {path: 'flights&locations', component: FlightsLocationsComponent},
+    {path: 'edit-flight/:id', component: EditFlightComponent},
     {path: 'change-password', component: ChangePasswordComponent},
     {path: 'tickets', component: MyTicketsComponent},
-    {path: '**', redirectTo: 'navigation', pathMatch: 'full'}
+    {path: '**', redirectTo: 'home', pathMatch: 'full'}
 ];

@@ -14,12 +14,22 @@
     <table mat-table [dataSource]="getDataSource()" class="mat-table" matSort>
 
       <ng-container *ngFor="let column of getDisplayedColumns()" [matColumnDef]="column">
-        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ getColumnLabel(column) }} </th>
+        <th mat-header-cell *matHeaderCellDef mat-sort-header> {{ getColumnLabel(column) }} </th>  
+        
+        <ng-container [ngSwitch] = "column">
+          <ng-container *ngSwitchCase="'actions'">
+            <td mat-cell *matCellDef="let element">
+              <button *ngIf="currentRole === 'ROLE_ADMIN'" mat-icon-button color="primary" (click)="editFlight(element)">
+                <mat-icon>edit</mat-icon>
+              </button>
+            </td>
+          </ng-container>
+        
         <td mat-cell *matCellDef="let element">
           {{ getColumnValue(element, column) }}
         </td>
       </ng-container>
-
+      </ng-container> 
 
       <tr mat-header-row *matHeaderRowDef="getDisplayedColumns()"></tr>
       <tr mat-row *matRowDef="let row; columns: getDisplayedColumns();"></tr>
@@ -117,16 +127,34 @@
             <mat-form-field appearance="fill">
               <mat-label>City</mat-label>
               <input matInput name="city" required formControlName="city">
+              <mat-error *ngIf="getForm().get('city')?.hasError('required')">
+                City is required
+              </mat-error>
+              <mat-error *ngIf="getForm().get('city')?.hasError('pattern')">
+                City is invalid
+              </mat-error>
             </mat-form-field>
 
             <mat-form-field appearance="fill">
               <mat-label>Country</mat-label>
               <input matInput name="country" required formControlName="country">
+              <mat-error *ngIf="getForm().get('country')?.hasError('required')">
+                Country is required
+              </mat-error>
+              <mat-error *ngIf="getForm().get('country')?.hasError('pattern')">
+                Country is invalid
+              </mat-error>
             </mat-form-field>
 
             <mat-form-field appearance="fill">
               <mat-label>Short Name</mat-label>
               <input matInput name="shortName" required formControlName="shortName">
+              <mat-error *ngIf="getForm().get('shortName')?.hasError('required')">
+                Short Name is required
+              </mat-error>
+              <mat-error *ngIf="getForm().get('shortName')?.hasError('pattern')">
+                Short Name is invalid
+              </mat-error>
             </mat-form-field>
 
           </div>

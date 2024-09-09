@@ -1,0 +1,60 @@
+<app-navigation>
+    <div class="container">
+        <div class="form-container add">
+
+
+            <h3>Edit Flight</h3>
+
+            <form (ngSubmit)="editFlight()" [formGroup]="flightForm">
+                <div class="lista">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Price</mat-label>
+                        <input type="number" matInput name="price" required formControlName="price">
+                        <mat-error *ngIf="flightForm.get('price')?.hasError('required')">
+                            Price is required
+                        </mat-error>
+                        <mat-error *ngIf="flightForm.get('price')?.hasError('min')">
+                            Price can not be negative
+                        </mat-error>
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                        <mat-label>Departure</mat-label>
+                        <input matInput type="datetime-local" name="departureTime" required
+                            formControlName="departureTime">
+                        <mat-error *ngIf="flightForm.get('departureTime')?.hasError('required')">
+                            Departure is required
+                        </mat-error>
+
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                        <mat-label>Arrival</mat-label>
+                        <input matInput type="datetime-local" name="arrivalTime" required formControlName="arrivalTime">
+                        <mat-error *ngIf="flightForm.get('arrivalTime')?.hasError('required')">
+                            Arrival is required
+                        </mat-error>
+
+                    </mat-form-field>
+
+                    <mat-form-field appearance="fill">
+                        <mat-label>Gate</mat-label>
+                        <input matInput name="gate" required formControlName="gate">
+                        <mat-error *ngIf="flightForm.get('gate')?.hasError('required')">
+                            Gate is required
+                        </mat-error>
+                        <mat-error *ngIf="flightForm.get('gate')?.hasError('pattern')">
+                            Gate is not valid
+                        </mat-error>
+                    </mat-form-field>
+
+                    <button mat-raised-button color="primary" type="submit">Save Changes</button>
+                    <mat-error color="primary" *ngIf="errorMessage!==''">
+                        {{ errorMessage }}
+                    </mat-error>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</app-navigation>

@@ -69,7 +69,7 @@ export class FlightViewModel{
     availableFirstClassSeats: number;
 }
 
-export class FlightChangeModel{
+export class FlightUpdateModel{
     newPrice: number;
     newDepartureTime: Date;
     newArrivalTime: Date;

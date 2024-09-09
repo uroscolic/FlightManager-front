@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { PageableResponse } from '../models/pageableResponse.model';
 
 import { UtilityService } from './utility.service';
-import { AirportUpdateModel, FlightViewModel, LocationViewModel, OptionForPackageViewModel, OptionViewModel, PackageViewModel, PassengerViewModel, PlaneViewModel, TicketViewModel } from '../models/flight-booking.model';
+import { AirportUpdateModel, FlightUpdateModel, FlightViewModel, LocationViewModel, OptionForPackageViewModel, OptionViewModel, PackageViewModel, PassengerViewModel, PlaneViewModel, TicketViewModel } from '../models/flight-booking.model';
 import { CouponViewModel } from '../models/coupon.model';
 import { AirportViewModel } from '../models/flight-booking.model';
 
@@ -48,14 +48,24 @@ export class FlightBookingService {
   }
 
   getAirportById(id: number): Observable<AirportViewModel> {
-      
-      const headers = this.utilityService.getHeaders();
-  
-      return this.http.get<AirportViewModel>(
-        this.url + AIRPORT + `/${id}`,
-        { headers }
-      );
-    }
+
+    const headers = this.utilityService.getHeaders();
+
+    return this.http.get<AirportViewModel>(
+      this.url + AIRPORT + `/${id}`,
+      { headers }
+    );
+  }
+
+  getFlightById(id: number): Observable<FlightViewModel> {
+
+    const headers = this.utilityService.getHeaders();
+
+    return this.http.get<FlightViewModel>(
+      this.url + FLIGHT + `/${id}`,
+      { headers }
+    );
+  }
 
   getOptions(): Observable<PageableResponse<OptionViewModel[]>> {
 
@@ -294,6 +304,27 @@ export class FlightBookingService {
     return this.http.put<AirportViewModel>(
       this.url + AIRPORT,
       request,
+      { headers }
+    );
+  }
+
+  updateFlight(id:number, request: FlightUpdateModel): Observable<FlightViewModel> {
+
+    const headers = this.utilityService.getHeaders();
+
+    return this.http.put<FlightViewModel>(
+      this.url + FLIGHT + `/${id}`,
+      request,
+      { headers }
+    );
+  }
+
+  allTickets(): Observable<PageableResponse<TicketViewModel[]>> {
+
+    const headers = this.utilityService.getHeaders();
+
+    return this.http.get<PageableResponse<TicketViewModel[]>>(
+      this.url + TICKET,
       { headers }
     );
   }
