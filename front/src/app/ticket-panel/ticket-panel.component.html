@@ -4,7 +4,7 @@
             <mat-panel-title>
                 <mat-icon>flight</mat-icon>
                 <!-- Display the time before the expansion icon -->
-                 Ticket ID: {{ ticket.id }}
+                Ticket ID: {{ ticket.id }}
             </mat-panel-title>
             <div class="mat-expansion-panel-header-description">
                 <!-- Display the ticket ID -->
@@ -14,6 +14,12 @@
                 <!-- Display the ticket ID -->
                 {{ ticket.totalPrice }}€
             </div>
+            
+            <button mat-icon-button class="mat-expansion-panel-header-button" (click)="onCancelTicket(ticket.id, $event)">
+                <mat-icon class="default-icon" color="primary">delete</mat-icon>
+                <mat-icon class="hover-icon" color="primary">delete_forever</mat-icon>
+            </button>
+
         </mat-expansion-panel-header>
         <br>
         <div class="tickets">
@@ -29,16 +35,17 @@
                 <p>Class: {{ticket.ticketClass}}</p>
                 <p>Package: {{ticket._package.name}} ({{ticket._package.price}}€)</p>
 
-                <p *ngIf="!ticket.isReturn" ngClass='no-text'>
-                    {{ ticket.isReturn ? 'Return Flight' : 'Single Way Flight' }}
+                <p *ngIf="!ticket._return" ngClass='no-text'>
+                    {{ ticket._return ? 'Return Flight' : 'Single Way Flight' }}
                 </p>
 
             </div>
-            <div class="details" *ngIf="ticket.isReturn">
+            <div class="details" *ngIf="ticket._return">
                 <h4> Return Ticket Details: </h4>
                 <p>Owner: {{ticket.owner.firstName}} {{ticket.owner.lastName}}</p>
                 <p>Passenger: {{ticket.passenger.firstName}} {{ticket.passenger.lastName}}</p>
-                <p>Flight: {{ticket.returnFlight?.destination?.location?.country}} - {{ticket.returnFlight?.origin?.location?.city}}</p>
+                <p>Flight: {{ticket.returnFlight?.destination?.location?.country}} -
+                    {{ticket.returnFlight?.origin?.location?.city}}</p>
                 <p>Departure: {{ticket.returnFlight?.departureTime | date: 'dd/MM/yyyy HH:mm'}}</p>
                 <p>Arrival: {{ticket.returnFlight?.arrivalTime | date: 'dd/MM/yyyy HH:mm'}}</p>
                 <p>Seat Number: {{ticket.seatNumber}}</p>

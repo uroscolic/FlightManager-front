@@ -20,6 +20,7 @@ export class ClientViewModel implements UserViewModel {
     numberOfBookings: number;
     token: string;
     
+    
     constructor(id: number, firstName: string, lastName: string, email: string, password: string, banned: boolean, numberOfBookings: number) {
         this.id = id;
         this.firstName = firstName;

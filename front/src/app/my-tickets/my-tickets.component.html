@@ -1,8 +1,16 @@
 <app-navigation>
     <div class="container">
-        <h3>My Tickets</h3>
+        <h3>My Tickets ({{numberOfBookings}})</h3>
+        <ng-container *ngIf="numberOfBookings === 0">
+            <p>You have no tickets yet.</p>
+        </ng-container>
         <ng-container *ngFor="let ticket of allTickets()">
-            <app-ticket-panel [ticket]="ticket"></app-ticket-panel>
-          </ng-container>
+            <app-ticket-panel [ticket]="ticket" (cancelTicket)="cancelTicket($event)"></app-ticket-panel>
+        </ng-container>
+        <div>
+
+        <mat-error *ngIf="cancelingFailed" color="primary">
+            {{ errorMessage}}
+        </mat-error></div>
     </div>
 </app-navigation>

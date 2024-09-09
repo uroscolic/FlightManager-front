@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { PageableResponse } from '../models/pageableResponse.model';
 
 import { UtilityService } from './utility.service';
-import { FlightViewModel, LocationViewModel, OptionForPackageViewModel, OptionViewModel, PackageViewModel, PassengerViewModel, PlaneViewModel, TicketViewModel } from '../models/flight-booking.model';
+import { AirportUpdateModel, FlightViewModel, LocationViewModel, OptionForPackageViewModel, OptionViewModel, PackageViewModel, PassengerViewModel, PlaneViewModel, TicketViewModel } from '../models/flight-booking.model';
 import { CouponViewModel } from '../models/coupon.model';
 import { AirportViewModel } from '../models/flight-booking.model';
 
@@ -46,6 +46,16 @@ export class FlightBookingService {
       { headers }
     );
   }
+
+  getAirportById(id: number): Observable<AirportViewModel> {
+      
+      const headers = this.utilityService.getHeaders();
+  
+      return this.http.get<AirportViewModel>(
+        this.url + AIRPORT + `/${id}`,
+        { headers }
+      );
+    }
 
   getOptions(): Observable<PageableResponse<OptionViewModel[]>> {
 
@@ -275,5 +285,29 @@ export class FlightBookingService {
     );
   }
 
+  // PUT requests
+
+  updateAirport(request: AirportUpdateModel): Observable<AirportViewModel> {
+
+    const headers = this.utilityService.getHeaders();
+
+    return this.http.put<AirportViewModel>(
+      this.url + AIRPORT,
+      request,
+      { headers }
+    );
+  }
+
+  // DELETE requests
+
+  cancelTicket(id: number): Observable<any> {
+
+    const headers = this.utilityService.getHeaders();
+
+    return this.http.delete<any>(
+      this.url + TICKET + `/${id}`,
+      { headers }
+    );
+  }
 
 }

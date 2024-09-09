@@ -1,0 +1,20 @@
+.container {
+    margin-top: 30px;
+    display: flex;
+    justify-content: center;
+}
+
+.form-container.edit {
+    width: 100%;
+    max-width: 600px;
+    text-align: center;
+}
+
+.form-container.edit h3 {
+    text-align: center;
+}
+
+.lista {
+    display: flex;
+    flex-direction: column;
+}

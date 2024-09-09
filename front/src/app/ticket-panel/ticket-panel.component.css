@@ -1,53 +1,66 @@
 .mat-expansion-panel-header-description {
-    font-size: 0.875rem;
-    color: #ff8741;
-    margin-left: 8px; 
-  }
+  font-size: 0.875rem;
+  color: #ff8741;
+  margin-left: 8px;
+}
 
-  mat-accordion
-  mat-expansion-panel
-  mat-expansion-panel-header
-  mat-expanded{
-    font-size: 1.25em;
-    background-color: white;
-    background: white;
-    font-weight: 500;
-  }
-  
-  
-  
-  mat-accordion
-  mat-expansion-panel
-  mat-expansion-panel-header {
-    font-size: 1.25em;
-    background-color: white;
-    background: white;
-  
-    font-weight: 500;
-  }
-  
-  
-    mat-accordion
-    mat-expansion-panel
-    .mat-expansion-panel-body {
-    background-color: white;
-    padding-top: 5px;
-  }
+.mat-expansion-panel-header-button {
+  font-size: 0.875rem;
+  margin-right: 10px;
+  border: none;
+  background: none;
+  position: relative;
+
+}
+
+.hover-icon {
+  display: none;
+}
+
+.mat-expansion-panel-header-button:hover .default-icon {
+  display: none;
+}
+
+.mat-expansion-panel-header-button:hover .hover-icon {
+  display: inline;
+}
+
+mat-accordion mat-expansion-panel mat-expansion-panel-header mat-expanded {
+  font-size: 1.25em;
+  background-color: white;
+  background: white;
+  font-weight: 500;
+}
+
+
+mat-accordion mat-expansion-panel mat-expansion-panel-header {
+  font-size: 1.25em;
+  background-color: white;
+  background: white;
+
+  font-weight: 500;
+}
+
+
+mat-accordion mat-expansion-panel .mat-expansion-panel-body {
+  background-color: white;
+  padding-top: 5px;
+}
 
 
 .details {
-    border: 4px solid;
-    border-radius: 5%;
-    border-color: #ffffff;
-    max-width: 300px;
+  border: 4px solid;
+  border-radius: 5%;
+  border-color: #ffffff;
+  max-width: 300px;
 
-    background: linear-gradient(to right, #fc9d9d, #ffaf81);
-    color: white;
-    margin: auto;
-    width: 50%;
-    padding: 10px; 
-  }
-  
-  .no-text {
-    color: red;
-  }
+  background: linear-gradient(to right, #fc9d9d, #ffaf81);
+  color: white;
+  margin: auto;
+  width: 50%;
+  padding: 10px;
+}
+
+.no-text {
+  color: red;
+}

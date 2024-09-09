@@ -1,4 +1,4 @@
-import { Component, Inject, Input } from '@angular/core';
+import { Component, Inject, Input, Output, EventEmitter } from '@angular/core';
 import { TicketViewModel, Class } from '../shared/models/flight-booking.model';
 import { MatExpansionModule } from '@angular/material/expansion';  // Import MatExpansionModule
 import { MatFormFieldModule } from '@angular/material/form-field';  // Import MatFormFieldModule
@@ -22,6 +22,11 @@ import { MatIcon } from '@angular/material/icon';
 })
 export class TicketPanelComponent {
   @Input() ticket!: TicketViewModel;
+  @Output() cancelTicket = new EventEmitter<number>();
 
   
+  onCancelTicket(id: number, event: MouseEvent): void {
+    event.stopPropagation();
+    this.cancelTicket.emit(id);
+  }
 }

@@ -8,6 +8,7 @@ import { TicketsPassengersComponent } from './tickets-passengers/tickets-passeng
 import { FlightsLocationsComponent } from './flights-locations/flights-locations.component';
 import { ChangePasswordComponent } from './change-password/change-password.component';
 import { MyTicketsComponent } from './my-tickets/my-tickets.component';
+import { EditAirportComponent } from './edit-airport/edit-airport.component';
 
 export const routes: Routes = [
     {path: '', redirectTo : 'navigation', pathMatch: 'full'},
@@ -16,6 +17,7 @@ export const routes: Routes = [
     {path : 'navigation', component: NavigationComponent},
     {path: 'packages&options&coupons', component: PackagesOptionsCouponsComponent},
     {path: 'airports&planes', component: AirportsPlanesComponent},
+    {path: 'edit-airport/:id', component: EditAirportComponent},
     {path: 'tickets&passengers', component: TicketsPassengersComponent},
     {path: 'flights&locations', component: FlightsLocationsComponent},
     {path: 'change-password', component: ChangePasswordComponent},

@@ -20,6 +20,9 @@ import { Subscription } from 'rxjs';
 import { FlightBookingService } from '../shared/services/flight-booking.service';
 import { TicketViewModel } from '../shared/models/flight-booking.model';
 import { TicketPanelComponent } from '../ticket-panel/ticket-panel.component';
+import { UserService } from '../shared/services/user.service';
+import { MatDialog } from '@angular/material/dialog';
+import { GenericConfirmDialogComponent } from '../shared/generic-confirm-dialog/generic-confirm-dialog.component';
 
 @Component({
   selector: 'app-my-tickets',
@@ -48,11 +51,15 @@ import { TicketPanelComponent } from '../ticket-panel/ticket-panel.component';
 })
 export class MyTicketsComponent implements OnInit {
 
+  numberOfBookings: number = 0;
   subscriptions: Subscription[] = [];
   tickets: TicketViewModel[] = [];
+  errorMessage!: string;  
+  cancelingFailed: boolean = false;
 
   email: string = '';
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, private flightBookingService: FlightBookingService) { }
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private flightBookingService: FlightBookingService, 
+  private userService: UserService, private dialog: MatDialog) { }
 
   ngOnInit(): void {
     if(isPlatformBrowser(this.platformId)) {
@@ -70,7 +77,13 @@ export class MyTicketsComponent implements OnInit {
 
       this.subscriptions.push(this.flightBookingService.getTickets(this.email).subscribe(res => {
         this.tickets = res.content;
+        console.log(this.tickets);
       }));
+
+      this.subscriptions.push(this.userService.getNumberOfBookingsByEmail(this.email).subscribe(res => {
+        this.numberOfBookings = res.numberOfBookings;
+      }));
+
     } else {
       console.error('sessionStorage is not available.');
     }
@@ -82,5 +95,37 @@ export class MyTicketsComponent implements OnInit {
 
   allTickets() : TicketViewModel[] {
     return this.tickets;
+  }
+
+  cancelTicket(id: number): void {
+
+    this.dialog.open(GenericConfirmDialogComponent, {
+      data: {
+        title: 'Cancel Ticket',
+        message: 'Are you sure you want to cancel this ticket?'
+      }
+    }).afterClosed().subscribe(result => {
+      if(result) {
+        this.subscriptions.push(this.flightBookingService.cancelTicket(id).subscribe(
+          (res) => {
+            if(res) {
+            this.getTickets();
+
+            }
+        },
+        (error) => {
+          if (error.status === 500) {
+            this.errorMessage = "You can't cancel a ticket less than 48 hours before the flight";
+            
+          } else {
+            this.errorMessage = 'An error occurred while canceling ticket. Please try again.';
+          }
+          this.cancelingFailed = true;
+        }
+      ));
+      }
+    });
+
+    
   }
 }

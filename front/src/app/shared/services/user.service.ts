@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { UserChangePasswordModel, UserRole, UserViewModel } from '../models/user.model';
+import { ClientViewModel, UserChangePasswordModel, UserRole, UserViewModel } from '../models/user.model';
 import { environment } from '../../../environment/environment';
 import { LoginViewModel, SignUpViewModel } from '../models/loginSignUp.model';
 import { PageableResponse } from '../models/pageableResponse.model';
@@ -29,6 +29,14 @@ export class UserService {
     const headers = this.utilityService.getHeaders();
     return this.http.get<PageableResponse<UserViewModel[]>>(
       this.url + ALL_USERS, 
+      { headers }
+    );
+  }
+
+  getNumberOfBookingsByEmail(email: string): Observable<ClientViewModel> {
+    const headers = this.utilityService.getHeaders();
+    return this.http.get<ClientViewModel>(
+      this.url + CLIENT + "/email/" + email, 
       { headers }
     );
   }

@@ -4,6 +4,12 @@ export class AirportViewModel{
     location: LocationViewModel;
 }
 
+export class AirportUpdateModel{
+    oldName: string;
+    newName: string;
+    location: LocationViewModel;
+}
+
 export class LocationViewModel{
     id: number;
     country: string;
@@ -63,13 +69,20 @@ export class FlightViewModel{
     availableFirstClassSeats: number;
 }
 
+export class FlightChangeModel{
+    newPrice: number;
+    newDepartureTime: Date;
+    newArrivalTime: Date;
+    newGate: string;
+}
+
 export class TicketViewModel{
     id: number;
     owner: PassengerViewModel;
     passenger: PassengerViewModel;
     seatNumber: number;
     ticketClass: Class;
-    isReturn: boolean;
+    _return: boolean;
     _package: PackageViewModel;
     flight: FlightViewModel;
     returnFlight?: FlightViewModel;

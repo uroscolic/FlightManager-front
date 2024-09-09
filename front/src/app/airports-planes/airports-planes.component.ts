@@ -8,7 +8,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -56,7 +56,9 @@ import { error } from 'console';
 })
 export class AirportsPlanesComponent implements OnInit {
   displayedPlaneColumns: string[] = ['id', 'name', 'economySeats', 'businessSeats', 'firstClassSeats'];
-  displayedAirportColumns: string[] = ['id', 'name', 'city', 'country'];
+  displayedAirportColumns: string[] = ['id', 'name', 'city', 'country', 'actions'];
+
+  currentRole: string = '';
 
   dataSourcePlane: MatTableDataSource<PlaneViewModel> = new MatTableDataSource<PlaneViewModel>([]);
   dataSourceAirport: MatTableDataSource<AirportViewModel> = new MatTableDataSource<AirportViewModel>([]);
@@ -70,6 +72,7 @@ export class AirportsPlanesComponent implements OnInit {
     firstClassSeats: 'First Class Seats',
     city: 'City',
     country: 'Country',
+    actions: 'Actions'
   };
 
   itemConfig: { [key: string]: any } = {
@@ -81,7 +84,7 @@ export class AirportsPlanesComponent implements OnInit {
     },
     airports: {
       itemName: 'Airport',
-      displayedColumns: ['id', 'name', 'location.city', 'location.country'],
+      displayedColumns: ['id', 'name', 'location.city', 'location.country', 'actions'],
       dataSource: this.dataSourceAirport,
       action: () => this.addAirport(),
     }
@@ -134,12 +137,13 @@ export class AirportsPlanesComponent implements OnInit {
   planeForm: FormGroup;
   airportForm: FormGroup;
 
-  constructor(private formBuilder: FormBuilder, private dialog: MatDialog, private flightBookingService: FlightBookingService) { }
+  constructor(private formBuilder: FormBuilder, private dialog: MatDialog, private flightBookingService: FlightBookingService, private router: Router) { }
 
 
   ngOnInit(): void {
+    
+    this.currentRole = sessionStorage.getItem('roleType') || localStorage.getItem('roleType') || '';
     this.initializeForms();
-
 
     this.getPlanes();
     this.getAirports();
@@ -183,13 +187,19 @@ export class AirportsPlanesComponent implements OnInit {
       'name': 'Name',
       'economySeats': 'Economy Seats',
       'businessSeats': 'Business Seats',
-      'firstClassSeats': 'First Class Seats'
+      'firstClassSeats': 'First Class Seats',
+      'actions': 'Actions'
     };
     return columnDisplayNames[column] || column;
   }
+
   resetForms() {
     this.planeForm.reset();
     this.airportForm.reset();
+  }
+
+  editAirport(airport: AirportViewModel) {
+    this.router.navigate(['/edit-airport', airport.id]);
   }
 
   getColumnLabel(column: string): string {
@@ -243,7 +253,6 @@ export class AirportsPlanesComponent implements OnInit {
     }
     else {
       console.log("error");
-
       console.log(this.newPlane);
       console.log(this.planeForm.value);
       console.error('Invalid form');
@@ -318,6 +327,10 @@ export class AirportsPlanesComponent implements OnInit {
     } else {
       console.error('sessionStorage is not available.');
     }
+  }
+
+  updateAirport(airport: AirportViewModel) {
+
   }
 
 }

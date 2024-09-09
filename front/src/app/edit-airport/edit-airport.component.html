@@ -1,0 +1,27 @@
+<app-navigation>
+    <div class="container">
+        <div class="form-container add">
+
+
+            <h3>Change airport's name</h3>
+
+            <form (ngSubmit)="editAirport()" [formGroup]="airportForm">
+                <div class="lista">
+                    <mat-form-field appearance="fill">
+                        <mat-label>Name</mat-label>
+                        <input matInput name="name" required formControlName="name">
+                        <mat-error *ngIf="airportForm.get('name')?.hasError('required')">
+                            Name is required
+                        </mat-error>
+                        <mat-error *ngIf="airportForm.get('name')?.hasError('pattern')">
+                            Name is not valid
+                        </mat-error>
+                    </mat-form-field>
+
+                    <button mat-raised-button color="primary" type="submit">Save Changes</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</app-navigation>
