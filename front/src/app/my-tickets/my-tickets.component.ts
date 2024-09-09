@@ -10,7 +10,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { NavigationComponent } from '../navigation/navigation.component';
 import { LoginComponent } from '../login/login.component';
 import { MatInputModule } from '@angular/material/input';
@@ -23,6 +23,10 @@ import { TicketPanelComponent } from '../ticket-panel/ticket-panel.component';
 import { UserService } from '../shared/services/user.service';
 import { MatDialog } from '@angular/material/dialog';
 import { GenericConfirmDialogComponent } from '../shared/generic-confirm-dialog/generic-confirm-dialog.component';
+
+
+const HOME = '/home';
+
 
 @Component({
   selector: 'app-my-tickets',
@@ -51,6 +55,7 @@ import { GenericConfirmDialogComponent } from '../shared/generic-confirm-dialog/
 })
 export class MyTicketsComponent implements OnInit {
 
+  currentRole: string = '';
   numberOfBookings: number = 0;
   subscriptions: Subscription[] = [];
   tickets: TicketViewModel[] = [];
@@ -59,9 +64,13 @@ export class MyTicketsComponent implements OnInit {
 
   email: string = '';
   constructor(@Inject(PLATFORM_ID) private platformId: Object, private flightBookingService: FlightBookingService, 
-  private userService: UserService, private dialog: MatDialog) { }
+  private userService: UserService, private dialog: MatDialog, private router: Router) { }
 
   ngOnInit(): void {
+
+    this.currentRole = sessionStorage.getItem('roleType') || localStorage.getItem('roleType') || '';
+    this.currentRole !== 'ROLE_CLIENT' ? this.router.navigate([HOME]) : null;
+
     if(isPlatformBrowser(this.platformId)) {
       if (!this.rememberMeChecked) {
         this.email = sessionStorage.getItem('email') || '';

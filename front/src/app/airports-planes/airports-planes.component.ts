@@ -27,6 +27,8 @@ import { MatInputModule } from '@angular/material/input';
 import { error } from 'console';
 
 
+const HOME = '/home';
+
 @Component({
   selector: 'app-airports-planes',
   standalone: true,
@@ -143,6 +145,8 @@ export class AirportsPlanesComponent implements OnInit {
   ngOnInit(): void {
     
     this.currentRole = sessionStorage.getItem('roleType') || localStorage.getItem('roleType') || '';
+    this.currentRole !== 'ROLE_ADMIN' && this.currentRole !== 'ROLE_MANAGER' ? this.router.navigate([HOME]) : null;
+
     this.initializeForms();
 
     this.getPlanes();
@@ -327,10 +331,6 @@ export class AirportsPlanesComponent implements OnInit {
     } else {
       console.error('sessionStorage is not available.');
     }
-  }
-
-  updateAirport(airport: AirportViewModel) {
-
   }
 
 }

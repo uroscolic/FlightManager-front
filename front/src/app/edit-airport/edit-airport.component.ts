@@ -24,6 +24,7 @@ import { GenericConfirmDialogComponent } from '../shared/generic-confirm-dialog/
 
 
 const AIRPORTS_PLANES = '/airports&planes';
+const HOME = '/home';
 
 @Component({
   selector: 'app-edit-airport',
@@ -54,8 +55,12 @@ const AIRPORTS_PLANES = '/airports&planes';
 export class EditAirportComponent implements OnInit {
 
   subscriptions: Subscription[] = [];
+  currentRole: string = '';
+
   airportForm: FormGroup;
   airportForEditing!: AirportViewModel;
+
+
   newAirport: { oldName: string, newName: string, location: LocationViewModel } = {
     oldName: '',
     newName: '',
@@ -73,6 +78,11 @@ export class EditAirportComponent implements OnInit {
 
   ngOnInit() {
     const id = this.route.snapshot.params['id'];
+
+    this.currentRole = sessionStorage.getItem('roleType') || localStorage.getItem('roleType') || '';
+    this.currentRole !== 'ROLE_ADMIN' ? this.router.navigate([HOME]) : null;
+
+
     this.getAirportById(id);
     this.initializeForm();
   }

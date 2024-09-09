@@ -149,8 +149,8 @@ export class NavigationComponent {
           this.firstName = '';
           this.lastName = '';
           this.roleType = '';
-          this.routes = this.userRoutes;
-          this.router.navigate(['/navigation']);
+          this.routes = this.notLoggedInRoutes;
+          this.router.navigate(['/home']);
         }
         else {
           localStorage.removeItem('roleType');
@@ -163,8 +163,8 @@ export class NavigationComponent {
           this.firstName = '';
           this.lastName = '';
           this.roleType = '';
-          this.routes = this.userRoutes;
-          this.router.navigate(['/navigation']);
+          this.routes = this.notLoggedInRoutes;
+          this.router.navigate(['/home']);
         }
       }
     });

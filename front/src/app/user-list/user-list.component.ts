@@ -10,7 +10,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
 import { MatListModule } from '@angular/material/list';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { MatTableModule } from '@angular/material/table';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
@@ -24,7 +24,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatOptionModule } from '@angular/material/core';
 import { MatCardModule } from '@angular/material/card';
 
-
+const HOME = '/home';
 
 @Component({
   selector: 'app-user-list',
@@ -51,6 +51,7 @@ import { MatCardModule } from '@angular/material/card';
   ]
 })
 export class UserListComponent implements OnInit {
+
   displayedColumns: string[] = ['id', 'firstName', 'lastName', 'email', 'roleType', 'ban'];
   dataSource: MatTableDataSource<UserViewModel> = new MatTableDataSource<UserViewModel>([]);
   subscriptions: Subscription[] = [];
@@ -61,13 +62,15 @@ export class UserListComponent implements OnInit {
   currentRole: string = '';
   generatedPassword: string = '';
 
-  constructor(private dialog: MatDialog, private userService: UserService, private formBuilder: FormBuilder) { }
+  constructor(private dialog: MatDialog, private userService: UserService, private formBuilder: FormBuilder, private router: Router) { }
 
   managerForm: FormGroup;
 
   ngOnInit(): void {
+    
     this.currentRole = sessionStorage.getItem('roleType') || localStorage.getItem('roleType') || '';
-    this.currentRole === 'ROLE_ADMIN' ? this.getUsers() : this.getClients();
+    this.currentRole === 'ROLE_ADMIN' ? this.getUsers() : this.currentRole === 'ROLE_MANAGER' ? this.getClients() : this.router.navigate([HOME]);
+    
     this.initializeForms();
     this.managerForm.valueChanges.subscribe(() => {
       this.generatePassword();

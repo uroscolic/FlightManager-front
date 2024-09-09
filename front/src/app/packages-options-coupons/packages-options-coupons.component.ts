@@ -7,7 +7,7 @@ import { MatTableDataSource, MatTableModule } from '@angular/material/table';
 import { CouponViewModel } from '../shared/models/coupon.model';
 import { MatPaginator, MatPaginatorModule } from '@angular/material/paginator';
 import { MatSort, MatSortModule } from '@angular/material/sort';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
@@ -23,8 +23,9 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { OptionForPackageViewModel, OptionViewModel, PackageViewModel } from '../shared/models/flight-booking.model';
-import { get } from 'http';
-import e from 'express';
+
+
+const HOME = '/home';
 
 
 @Component({
@@ -94,6 +95,7 @@ export class PackagesOptionsCouponsComponent implements OnInit {
 
 
   subscriptions: Subscription[] = [];
+  currentRole: string = '';
   selectedItem: string = 'coupons';
   errorMessage!: string;
   addingFailed: boolean = false;
@@ -145,9 +147,13 @@ export class PackagesOptionsCouponsComponent implements OnInit {
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild(MatSort) sort!: MatSort;
 
-  constructor(private formBuilder: FormBuilder, private dialog: MatDialog, private flightBookingService: FlightBookingService) { }
+  constructor(private formBuilder: FormBuilder, private dialog: MatDialog, private flightBookingService: FlightBookingService, private router: Router) { }
 
   ngOnInit(): void {
+
+    this.currentRole = sessionStorage.getItem('roleType') || localStorage.getItem('roleType') || '';
+    this.currentRole !== 'ROLE_ADMIN' && this.currentRole !== 'ROLE_MANAGER' ? this.router.navigate([HOME]) : null;
+
 
     this.initializeForms();
 

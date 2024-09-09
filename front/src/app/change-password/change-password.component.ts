@@ -9,7 +9,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { NavigationComponent } from '../navigation/navigation.component';
 import { LoginComponent } from '../login/login.component';
 import { MatInputModule } from '@angular/material/input';
@@ -20,6 +20,10 @@ import { UserChangePasswordModel } from '../shared/models/user.model';
 import { GenericConfirmDialogComponent } from '../shared/generic-confirm-dialog/generic-confirm-dialog.component';
 import { MatDialog } from '@angular/material/dialog';
 import { Subscription } from 'rxjs';
+
+
+const HOME = '/home';
+
 
 @Component({
   selector: 'app-change-password',
@@ -48,6 +52,7 @@ import { Subscription } from 'rxjs';
 export class ChangePasswordComponent implements OnInit {
 
   firstName: string = '';
+  currentRole: string = '';
   changingPasswordFailed: boolean = false;
   changingPasswordSuccess: boolean = false;
 
@@ -69,13 +74,17 @@ export class ChangePasswordComponent implements OnInit {
   errorMessage!: string;
 
 
-  constructor(private dialog: MatDialog, private userService: UserService, private formBuilder: FormBuilder) { }
+  constructor(private dialog: MatDialog, private userService: UserService, private formBuilder: FormBuilder, private router: Router) { }
 
   changePasswordForm: FormGroup;
   subscriptions: Subscription[] = [];
 
 
   ngOnInit(): void {
+
+    this.currentRole = sessionStorage.getItem('roleType') || localStorage.getItem('roleType') || '';
+    this.currentRole !== 'ROLE_MANAGER' ? this.router.navigate([HOME]) : null;
+
     this.firstName = sessionStorage.getItem('firstName') || localStorage.getItem('firstName') || '';
 
 
