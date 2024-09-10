@@ -2,12 +2,20 @@ export class AirportViewModel{
     id: number;
     name: string;
     location: LocationViewModel;
+
+    constructor(id: number, name: string, location: LocationViewModel){
+        this.id = id;
+        this.name = name;
+        this.location = location;
+    }
 }
 
 export class AirportUpdateModel{
     oldName: string;
     newName: string;
     location: LocationViewModel;
+
+    
 }
 
 export class LocationViewModel{
@@ -15,6 +23,13 @@ export class LocationViewModel{
     country: string;
     city: string;
     shortName: string;
+
+    constructor(id: number, country: string, city: string, shortName: string){
+        this.id = id;
+        this.country = country;
+        this.city = city;
+        this.shortName = shortName;
+    }
 }
 
 export class PlaneViewModel{
@@ -23,6 +38,14 @@ export class PlaneViewModel{
     economySeats: number;
     businessSeats: number;
     firstClassSeats: number;
+
+    constructor(id: number, name: string, economySeats: number, businessSeats: number, firstClassSeats: number){
+        this.id = id;
+        this.name = name;
+        this.economySeats = economySeats;
+        this.businessSeats = businessSeats;
+        this.firstClassSeats = firstClassSeats;
+    }
 }
 
 export class OptionViewModel{
@@ -35,6 +58,12 @@ export class PackageViewModel{
     id: number;
     name: string;
     price: number;
+
+    constructor(id: number, name: string, price: number){
+        this.id = id;
+        this.name = name;
+        this.price = price;
+    }
 }
 
 export class OptionForPackageViewModel{
@@ -53,6 +82,13 @@ export class PassengerViewModel{
     firstName: string;
     lastName: string;
     email?: string;
+
+    constructor(id: number, firstName: string, lastName: string, email?: string){
+        this.id = id;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+    }
 }
 
 export class FlightViewModel{
@@ -67,6 +103,20 @@ export class FlightViewModel{
     availableEconomySeats: number;
     availableBusinessSeats: number;
     availableFirstClassSeats: number;
+
+    constructor(id: number, plane: PlaneViewModel, origin: AirportViewModel, destination: AirportViewModel, gate: string, departureTime: Date, arrivalTime: Date, price: number, availableEconomySeats: number, availableBusinessSeats: number, availableFirstClassSeats: number){
+        this.id = id;
+        this.plane = plane;
+        this.origin = origin;
+        this.destination = destination;
+        this.gate = gate;
+        this.departureTime = departureTime;
+        this.arrivalTime = arrivalTime;
+        this.price = price;
+        this.availableEconomySeats = availableEconomySeats;
+        this.availableBusinessSeats = availableBusinessSeats;
+        this.availableFirstClassSeats = availableFirstClassSeats;
+    }
 }
 
 export class FlightUpdateModel{
