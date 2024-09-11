@@ -72,9 +72,9 @@ export class OptionForPackageViewModel{
 }
 
 export enum Class {
-    Economy = "Economy",
-    Business = "Business",
-    FirstClass = "FirstClass"
+    ECONOMY = "ECONOMY",
+    BUSINESS = "BUSINESS",
+    FIRST = "FIRST"
 }
 
 export class PassengerViewModel{
@@ -137,5 +137,25 @@ export class TicketViewModel{
     flight: FlightViewModel;
     returnFlight?: FlightViewModel;
     totalPrice: number;
+
+}
+
+export class FlightSearchModel{
+    origin: AirportViewModel;
+    destination: AirportViewModel;
+    departureStart: Date;
+    arrivalEnd?: Date;
+    flightClass: Class;
+    passengers: number;
+    
+    constructor(origin: AirportViewModel, destination: AirportViewModel, departureStart: Date, flightClass: Class, passengers: number, arrivalEnd?: Date){
+        this.origin = origin;
+        this.destination = destination;
+        this.departureStart = departureStart;
+        this.arrivalEnd = arrivalEnd;
+        this.flightClass = flightClass;
+        this.passengers = passengers;
+    }
+   
 
 }
