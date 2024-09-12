@@ -10,12 +10,14 @@ import { ChangePasswordComponent } from './change-password/change-password.compo
 import { MyTicketsComponent } from './my-tickets/my-tickets.component';
 import { EditAirportComponent } from './edit-airport/edit-airport.component';
 import { EditFlightComponent } from './edit-flight/edit-flight.component';
+import { HomePageComponent } from './home-page/home-page.component';
+import { BookingPageComponent } from './booking-page/booking-page.component';
 
 export const routes: Routes = [
     {path: '', redirectTo : 'home', pathMatch: 'full'},
     {path: 'users', component: UserListComponent},
     {path : 'login' , component: LoginComponent},
-    {path : 'home', component: NavigationComponent},
+    {path : 'home', component: HomePageComponent},
     {path: 'packages&options&coupons', component: PackagesOptionsCouponsComponent},
     {path: 'airports&planes', component: AirportsPlanesComponent},
     {path: 'edit-airport/:id', component: EditAirportComponent},
@@ -24,5 +26,6 @@ export const routes: Routes = [
     {path: 'edit-flight/:id', component: EditFlightComponent},
     {path: 'change-password', component: ChangePasswordComponent},
     {path: 'tickets', component: MyTicketsComponent},
+    {path: 'book-flight', component: BookingPageComponent},
     {path: '**', redirectTo: 'home', pathMatch: 'full'}
 ];

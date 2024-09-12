@@ -1,0 +1,65 @@
+<app-navigation>
+
+  <body>
+    <div class="search-container">
+      <h2>Search Your Flight</h2>
+      <form [formGroup]="flightSearchForm">
+        <mat-form-field>
+          <mat-label>From</mat-label>
+          <mat-select formControlName="from">
+            <mat-option *ngFor="let airport of airports" [value]="airport">{{airport.location.city}} -
+              {{airport.location.country}} ({{airport.name}})</mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>To</mat-label>
+          <mat-select formControlName="to">
+            <mat-option *ngFor="let airport of airports" [value]="airport">{{airport.location.city}} -
+              {{airport.location.country}} ({{airport.name}}) </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Total Passengers</mat-label>
+          <input matInput type="number" formControlName="passengers" placeholder="Total Passengers">
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Date from</mat-label>
+          <input matInput [matDatepicker]="picker" formControlName="flightDate" placeholder="dd/mm/yyyy">
+          <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+          <mat-datepicker #picker></mat-datepicker>
+
+        </mat-form-field>
+
+
+        <!-- Return Date (Conditional) -->
+        <mat-form-field *ngIf="isReturn">
+          <mat-label>Return Date</mat-label>
+          <input matInput [matDatepicker]="returnPicker" formControlName="returnDate" placeholder="dd/mm/yyyy">
+          <mat-datepicker-toggle matSuffix [for]="returnPicker"></mat-datepicker-toggle>
+          <mat-datepicker #returnPicker></mat-datepicker>
+        </mat-form-field>
+
+        <mat-form-field>
+          <mat-label>Class</mat-label>
+          <mat-select formControlName="class">
+            <mat-option *ngFor="let class of getClasses()" [value]="class">{{class}} </mat-option>
+          </mat-select>
+        </mat-form-field>
+
+        <div>
+          <button mat-flat-button type="button" (click)="toggleReturn()">{{isReturn ? 'Single Way Flight' : 'Return Flight'}}</button>
+
+          <button mat-raised-button color="primary" (click)="onSearch()"
+            [disabled]="!flightSearchForm.valid || (isReturn && !flightSearchForm.get('returnDate')?.value)">Search</button>
+          <button mat-raised-button color="warn" (click)="onReset()">Reset</button>
+        </div>
+      </form>
+      <mat-error *ngIf="flightDoesntExist">No flights found for selected options</mat-error>
+
+    </div>
+    <img src="d.jpg">
+  </body>
+</app-navigation>

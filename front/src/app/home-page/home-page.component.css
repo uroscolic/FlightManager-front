@@ -1,0 +1,45 @@
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center horizontally */
+    justify-content: center; /* Center vertically if needed */
+    min-height: 100vh; /* Make sure the body takes up the full height of the viewport */
+    margin: 0;
+}
+
+
+.search-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 20px;
+    background-color: #0c3c64;
+    color: white;
+    border-radius: 8px;
+}
+
+mat-form-field {
+    margin: 10px;
+    width: 200px;
+}
+
+button {
+    margin: 10px;
+
+}
+
+
+button:focus {
+    outline: none;
+}
+
+button:disabled {
+    background-color: #797979;
+
+}
+
+img {
+    margin-top: 20px; /* Space between the form and the image */
+    max-width: 100%; /* Ensure the image is responsive */
+    height: auto;
+}

@@ -143,12 +143,12 @@ export class TicketViewModel{
 export class FlightSearchModel{
     origin: AirportViewModel;
     destination: AirportViewModel;
-    departureStart: Date;
-    arrivalEnd?: Date;
+    departureStart: Date | null;
+    arrivalEnd: Date | null;
     flightClass: Class;
     passengers: number;
     
-    constructor(origin: AirportViewModel, destination: AirportViewModel, departureStart: Date, flightClass: Class, passengers: number, arrivalEnd?: Date){
+    constructor(origin: AirportViewModel, destination: AirportViewModel, departureStart: Date | null, flightClass: Class, passengers: number, arrivalEnd: Date| null){
         this.origin = origin;
         this.destination = destination;
         this.departureStart = departureStart;
