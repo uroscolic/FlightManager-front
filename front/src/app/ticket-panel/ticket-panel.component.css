@@ -43,7 +43,7 @@ mat-accordion mat-expansion-panel mat-expansion-panel-header {
 
 
 mat-accordion mat-expansion-panel .mat-expansion-panel-body {
-  background-color: white;
+  background-color: rgb(255, 255, 255);
   padding-top: 5px;
 }
 
@@ -63,4 +63,10 @@ mat-accordion mat-expansion-panel .mat-expansion-panel-body {
 
 .no-text {
   color: red;
+}
+
+.highlight {
+  border: 2px solid #ffaf81;
+  border-radius: 5px;
+  transition: border 2s ease;
 }

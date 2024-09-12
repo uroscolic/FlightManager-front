@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { PageableResponse } from '../models/pageableResponse.model';
 
 import { UtilityService } from './utility.service';
-import { AirportUpdateModel, FlightUpdateModel, FlightViewModel, LocationViewModel, OptionForPackageViewModel, OptionViewModel, PackageViewModel, PassengerViewModel, PlaneViewModel, TicketViewModel } from '../models/flight-booking.model';
+import { AirportUpdateModel, FlightSearchModel, FlightUpdateModel, FlightViewModel, LocationViewModel, OptionForPackageViewModel, OptionViewModel, PackageViewModel, PassengerViewModel, PlaneViewModel, TicketViewModel } from '../models/flight-booking.model';
 import { CouponViewModel } from '../models/coupon.model';
 import { AirportViewModel } from '../models/flight-booking.model';
 
@@ -67,6 +67,16 @@ export class FlightBookingService {
     );
   }
 
+  getFilteredFlights(request: FlightSearchModel): Observable<PageableResponse<FlightViewModel[]>> {
+
+    const headers = this.utilityService.getHeaders();
+
+    return this.http.post<PageableResponse<FlightViewModel[]>>(
+      this.url + FLIGHT + "/search", request,
+      { headers }
+    );
+  }
+
   getOptions(): Observable<PageableResponse<OptionViewModel[]>> {
 
     const headers = this.utilityService.getHeaders();
@@ -86,6 +96,13 @@ export class FlightBookingService {
       { headers }
     );
 
+  }
+
+  getCouponByCouponCode(couponCode: string): Observable<CouponViewModel> {
+
+    return this.http.get<CouponViewModel>(
+      this.url + COUPON + `/${couponCode}`
+    );
   }
 
   getPackages(): Observable<PageableResponse<PackageViewModel[]>> {
@@ -147,6 +164,18 @@ export class FlightBookingService {
     return this.http.get<PageableResponse<PassengerViewModel[]>>(
       this.url + PASSENGER,
       { headers }
+    );
+  }
+
+  getPassengerByEmail(email: string): Observable<PassengerViewModel> {
+
+    const headers = this.utilityService.getHeaders();
+    const params = new HttpParams().set('email', email);
+
+
+    return this.http.get<PassengerViewModel>(
+      this.url + PASSENGER,
+      { headers, params }
     );
   }
 
@@ -230,6 +259,7 @@ export class FlightBookingService {
       { headers }
     );
   }
+
   addPlane(request: PlaneViewModel): Observable<PlaneViewModel> {
 
     const headers = this.utilityService.getHeaders();
@@ -265,14 +295,12 @@ export class FlightBookingService {
 
   addPassenger(request: PassengerViewModel): Observable<PassengerViewModel> {
 
-    const headers = this.utilityService.getHeaders();
-
     return this.http.post<PassengerViewModel>(
       this.url + PASSENGER,
-      request,
-      { headers }
+      request
     );
   }
+
   addLocation(request: LocationViewModel): Observable<LocationViewModel> {
 
     const headers = this.utilityService.getHeaders();
@@ -286,12 +314,9 @@ export class FlightBookingService {
 
   addTicket(request: TicketViewModel): Observable<TicketViewModel> {
 
-    const headers = this.utilityService.getHeaders();
-
     return this.http.post<TicketViewModel>(
       this.url + TICKET,
-      request,
-      { headers }
+      request
     );
   }
 

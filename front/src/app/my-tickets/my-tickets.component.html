@@ -5,7 +5,7 @@
             <p>You have no tickets yet.</p>
         </ng-container>
         <ng-container *ngFor="let ticket of allTickets()">
-            <app-ticket-panel [ticket]="ticket" (cancelTicket)="cancelTicket($event)"></app-ticket-panel>
+            <app-ticket-panel [newTicketIds]="ticketIds" [ticket]="ticket" (cancelTicket)="cancelTicket($event)"></app-ticket-panel>
         </ng-container>
         <div>
 

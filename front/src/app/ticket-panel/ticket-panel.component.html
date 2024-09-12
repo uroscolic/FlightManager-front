@@ -1,6 +1,6 @@
 <mat-accordion>
-    <mat-expansion-panel>
-        <mat-expansion-panel-header>
+    <mat-expansion-panel [ngClass]="{'highlight': isTicketHighlighted(ticket.id)}">
+        <mat-expansion-panel-header >
             <mat-panel-title>
                 <mat-icon>flight</mat-icon>
                 <!-- Display the time before the expansion icon -->

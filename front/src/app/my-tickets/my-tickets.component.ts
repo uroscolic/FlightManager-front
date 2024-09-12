@@ -2,7 +2,6 @@ import { CommonModule, isPlatformBrowser } from '@angular/common';
 import { Component, Inject, OnInit, PLATFORM_ID } from '@angular/core';
 import { ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
-import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 import { MatPaginatorModule } from '@angular/material/paginator';
@@ -10,7 +9,7 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatSortModule } from '@angular/material/sort';
 import { MatTableModule } from '@angular/material/table';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { Router, RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet, ActivatedRoute } from '@angular/router';
 import { NavigationComponent } from '../navigation/navigation.component';
 import { LoginComponent } from '../login/login.component';
 import { MatInputModule } from '@angular/material/input';
@@ -56,6 +55,7 @@ const HOME = '/home';
 export class MyTicketsComponent implements OnInit {
 
   currentRole: string = '';
+  ticketIds: number[] = [];
   numberOfBookings: number = 0;
   subscriptions: Subscription[] = [];
   tickets: TicketViewModel[] = [];
@@ -64,9 +64,16 @@ export class MyTicketsComponent implements OnInit {
 
   email: string = '';
   constructor(@Inject(PLATFORM_ID) private platformId: Object, private flightBookingService: FlightBookingService, 
-  private userService: UserService, private dialog: MatDialog, private router: Router) { }
+  private userService: UserService, private dialog: MatDialog, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
+    this.route.queryParamMap.subscribe(params => {
+      const ids = params.get('ticketIds');
+      if (ids) {
+        this.ticketIds = ids.split(',').map(id => +id);
+        console.log(this.ticketIds);
+      }
+    });
 
     this.currentRole = sessionStorage.getItem('roleType') || localStorage.getItem('roleType') || '';
     this.currentRole !== 'ROLE_CLIENT' ? this.router.navigate([HOME]) : null;
@@ -86,7 +93,6 @@ export class MyTicketsComponent implements OnInit {
 
       this.subscriptions.push(this.flightBookingService.getTickets(this.email).subscribe(res => {
         this.tickets = res.content;
-        console.log(this.tickets);
       }));
 
       this.subscriptions.push(this.userService.getNumberOfBookingsByEmail(this.email).subscribe(res => {
