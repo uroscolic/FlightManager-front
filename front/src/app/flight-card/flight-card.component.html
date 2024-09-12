@@ -1,0 +1,40 @@
+<mat-card class="flight-result">
+    <div class="airline-info">
+        <img src="d.jpg" alt="Airline Logo" class="airline-logo">
+        <div class="airline-details">
+            <mat-icon class="star-icon">flight_takeoff</mat-icon>
+        </div>
+        <div class="flight-class">{{flightClass}}</div>
+    </div>
+
+    <div class="flight-details-time">
+        <div class="flight-time">
+            <span class="time">{{flight.departureTime | date:'HH:mm'}}</span>
+        </div>
+        <div class="horizontal-line"></div>
+        <div class="flight-duration">
+            <span>{{flightDuration}}</span>
+        </div>
+        <div class="horizontal-line"></div>
+        <div class="flight-time">
+            <span class="time">{{flight.arrivalTime | date:'HH:mm'}}</span>
+        </div>
+    </div>
+
+    <div class="flight-details-location">
+        <div class="location">
+            <span class="location">{{flight.origin.location.shortName}} ({{flight.origin.name}})</span>
+        </div>
+
+        <div class="location">
+            <span class="location">{{flight.destination.location.shortName}} ({{flight.destination.name}})</span>
+        </div>
+    </div>
+
+    <div class="flight-price">
+        <h3>{{flight.price | currency}}</h3>
+    </div>
+
+    <button mat-raised-button [ngClass]="getButtonClass()" color="primary" (click)="onSelect()">{{isSelected? 'Selected' : 'Select'}}</button>
+
+</mat-card>

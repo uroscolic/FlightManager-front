@@ -1,0 +1,118 @@
+.flight-result {
+    width: 350px;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    border-radius: 8px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+  }
+
+  .flight-result button {
+    transition: background-color 0.3s;
+    outline: none;
+  }
+  
+  .flight-result button.selected {
+    background-color: #2baf41; 
+    color: white;
+  }
+  
+  .airline-info {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 20px;
+  }
+  
+  .airline-logo {
+    width: 50px;
+    height: 50px;
+    margin-right: 10px;
+  }
+  
+  .flight-class {
+    font-weight: 600;
+    color: grey;
+    font-size: 14px;
+  }
+  
+  .flight-details-time {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 15px;
+  }
+
+  .flight-details-location {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 5px;
+  }
+
+  
+  .flight-time {
+    text-align: center;
+    flex: 1;
+  }
+  
+  .flight-time .time {
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .location {
+    font-size: 10px;
+    color: grey;
+    text-align: center;
+  }
+  
+  .flight-duration {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    font-weight: bold;
+  }
+  
+  .horizontal-line {
+    width: 50px;
+    height: 1px;
+    background-color: #ccc;
+    margin: 0 10px;
+  }
+  
+  .flight-price {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .flight-price h3 {
+    margin: 0;
+    font-size: 24px;
+    font-weight: bold;
+    color: #2baf41;
+  }
+  
+  /* .flight-features {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+    margin-bottom: 20px;
+  }
+  
+  .flight-features .feature {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+  }
+  
+  .flight-features mat-icon {
+    margin-right: 5px;
+    color: grey;
+  }
+   */
