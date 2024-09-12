@@ -110,7 +110,7 @@
               <mat-select formControlName="options" required multiple="true">
                 <mat-option *ngFor="let option of dataSourceOption.data" [value]="option"
                   (onSelectionChange)="toggleOptionSelection(option)">
-                  {{ option.name }} ({{ option.price }}€)
+                  {{ option.name }} ({{ option.price | currency }})
                 </mat-option>
               </mat-select>
               <mat-error *ngIf="getForm().get('options')?.hasError('required')">

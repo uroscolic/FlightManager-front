@@ -12,6 +12,7 @@ import { EditAirportComponent } from './edit-airport/edit-airport.component';
 import { EditFlightComponent } from './edit-flight/edit-flight.component';
 import { HomePageComponent } from './home-page/home-page.component';
 import { BookingPageComponent } from './booking-page/booking-page.component';
+import { FilteredFlightsComponent } from './filtered-flights/filtered-flights.component';
 
 export const routes: Routes = [
     {path: '', redirectTo : 'home', pathMatch: 'full'},
@@ -23,6 +24,7 @@ export const routes: Routes = [
     {path: 'edit-airport/:id', component: EditAirportComponent},
     {path: 'tickets&passengers', component: TicketsPassengersComponent},
     {path: 'flights&locations', component: FlightsLocationsComponent},
+    {path: 'filtered-flights', component: FilteredFlightsComponent},
     {path: 'edit-flight/:id', component: EditFlightComponent},
     {path: 'change-password', component: ChangePasswordComponent},
     {path: 'tickets', component: MyTicketsComponent},

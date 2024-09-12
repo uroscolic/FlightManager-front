@@ -1,0 +1,27 @@
+<app-navigation>
+    <div class="container">
+        <ng-container *ngFor="let flight of flights">
+            <app-flight-card [flight]="flight" flightClass="Economy">
+
+            </app-flight-card>
+        </ng-container>
+    </div>
+    <div class="container">
+        <div class="form-container add">
+
+            <form (ngSubmit)="addPackages()" [formGroup]="packageForm">
+                <div class="lista">
+                    <mat-form-field>
+                        <mat-label>Packages</mat-label>
+                        <mat-select [(value)]="selectedPackage">
+                            <mat-option *ngFor="let _package of packages" [value]="_package">
+                                {{ _package.name }} ({{getOptionsAsString(_package.id)}}) - {{ _package.price | currency }}
+                            </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+                <button mat-raised-button color="primary" type="submit">Add Packages</button>
+            </form>
+        </div>
+    </div>
+</app-navigation>

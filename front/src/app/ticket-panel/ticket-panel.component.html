@@ -12,7 +12,7 @@
             </div>
             <div class="mat-expansion-panel-header-description">
                 <!-- Display the ticket ID -->
-                {{ ticket.totalPrice }}€
+                {{ ticket.totalPrice | currency}}
             </div>
             
             <button mat-icon-button class="mat-expansion-panel-header-button" (click)="onCancelTicket(ticket.id, $event)">
@@ -33,7 +33,7 @@
                 <p>Seat Number: {{ticket.seatNumber}}</p>
                 <p>Gate: {{ticket.flight.gate}}</p>
                 <p>Class: {{ticket.ticketClass}}</p>
-                <p>Package: {{ticket._package.name}} ({{ticket._package.price}}€)</p>
+                <p>Package: {{ticket._package.name}} ({{ticket._package.price | currency}})</p>
 
                 <p *ngIf="!ticket._return" ngClass='no-text'>
                     {{ ticket._return ? 'Return Flight' : 'Single Way Flight' }}
@@ -51,7 +51,7 @@
                 <p>Seat Number: {{ticket.seatNumber}}</p>
                 <p>Gate: {{ticket.returnFlight?.gate}}</p>
                 <p>Class: {{ticket.ticketClass}}</p>
-                <p>Package: {{ticket._package.name}} ({{ticket._package.price}}€)</p>
+                <p>Package: {{ticket._package.name}} ({{ticket._package.price | currency}})</p>
 
             </div>
         </div>

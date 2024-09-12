@@ -7,6 +7,12 @@
         <ng-container *ngFor="let ticket of allTickets()">
             <app-ticket-panel [newTicketIds]="ticketIds" [ticket]="ticket" (cancelTicket)="cancelTicket($event)"></app-ticket-panel>
         </ng-container>
+        <nav class="pagination">
+            <button mat-raised-button (click)="previousPage()" [disabled]="currentPage === 0">Previous</button>
+            <span>Page {{currentPage + 1}}</span>
+            <button mat-raised-button (click)="nextPage()" [disabled]="!hasMoreTickets">Next</button>
+        </nav>
+
         <div>
 
         <mat-error *ngIf="cancelingFailed" color="primary">

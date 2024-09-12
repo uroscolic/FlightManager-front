@@ -67,7 +67,7 @@ export class FlightsLocationsComponent implements OnInit, AfterViewInit {
     gate: 'Gate',
     departureTime: 'Departure Time',
     arrivalTime: 'Arrival Time',
-    price: 'Price (€)',
+    price: 'Price ($)',
     availableEconomySeats: 'Available Economy Seats',
     availableBusinessSeats: 'Available Business Seats',
     availableFirstClassSeats: 'Available First Class Seats',

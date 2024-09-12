@@ -59,6 +59,9 @@ export class MyTicketsComponent implements OnInit {
   numberOfBookings: number = 0;
   subscriptions: Subscription[] = [];
   tickets: TicketViewModel[] = [];
+  currentPage: number = 0;
+  pageSize: number = 20;
+  hasMoreTickets: boolean = true;
   errorMessage!: string;  
   cancelingFailed: boolean = false;
 
@@ -91,8 +94,9 @@ export class MyTicketsComponent implements OnInit {
   getTickets() {
     if (typeof window !== 'undefined' && window.sessionStorage) {
 
-      this.subscriptions.push(this.flightBookingService.getTickets(this.email).subscribe(res => {
+      this.subscriptions.push(this.flightBookingService.getTickets(this.email, this.currentPage, this.pageSize).subscribe(res => {
         this.tickets = res.content;
+        this.hasMoreTickets = res.content.length === this.pageSize;
       }));
 
       this.subscriptions.push(this.userService.getNumberOfBookingsByEmail(this.email).subscribe(res => {
@@ -142,5 +146,18 @@ export class MyTicketsComponent implements OnInit {
     });
 
     
+  }
+  previousPage(): void {
+    if (this.currentPage > 0) {
+      this.currentPage--;
+      this.getTickets();
+    }
+  }
+
+  nextPage(): void {
+    if (this.hasMoreTickets) {
+      this.currentPage++;
+      this.getTickets();
+    }
   }
 }

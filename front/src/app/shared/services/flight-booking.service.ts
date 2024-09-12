@@ -179,10 +179,12 @@ export class FlightBookingService {
     );
   }
 
-  getTickets(ownerEmail: string): Observable<PageableResponse<TicketViewModel[]>> {
+  getTickets(ownerEmail: string, currentPage: number, pageSize: number): Observable<PageableResponse<TicketViewModel[]>> {
 
     const headers = this.utilityService.getHeaders();
-    const params = new HttpParams().set('ownerEmail', ownerEmail);
+    const params = new HttpParams().set('ownerEmail', ownerEmail)
+    .set('page', currentPage)
+    .set('size', pageSize);
 
     return this.http.get<PageableResponse<TicketViewModel[]>>(
       this.url + TICKET,

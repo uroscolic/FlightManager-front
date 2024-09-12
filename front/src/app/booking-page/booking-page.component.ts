@@ -59,7 +59,7 @@ const TICKETS = '/tickets';
 export class BookingPageComponent implements OnInit {
 
   ticketIds: number[] = [];
-  subscribers: Subscription[] = [];
+  subscriptions: Subscription[] = [];
   currentRole: string = '';
   tickets: TicketViewModel[] = [];
   ticket: TicketViewModel = new TicketViewModel();
@@ -89,7 +89,6 @@ export class BookingPageComponent implements OnInit {
     this.ticket.ticketClass = Class.ECONOMY;
     this.ticket._package = new PackageViewModel(1, 'Package 1', 10);
     this.ticket.flight = new FlightViewModel(1, new PlaneViewModel(1, 'Plane 1', 11, 11, 11), new AirportViewModel(1, 'Airport 1', new LocationViewModel(1, 'Serbia', 'Belgrade', 'SRB-BG')), new AirportViewModel(2, 'Airport 2', new LocationViewModel(2, 'Serbia', 'Novi Sad', 'SRB-NS')), 'A1', new Date('2024-10-11 18:30:49.476908'), new Date('2024-10-11 19:30:49.476908'), 100, 11, 11, 11);
-    console.log(this.ticket);
     // this.ticket.returnFlight = new FlightViewModel(2, new PlaneViewModel(1, 'Plane 1', 11, 11, 11), new AirportViewModel(2, 'Airport 2', new LocationViewModel(2, 'Serbia', 'Novi Sad', 'SRB-NS')), new AirportViewModel(1, 'Airport 1', new LocationViewModel(1, 'Serbia', 'Belgrade', 'SRB-BG')), 'Gate 1', new Date(	), new Date(), 100, 100, 100, 100);
 
     // this.ticket2.id = 1;
@@ -103,7 +102,6 @@ export class BookingPageComponent implements OnInit {
     // this.ticket2.flight = new FlightViewModel(3, new PlaneViewModel(1, 'Plane 1', 10, 10, 10), new AirportViewModel(0, 'Airport 1', new LocationViewModel(1, 'Serbia', 'Novi Sad', 'SRB-NS')), new AirportViewModel(0, 'Airport 2', new LocationViewModel(2, 'Serbia', 'Belgrade', 'SRB-BG')), 'Gate 1', new Date(), new Date(), 100, 100, 100, 100);
 
 
-    this.tickets.push(this.ticket);
     this.tickets.push(this.ticket);
 
     this.currentRole = sessionStorage.getItem('roleType') || localStorage.getItem('roleType') || '';
@@ -129,7 +127,7 @@ export class BookingPageComponent implements OnInit {
   }
 
   getCouponFromCouponCode(couponCode: string, ticket: TicketViewModel): void {
-    this.subscribers.push(this.flightBookingService.getCouponByCouponCode(couponCode).subscribe(
+    this.subscriptions.push(this.flightBookingService.getCouponByCouponCode(couponCode).subscribe(
       (res) => {
         if (res) {
           this.discountPercentage = res.discount;
@@ -159,7 +157,7 @@ export class BookingPageComponent implements OnInit {
         let ticketsProcessed = 0;
   
         this.tickets.forEach(ticket => {
-          this.subscribers.push(this.flightBookingService.addPassenger(ticket.passenger).subscribe(
+          this.subscriptions.push(this.flightBookingService.addPassenger(ticket.passenger).subscribe(
             (passengerRes) => {
               if (passengerRes) {
                 ticket.passenger.id = passengerRes.id;
@@ -172,7 +170,7 @@ export class BookingPageComponent implements OnInit {
             (error) => {
               const email = ticket.passenger.email;
               if (email) {
-                this.subscribers.push(this.flightBookingService.getPassengerByEmail(email).subscribe(
+                this.subscriptions.push(this.flightBookingService.getPassengerByEmail(email).subscribe(
                   (res) => {
                     if (res) {
                       ticket.passenger.id = res.id;
@@ -192,7 +190,7 @@ export class BookingPageComponent implements OnInit {
   }
   
   bookTicket(ticket: TicketViewModel, callback: () => void) {
-    this.subscribers.push(this.flightBookingService.addTicket(ticket).subscribe(
+    this.subscriptions.push(this.flightBookingService.addTicket(ticket).subscribe(
       (res) => {
         if (res) {
           ticket.id = res.id;

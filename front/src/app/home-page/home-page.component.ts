@@ -8,20 +8,19 @@ import { NavigationComponent } from '../navigation/navigation.component';
 import { MatSortModule } from '@angular/material/sort';
 import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatTableModule } from '@angular/material/table';
-import { RouterOutlet } from '@angular/router';
+import { Router, RouterOutlet } from '@angular/router';
 import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
-import { CommonModule, DatePipe } from '@angular/common';
+import { CommonModule } from '@angular/common';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatNativeDateModule, MAT_DATE_LOCALE } from '@angular/material/core';
 import { AirportViewModel, Class, FlightSearchModel, FlightViewModel, LocationViewModel } from '../shared/models/flight-booking.model';
 import { Subscription } from 'rxjs';
 import { FlightBookingService } from '../shared/services/flight-booking.service';
 import { MatSpinner} from '@angular/material/progress-spinner';
-import { SourceTextModule } from 'vm';
 
 @Component({
   selector: 'app-home-page',
@@ -49,8 +48,7 @@ import { SourceTextModule } from 'vm';
     MatSpinner
   ],
   templateUrl: './home-page.component.html',
-  styleUrl: './home-page.component.css',
-  providers: [DatePipe]
+  styleUrl: './home-page.component.css'
 })
 export class HomePageComponent implements OnInit {
   flightSearchForm: FormGroup;
@@ -67,7 +65,7 @@ export class HomePageComponent implements OnInit {
   flightsForReturn: FlightViewModel[] = [];
 
 
-  constructor(private fb: FormBuilder, private datePipe: DatePipe, private flightBookingService: FlightBookingService) { }
+  constructor(private fb: FormBuilder, private flightBookingService: FlightBookingService, private router: Router) { }
 
   ngOnInit(): void {
     this.getAirports();
@@ -153,7 +151,6 @@ export class HomePageComponent implements OnInit {
             }
   
             console.log(this.flightsForReturn + "  111");
-  
             
             if (this.isReturn) {
               const flightSearchModelReturn = new FlightSearchModel(this.to, this.from, null, this.class, this.passengers, this.toDate);
@@ -170,9 +167,13 @@ export class HomePageComponent implements OnInit {
                     this.flightsForReturn.push(...returnRes.content);
                   }
                   
-
                   console.log(this.flightsForReturn + "  222");
                   resolve(this.flightsForReturn);
+                  if(this.flightsForReturn.length > 1){
+                    const flightIds = this.flightsForReturn.map(flight => flight.id).join(',');
+                    this.router.navigate(['/filtered-flights'], { queryParams: { flights: flightIds } });
+                  }
+                  
                 }, error => {
                   reject(error); 
                 })
@@ -180,6 +181,10 @@ export class HomePageComponent implements OnInit {
             } else {
               console.log(this.flightsForReturn + "  333");
               resolve(this.flightsForReturn);
+              if(this.flightsForReturn.length > 0){
+                const flightIds = this.flightsForReturn.map(flight => flight.id).join(',');
+                this.router.navigate(['/filtered-flights'], { queryParams: { flights: flightIds } });
+              }
             }
           }, error => {
             reject(error); 

@@ -1,9 +1,28 @@
-h3{
+h3 {
     text-align: center;
     margin-top: 20px;
 }
 
-mat-error{
+mat-error {
     font-size: 12px;
     margin-top: 4px;
+}
+
+.container {
+    margin-top: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.pagination {
+    justify-content: center;
+    align-items: baseline;
+    justify-items: center;
+    margin-top: 20px;
+
+}
+
+button {
+    margin: 0 10px 0 10px;
 }

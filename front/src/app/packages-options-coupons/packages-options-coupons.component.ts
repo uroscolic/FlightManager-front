@@ -68,7 +68,7 @@ export class PackagesOptionsCouponsComponent implements OnInit {
     active: 'Active',
     id: 'ID',
     name: 'Name',
-    price: 'Price (€)',
+    price: 'Price ($)',
     options: 'Options'
   };
 
@@ -112,7 +112,7 @@ export class PackagesOptionsCouponsComponent implements OnInit {
 
   optionFields = [
     { label: 'Name', name: 'name', type: 'text' },
-    { label: 'Price (€)', name: 'price', type: 'number' },
+    { label: 'Price ($)', name: 'price', type: 'number' },
   ];
 
   packageFields = [
@@ -288,7 +288,6 @@ export class PackagesOptionsCouponsComponent implements OnInit {
         this.getOptionsForPackage(_package);
       }
     }));
-
   }
 
   toggleCouponStatus(coupon: CouponViewModel) {
