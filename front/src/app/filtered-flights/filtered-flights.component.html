@@ -43,36 +43,42 @@
                 </form>
 
                 <form (ngSubmit)="addPassengers()" [formGroup]="passengerForm">
-                    <mat-form-field appearance="fill">
-                        <mat-label>First Name</mat-label>
-                        <input matInput formControlName="firstName" />
-                        <mat-error *ngIf="hasFirstNameError('required')">
+                    <div formArrayName="passengers">
+                      <div *ngFor="let passenger of passengersArray.controls; let i = index" [formGroupName]="i">
+                        <span class="title">
+                            {{ i === 0 ? 'Owner' : 'Passenger' }} 
+                            <ng-container *ngIf="i !== 0"> {{ i + 1 }} </ng-container>
+                          </span>                        
+                          <mat-form-field appearance="fill">
+                          <mat-label>First Name</mat-label>
+                          <input matInput formControlName="firstName" />
+                          <mat-error *ngIf="hasFirstNameError(i, 'required')">
                             First name is required.
-                        </mat-error>
-                    </mat-form-field>
-
-                    <mat-form-field appearance="fill">
-                        <mat-label>Last Name</mat-label>
-                        <input matInput formControlName="lastName" />
-                        <mat-error *ngIf="hasLastNameError('required')">
+                          </mat-error>
+                        </mat-form-field>
+                  
+                        <mat-form-field appearance="fill">
+                          <mat-label>Last Name</mat-label>
+                          <input matInput formControlName="lastName" />
+                          <mat-error *ngIf="hasLastNameError(i, 'required')">
                             Last name is required.
-                        </mat-error>
-                    </mat-form-field>
-
-                    <mat-form-field appearance="fill">
-                        <mat-label>Email</mat-label>
-                        <input matInput formControlName="email" />
-                        <mat-error *ngIf="hasEmailError('required')">
+                          </mat-error>
+                        </mat-form-field>
+                  
+                        <mat-form-field appearance="fill">
+                          <mat-label>Email</mat-label>
+                          <input matInput formControlName="email" />
+                          <mat-error *ngIf="hasEmailError(i, 'required')">
                             Email is required.
-                        </mat-error>
-                        <mat-error *ngIf="hasEmailError('email')">
+                          </mat-error>
+                          <mat-error *ngIf="hasEmailError(i, 'email')">
                             Invalid email format.
-                        </mat-error>
-                    </mat-form-field>
-
-                </form>
-
-                <button mat-raised-button color="primary" type="submit">Confirm</button>
+                          </mat-error>
+                        </mat-form-field>
+                      </div>
+                    </div>
+                    <button mat-raised-button color="primary" type="submit">Confirm</button>
+                  </form>
 
             </div>
         </div>

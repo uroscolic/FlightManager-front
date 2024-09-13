@@ -16,6 +16,10 @@ mat-error {
     margin-top: 4px;
 }
 
+span {
+   margin-bottom: 20px;
+}
+
 .container {
     margin-top: 20px;
     display: flex;
@@ -59,10 +63,8 @@ button {
     outline: none;
   }
   
-
-  
   mat-form-field {
     width: 100%;
     max-width: 600px;
-    margin: 5px;
+    margin: 8px;
   }

@@ -1,6 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit, QueryList, ViewChildren } from '@angular/core';
-import { Form, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { Form, FormArray, FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
@@ -92,6 +92,7 @@ export class FilteredFlightsComponent implements OnInit{
 
     this.initializeForm();
     this.getPackages();
+    this.initializePassengerForms(this.passengerCount);
     this.groupFlights();
   }
 
@@ -101,10 +102,21 @@ export class FilteredFlightsComponent implements OnInit{
     });
 
     this.passengerForm = this.formBuilder.group({
-      firstName: ['', [Validators.required,Validators.pattern('^[a-zA-Z]+$')]],
-      lastName: ['', [Validators.required, Validators.pattern('^[a-zA-Z]+$')]],
-      email: ['', [Validators.required, Validators.email]],
+      passengers: this.formBuilder.array([])  
     });
+  }
+
+  initializePassengerForms(numberOfPassengers: number) {
+    const passengerArray = this.passengersArray;
+    passengerArray.clear(); // Clear existing forms
+  
+    for (let i = 0; i < numberOfPassengers; i++) {
+      passengerArray.push(this.formBuilder.group({
+        firstName: ['', [Validators.required, Validators.pattern('^[a-zA-Z]+$')]],
+        lastName: ['', [Validators.required, Validators.pattern('^[a-zA-Z]+$')]],
+        email: ['', [Validators.required, Validators.email]],
+      }));
+    }
   }
 
   getPackages() {
@@ -117,6 +129,11 @@ export class FilteredFlightsComponent implements OnInit{
     }));
 
   }
+
+  get passengersArray(): FormArray {
+    return this.passengerForm.get('passengers') as FormArray;
+  }
+  
 
   selectRegularFlight(flightCard: FlightCardComponent) {
     this.flightCards.forEach(card => {
@@ -192,31 +209,30 @@ selectReturnFlight(flightCard: FlightCardComponent) {
     return options ? options.map(option => option.name).join(', ') : '';
   }
 
+  getFirstNameControl(index: number) {
+    return this.passengersArray.at(index).get('firstName');
+  }
   
-  getEmailControl() {
-    return this.passengerForm.get('email');
-  }
-
-  hasEmailError(error: string): boolean {
-    const control = this.getEmailControl();
+  hasFirstNameError(index: number, error: string): boolean {
+    const control = this.getFirstNameControl(index);
     return control ? control.hasError(error) : false;
   }
-
-  getFirstNameControl() {
-    return this.passengerForm.get('firstName');
+  
+  getLastNameControl(index: number) {
+    return this.passengersArray.at(index).get('lastName');
   }
-
-  hasFirstNameError(error: string): boolean {
-    const control = this.getFirstNameControl();
+  
+  hasLastNameError(index: number, error: string): boolean {
+    const control = this.getLastNameControl(index);
     return control ? control.hasError(error) : false;
   }
-
-  getLastNameControl() {
-    return this.passengerForm.get('lastName');
+  
+  getEmailControl(index: number) {
+    return this.passengersArray.at(index).get('email');
   }
-
-  hasLastNameError(error: string): boolean {
-    const control = this.getLastNameControl();
+  
+  hasEmailError(index: number, error: string): boolean {
+    const control = this.getEmailControl(index);
     return control ? control.hasError(error) : false;
   }
 
