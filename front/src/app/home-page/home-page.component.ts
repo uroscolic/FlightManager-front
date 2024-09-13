@@ -51,6 +51,7 @@ import { MatSpinner} from '@angular/material/progress-spinner';
   styleUrl: './home-page.component.css'
 })
 export class HomePageComponent implements OnInit {
+  
   flightSearchForm: FormGroup;
   isReturn = false;
   airports: AirportViewModel[] = []
@@ -133,14 +134,11 @@ export class HomePageComponent implements OnInit {
         this.toDate = this.flightSearchForm.get('returnDate')?.value;
         this.class = this.flightSearchForm.get('class')?.value as Class;
         this.passengers = this.flightSearchForm.get('passengers')?.value;
-        
-        console.log(this.from, this.to, this.fromDate, this.toDate, this.class, this.passengers);
-  
+          
         const flightSearchModel = new FlightSearchModel(this.from, this.to, this.fromDate, this.class, this.passengers, null);
   
         this.subscriptions.push(
           this.flightBookingService.getFilteredFlights(flightSearchModel).subscribe(res => {
-            console.log(res);
   
             if (res.content.length === 0) {
               this.flightDoesntExist = true;
@@ -150,14 +148,12 @@ export class HomePageComponent implements OnInit {
               this.flightsForReturn = res.content;
             }
   
-            console.log(this.flightsForReturn + "  111");
             
             if (this.isReturn) {
               const flightSearchModelReturn = new FlightSearchModel(this.to, this.from, null, this.class, this.passengers, this.toDate);
   
               this.subscriptions.push(
                 this.flightBookingService.getFilteredFlights(flightSearchModelReturn).subscribe(returnRes => {
-                  console.log(returnRes);
   
                   if (returnRes.content.length === 0) {
                     this.flightDoesntExist = true;
@@ -167,11 +163,9 @@ export class HomePageComponent implements OnInit {
                     this.flightsForReturn.push(...returnRes.content);
                   }
                   
-                  console.log(this.flightsForReturn + "  222");
                   resolve(this.flightsForReturn);
                   if(this.flightsForReturn.length > 1){
-                    const flightIds = this.flightsForReturn.map(flight => flight.id).join(',');
-                    this.router.navigate(['/filtered-flights'], { queryParams: { flights: flightIds } });
+                    this.router.navigate(['/filtered-flights'], { state: { flights: this.flightsForReturn } });
                   }
                   
                 }, error => {
@@ -179,11 +173,9 @@ export class HomePageComponent implements OnInit {
                 })
               );
             } else {
-              console.log(this.flightsForReturn + "  333");
               resolve(this.flightsForReturn);
               if(this.flightsForReturn.length > 0){
-                const flightIds = this.flightsForReturn.map(flight => flight.id).join(',');
-                this.router.navigate(['/filtered-flights'], { queryParams: { flights: flightIds } });
+                this.router.navigate(['/filtered-flights'], { state: { flights: this.flightsForReturn } });
               }
             }
           }, error => {

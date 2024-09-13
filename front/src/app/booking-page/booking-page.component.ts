@@ -58,12 +58,11 @@ const TICKETS = '/tickets';
 })
 export class BookingPageComponent implements OnInit {
 
-  ticketIds: number[] = [];
+  bookedTickets: TicketViewModel[] = [];
   subscriptions: Subscription[] = [];
   currentRole: string = '';
   tickets: TicketViewModel[] = [];
   ticket: TicketViewModel = new TicketViewModel();
-  ticket2: TicketViewModel = new TicketViewModel();
   applyCouponForm: FormGroup;
   discountPercentage: number;
 
@@ -90,17 +89,6 @@ export class BookingPageComponent implements OnInit {
     this.ticket._package = new PackageViewModel(1, 'Package 1', 10);
     this.ticket.flight = new FlightViewModel(1, new PlaneViewModel(1, 'Plane 1', 11, 11, 11), new AirportViewModel(1, 'Airport 1', new LocationViewModel(1, 'Serbia', 'Belgrade', 'SRB-BG')), new AirportViewModel(2, 'Airport 2', new LocationViewModel(2, 'Serbia', 'Novi Sad', 'SRB-NS')), 'A1', new Date('2024-10-11 18:30:49.476908'), new Date('2024-10-11 19:30:49.476908'), 100, 11, 11, 11);
     // this.ticket.returnFlight = new FlightViewModel(2, new PlaneViewModel(1, 'Plane 1', 11, 11, 11), new AirportViewModel(2, 'Airport 2', new LocationViewModel(2, 'Serbia', 'Novi Sad', 'SRB-NS')), new AirportViewModel(1, 'Airport 1', new LocationViewModel(1, 'Serbia', 'Belgrade', 'SRB-BG')), 'Gate 1', new Date(	), new Date(), 100, 100, 100, 100);
-
-    // this.ticket2.id = 1;
-    // this.ticket2.totalPrice = 100;
-    // this.ticket2._return = false;
-    // this.ticket2.owner = new PassengerViewModel(0, 'Dusan', 'Doe', 'johndoe@gmail.com');
-    // this.ticket2.passenger = new PassengerViewModel(0, 'Dusan', 'Doe', 'johndoe@gmail.com');
-    // this.ticket2.seatNumber = 1;
-    // this.ticket2.ticketClass = Class.Economy;
-    // this.ticket2._package = new PackageViewModel(0, 'Package 1', 100);
-    // this.ticket2.flight = new FlightViewModel(3, new PlaneViewModel(1, 'Plane 1', 10, 10, 10), new AirportViewModel(0, 'Airport 1', new LocationViewModel(1, 'Serbia', 'Novi Sad', 'SRB-NS')), new AirportViewModel(0, 'Airport 2', new LocationViewModel(2, 'Serbia', 'Belgrade', 'SRB-BG')), 'Gate 1', new Date(), new Date(), 100, 100, 100, 100);
-
 
     this.tickets.push(this.ticket);
 
@@ -194,8 +182,7 @@ export class BookingPageComponent implements OnInit {
       (res) => {
         if (res) {
           ticket.id = res.id;
-          this.ticketIds.push(res.id);
-          console.log('TicketIds:', this.ticketIds);
+          this.bookedTickets.push(ticket);
           callback();
         }
       }
@@ -204,7 +191,7 @@ export class BookingPageComponent implements OnInit {
   
   checkAndNavigate(ticketsProcessed: number) {
     if (ticketsProcessed === this.tickets.length) {
-      this.router.navigate([TICKETS], { queryParams: { ticketIds: this.ticketIds.join(',') } });
+      this.router.navigate([TICKETS], { state: { bookedTickets: this.bookedTickets } });
     }
   }
   

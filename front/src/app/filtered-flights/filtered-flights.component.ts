@@ -52,12 +52,10 @@ export class FilteredFlightsComponent implements OnInit{
 
   subscriptions: Subscription[] = [];
   flights: FlightViewModel[] = [];
-  flightIds: number[] = [];
   departureDate: Date;
   returnDate: Date;
   optionsForPackage: { [key: number]: any[] } = {};
   selectedPackage: PackageViewModel;
-
 
   packages: PackageViewModel[] = [];
   packageForm: FormGroup;
@@ -67,8 +65,8 @@ export class FilteredFlightsComponent implements OnInit{
 
   ngOnInit(): void {
 
+    this.flights = history.state.flights;
     this.initializeForm();
-    this.getParams();
     this.getPackages();
   }
 
@@ -76,31 +74,6 @@ export class FilteredFlightsComponent implements OnInit{
     this.packageForm = this.formBuilder.group({
       packages: ['', [Validators.required]]
     });
-  }
-
-  getParams() {
-    this.route.queryParamMap.subscribe(params => {
-      const ids = params.get('flights');
-      if (ids) {
-        this.flightIds = ids.split(',').map(id => +id);
-        this.getFlights();
-        console.log(this.flights);
-      }
-    });
-  }
-
-  getFlights(){
-    this.flightIds.forEach(id => {
-      this.getFlightById(id);
-    });
-  }
-
-  getFlightById(id: number) { 
-    this.subscriptions.push(this.flightBookingService.getFlightById(id).subscribe(
-      (res: FlightViewModel) => {
-        this.flights.push(res);
-      }
-    ));
   }
 
   getPackages() {
