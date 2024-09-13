@@ -131,6 +131,7 @@ export class TicketViewModel{
     owner: PassengerViewModel;
     passenger: PassengerViewModel;
     seatNumber: number;
+    returnSeatNumber: number;
     ticketClass: Class;
     _return: boolean;
     _package: PackageViewModel;

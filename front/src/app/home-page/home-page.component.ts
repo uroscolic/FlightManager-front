@@ -166,7 +166,7 @@ export class HomePageComponent implements OnInit {
                   resolve(this.flightsForReturn);
                   if(this.flightsForReturn.length > 1){
                     this.router.navigate(['/filtered-flights'], { state: { flights: this.flightsForReturn, passengerCount: this.passengers, class: this.class } });
-                    //
+                    
                   }
                   
                 }, error => {

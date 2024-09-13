@@ -91,6 +91,7 @@ export class BookingPageComponent implements OnInit {
       this.ticket.owner = receivedTicket.owner;
       this.ticket.passenger = receivedTicket.passenger;
       this.ticket.seatNumber = receivedTicket.seatNumber;
+      this.ticket.returnSeatNumber = receivedTicket.returnSeatNumber;
       this.ticket.ticketClass = receivedTicket.ticketClass;
       this.ticket._package = receivedTicket._package;
       this.ticket.flight = receivedTicket.flight;

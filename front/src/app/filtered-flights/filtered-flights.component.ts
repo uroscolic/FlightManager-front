@@ -228,15 +228,20 @@ selectReturnFlight(flightCard: FlightCardComponent) {
       this.findSeats(flight);
     }
     this.ticket.id = 0;
-    this.ticket.flight = this.flights[0];
+    if(this.selectedRegularFlight !== null) {
+      this.ticket.flight = this.selectedRegularFlight;
+    }
     this.ticket._return = this.flights[1] ? true : false;
     this.ticket.owner = new PassengerViewModel(0, this.ownerFirstName, this.ownerLastName, this.ownerEmail);
     this.ticket.passenger = new PassengerViewModel(0, this.ownerFirstName, this.ownerLastName, this.ownerEmail);
-    this.ticket.returnFlight = this.flights[1];
+    if(this.selectedReturnFlight !== null) {
+      this.ticket.returnFlight = this.selectedReturnFlight;
+      this.ticket.returnSeatNumber = this.seatNumbers[1];
+    }
     this.ticket.ticketClass = this.class;
     this.ticket.seatNumber = this.seatNumbers[0];
     this.ticket._package = this.packageForm.value.package;
-    this.ticket.totalPrice = this.packageForm.value.package.price + this.ticket.flight.price + (this.ticket._return ? this.ticket.returnFlight.price : 0);
+    this.ticket.totalPrice = this.packageForm.value.package.price + this.ticket.flight.price + (this.ticket._return ? this.packageForm.value.package.price + this.ticket.returnFlight?.price : 0);
 
     this.tickets.push(this.ticket);
 

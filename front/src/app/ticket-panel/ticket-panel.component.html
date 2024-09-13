@@ -48,7 +48,7 @@
                     {{ticket.returnFlight?.origin?.location?.city}}</p>
                 <p>Departure: {{ticket.returnFlight?.departureTime | date: 'dd/MM/yyyy HH:mm'}}</p>
                 <p>Arrival: {{ticket.returnFlight?.arrivalTime | date: 'dd/MM/yyyy HH:mm'}}</p>
-                <p>Seat Number: {{ticket.seatNumber}}</p>
+                <p>Seat Number: {{ticket.returnSeatNumber}}</p>
                 <p>Gate: {{ticket.returnFlight?.gate}}</p>
                 <p>Class: {{ticket.ticketClass}}</p>
                 <p>Package: {{ticket._package.name}} ({{ticket._package.price | currency}})</p>

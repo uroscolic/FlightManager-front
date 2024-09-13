@@ -66,6 +66,7 @@ export class TicketsPassengersComponent implements OnInit {
     'owner': 'Owner',
     'passenger': 'Passenger',
     'seatNumber': 'Seat Number',
+    'returnSeatNumber': 'Return Seat Number',
     'class': 'Class',
     'isReturn': 'Is Return',
     'package': 'Package',
@@ -83,7 +84,7 @@ export class TicketsPassengersComponent implements OnInit {
     tickets: {
       itemName: 'Ticket',
       dataSource: this.dataSourceTickets,
-      displayedColumns: ['id', 'owner', 'passenger', 'seatNumber', 'class', 'isReturn', 'package', 'flightId', 'returnFlightId', 'totalPrice']
+      displayedColumns: ['id', 'owner', 'passenger', 'seatNumber', 'returnSeatNumber', 'class', 'isReturn', 'package', 'flightId', 'returnFlightId', 'totalPrice']
     },
 
   };
