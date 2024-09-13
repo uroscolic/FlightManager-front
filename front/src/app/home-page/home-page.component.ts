@@ -139,7 +139,7 @@ export class HomePageComponent implements OnInit {
   
         this.subscriptions.push(
           this.flightBookingService.getFilteredFlights(flightSearchModel).subscribe(res => {
-  
+            
             if (res.content.length === 0) {
               this.flightDoesntExist = true;
               this.flightsForReturn = [];
@@ -165,7 +165,8 @@ export class HomePageComponent implements OnInit {
                   
                   resolve(this.flightsForReturn);
                   if(this.flightsForReturn.length > 1){
-                    this.router.navigate(['/filtered-flights'], { state: { flights: this.flightsForReturn } });
+                    this.router.navigate(['/filtered-flights'], { state: { flights: this.flightsForReturn, passengerCount: this.passengers, class: this.class } });
+                    //
                   }
                   
                 }, error => {
@@ -175,7 +176,7 @@ export class HomePageComponent implements OnInit {
             } else {
               resolve(this.flightsForReturn);
               if(this.flightsForReturn.length > 0){
-                this.router.navigate(['/filtered-flights'], { state: { flights: this.flightsForReturn } });
+                this.router.navigate(['/filtered-flights'], { state: { flights: this.flightsForReturn, passengerCount: this.passengers, class: this.class } });
               }
             }
           }, error => {

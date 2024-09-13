@@ -70,7 +70,8 @@ export class MyTicketsComponent implements OnInit {
   private userService: UserService, private dialog: MatDialog, private router: Router, private route: ActivatedRoute) { }
 
   ngOnInit(): void {
-    this.ticketIds = history.state.bookedTickets.map((ticket: TicketViewModel) => ticket.id);
+    if(history.state.bookedTickets)
+      this.ticketIds = history.state.bookedTickets.map((ticket: TicketViewModel) => ticket.id);
 
     this.currentRole = sessionStorage.getItem('roleType') || localStorage.getItem('roleType') || '';
     this.currentRole !== 'ROLE_CLIENT' ? this.router.navigate([HOME]) : null;

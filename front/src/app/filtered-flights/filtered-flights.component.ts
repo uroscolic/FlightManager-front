@@ -16,7 +16,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatOptionModule } from '@angular/material/core';
 import { MatCardModule } from '@angular/material/card';
 import { MatSelectModule } from '@angular/material/select';
-import { AirportViewModel, FlightViewModel, OptionForPackageViewModel, PackageViewModel, PassengerViewModel } from '../shared/models/flight-booking.model';
+import { AirportViewModel, Class, FlightViewModel, OptionForPackageViewModel, PackageViewModel, PassengerViewModel, TicketViewModel } from '../shared/models/flight-booking.model';
 import { Subscription } from 'rxjs';
 import { FlightBookingService } from '../shared/services/flight-booking.service';
 import { FlightCardComponent } from '../flight-card/flight-card.component';
@@ -53,6 +53,18 @@ export class FilteredFlightsComponent implements OnInit{
   subscriptions: Subscription[] = [];
   @ViewChildren(FlightCardComponent) flightCards: QueryList<FlightCardComponent>;
 
+  firstNames: string[] = [];
+  lastNames: string[] = [];
+  emails: string[] = [];
+  ownerFirstName: string = '';
+  ownerLastName: string = '';
+  ownerEmail: string = '';
+  ticket: TicketViewModel = new TicketViewModel();
+  tickets: TicketViewModel[] = [];
+  selectedFlights: FlightViewModel[] = [];
+  seatNumbers: number[] = [];
+  passengerCount: number;
+  class: Class;
   flights: FlightViewModel[] = [];
   regularFlights: FlightViewModel[] = [];
   returnFlights: FlightViewModel[] = [];
@@ -70,7 +82,14 @@ export class FilteredFlightsComponent implements OnInit{
 
   ngOnInit(): void {
 
+    this.ownerFirstName = sessionStorage.getItem('firstName') || localStorage.getItem('firstName') || '';
+    this.ownerLastName = sessionStorage.getItem('lastName') || localStorage.getItem('lastName') || '';
+    this.ownerEmail = sessionStorage.getItem('email') || localStorage.getItem('email') || '';
+
+    this.passengerCount = history.state.passengerCount;
+    this.class = history.state.class;
     this.flights = history.state.flights;
+
     this.initializeForm();
     this.getPackages();
     this.groupFlights();
@@ -202,9 +221,38 @@ selectReturnFlight(flightCard: FlightCardComponent) {
   }
 
   addPackages() {
-   // console.log('Selected package price:', this.selectedPackage.price);
+    if(this.packageForm.invalid) {
+      return;
+    }
+    for (const flight of this.flights) {
+      this.findSeats(flight);
+    }
+    this.ticket.id = 0;
+    this.ticket.flight = this.flights[0];
+    this.ticket._return = this.flights[1] ? true : false;
+    this.ticket.owner = new PassengerViewModel(0, this.ownerFirstName, this.ownerLastName, this.ownerEmail);
+    this.ticket.passenger = new PassengerViewModel(0, this.ownerFirstName, this.ownerLastName, this.ownerEmail);
+    this.ticket.returnFlight = this.flights[1];
+    this.ticket.ticketClass = this.class;
+    this.ticket.seatNumber = this.seatNumbers[0];
+    this.ticket._package = this.packageForm.value.package;
+    this.ticket.totalPrice = this.packageForm.value.package.price + this.ticket.flight.price + (this.ticket._return ? this.ticket.returnFlight.price : 0);
+
+    this.tickets.push(this.ticket);
+
+    this.router.navigate(['/book-flight'], { state: { tickets: this.tickets}, replaceUrl: true });
   }
 
+
+
+  private findSeats(flight: FlightViewModel) {
+    const availableSeats = this.class === Class.ECONOMY ? flight.availableEconomySeats : this.class === Class.BUSINESS ? flight.availableBusinessSeats : flight.availableFirstClassSeats;
+    const numberOfSeatsOnThePlane = this.class === Class.ECONOMY ? flight.plane.economySeats : this.class === Class.BUSINESS ? flight.plane.businessSeats : flight.plane.firstClassSeats;
+    const firstAvailableSeat = numberOfSeatsOnThePlane - availableSeats + 1;
+    for (let i = 0; i < this.passengerCount; i++) {
+      this.seatNumbers.push(firstAvailableSeat + i);
+    }
+  }
 
   addPassengers() {
   }

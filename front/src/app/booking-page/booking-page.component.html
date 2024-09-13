@@ -55,7 +55,7 @@
                                 </div>
                                 <div class="item">
                                     <span>Seat</span>
-                                    <h3>{{ticket.seatNumber}}</h3>
+                                    <h3>{{ticket.seatNumber}} ({{ticket.ticketClass | capitalize}})</h3>
                                 </div>
                                 <div class="item">
                                     <span>Total price</span>
@@ -133,7 +133,7 @@
                                 </div>
                                 <div class="item">
                                     <span>Seat</span>
-                                    <h3>{{ticket.seatNumber}}</h3>
+                                    <h3>{{ticket.seatNumber}} ({{ticket.ticketClass | capitalize}})</h3>
                                 </div>
                                 <div class="item">
                                     <span>Total price</span>
@@ -158,7 +158,7 @@
     </div>
 
     <div class="totalPrice">
-        <h4>Total price for all travelers : {{ticket.totalPrice * tickets.length| currency}} </h4>
+        <h4>Total price for all travelers : {{ticket.totalPrice * tickets.length | currency}} </h4>
 
     </div>
     <div class="container">

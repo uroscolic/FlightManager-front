@@ -23,6 +23,7 @@ import { FlightBookingService } from '../shared/services/flight-booking.service'
 import { GenericConfirmDialogComponent } from '../shared/generic-confirm-dialog/generic-confirm-dialog.component';
 import { MatCardModule } from '@angular/material/card';
 import { ClientViewModel } from '../shared/models/user.model';
+import { CapitalizePipe } from '../shared/pipes/capitalize/capitalize.pipe';
 
 const LOGIN = '/login';
 const TICKETS = '/tickets';
@@ -50,7 +51,8 @@ const TICKETS = '/tickets';
     MatOptionModule,
     UploadImageComponent,
     MatCardModule,
-    DatePipe
+    DatePipe,
+    CapitalizePipe
   ],
   templateUrl: './booking-page.component.html',
   styleUrl: './booking-page.component.css',
@@ -78,22 +80,24 @@ export class BookingPageComponent implements OnInit {
 
   ngOnInit(): void {
 
-
-    this.ticket.id = 3;
-    this.ticket.totalPrice = 100;
-    this.ticket._return = false;
-    this.ticket.owner = new PassengerViewModel(1, 'Client', 'Client', 'client@gmail.com');
-    this.ticket.passenger = new PassengerViewModel(5, 'Uros', 'Doe', 'urosdoe@gmail.com');
-    this.ticket.seatNumber = 5;
-    this.ticket.ticketClass = Class.ECONOMY;
-    this.ticket._package = new PackageViewModel(1, 'Package 1', 10);
-    this.ticket.flight = new FlightViewModel(1, new PlaneViewModel(1, 'Plane 1', 11, 11, 11), new AirportViewModel(1, 'Airport 1', new LocationViewModel(1, 'Serbia', 'Belgrade', 'SRB-BG')), new AirportViewModel(2, 'Airport 2', new LocationViewModel(2, 'Serbia', 'Novi Sad', 'SRB-NS')), 'A1', new Date('2024-10-11 18:30:49.476908'), new Date('2024-10-11 19:30:49.476908'), 100, 11, 11, 11);
-    // this.ticket.returnFlight = new FlightViewModel(2, new PlaneViewModel(1, 'Plane 1', 11, 11, 11), new AirportViewModel(2, 'Airport 2', new LocationViewModel(2, 'Serbia', 'Novi Sad', 'SRB-NS')), new AirportViewModel(1, 'Airport 1', new LocationViewModel(1, 'Serbia', 'Belgrade', 'SRB-BG')), 'Gate 1', new Date(	), new Date(), 100, 100, 100, 100);
-
-    this.tickets.push(this.ticket);
-
     this.currentRole = sessionStorage.getItem('roleType') || localStorage.getItem('roleType') || '';
     this.currentRole !== 'ROLE_CLIENT' ? this.router.navigate([LOGIN]) : null;
+
+    const receivedTickets = history.state.tickets;
+    for(let receivedTicket of receivedTickets) {
+      this.ticket.id = receivedTicket.id;
+      this.ticket.totalPrice = receivedTicket.totalPrice;
+      this.ticket._return = receivedTicket._return;
+      this.ticket.owner = receivedTicket.owner;
+      this.ticket.passenger = receivedTicket.passenger;
+      this.ticket.seatNumber = receivedTicket.seatNumber;
+      this.ticket.ticketClass = receivedTicket.ticketClass;
+      this.ticket._package = receivedTicket._package;
+      this.ticket.flight = receivedTicket.flight;
+      this.ticket.returnFlight = receivedTicket.returnFlight;
+      this.tickets.push(this.ticket);
+    }
+    
 
     this.initializeForm();
 
@@ -149,6 +153,9 @@ export class BookingPageComponent implements OnInit {
             (passengerRes) => {
               if (passengerRes) {
                 ticket.passenger.id = passengerRes.id;
+                if(ticket.owner.email === ticket.passenger.email) {
+                  ticket.owner.id = ticket.passenger.id;
+                }
                 this.bookTicket(ticket, () => {
                   ticketsProcessed++;
                   this.checkAndNavigate(ticketsProcessed);
@@ -162,6 +169,10 @@ export class BookingPageComponent implements OnInit {
                   (res) => {
                     if (res) {
                       ticket.passenger.id = res.id;
+                      if(ticket.owner.email === ticket.passenger.email) {
+                        ticket.owner.id = ticket.passenger.id;
+                      }
+
                       this.bookTicket(ticket, () => {
                         ticketsProcessed++;
                         this.checkAndNavigate(ticketsProcessed);
@@ -178,11 +189,13 @@ export class BookingPageComponent implements OnInit {
   }
   
   bookTicket(ticket: TicketViewModel, callback: () => void) {
+    console.log("ticket: ", ticket);
     this.subscriptions.push(this.flightBookingService.addTicket(ticket).subscribe(
       (res) => {
         if (res) {
           ticket.id = res.id;
           this.bookedTickets.push(ticket);
+          console.log("bookedTickets: ", this.bookedTickets); 
           callback();
         }
       }
@@ -191,7 +204,7 @@ export class BookingPageComponent implements OnInit {
   
   checkAndNavigate(ticketsProcessed: number) {
     if (ticketsProcessed === this.tickets.length) {
-      this.router.navigate([TICKETS], { state: { bookedTickets: this.bookedTickets } });
+      this.router.navigate([TICKETS], { state: { bookedTickets: this.bookedTickets }, replaceUrl: true  });
     }
   }
   
