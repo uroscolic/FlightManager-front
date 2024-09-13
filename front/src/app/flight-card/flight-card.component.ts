@@ -1,4 +1,4 @@
-import { Component, Inject, Input } from '@angular/core';
+import { Component, Inject, Input, Output, EventEmitter } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatNativeDateModule, MatOptionModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
@@ -17,7 +17,6 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { CommonModule } from '@angular/common';
 import { MatCard } from '@angular/material/card';
-import { MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FlightViewModel } from '../shared/models/flight-booking.model';
 
 @Component({
@@ -52,6 +51,11 @@ export class FlightCardComponent {
   
   @Input() flight: FlightViewModel;
   @Input() flightClass: string;
+  @Input() isReturnFlight: boolean; 
+
+  @Output() selectFlight = new EventEmitter<FlightCardComponent>();
+
+
   formattedDepartureTime: string;
   formattedArrivalTime: string;
   flightDuration: string;
@@ -88,6 +92,7 @@ export class FlightCardComponent {
 
   onSelect() {
     this.isSelected = !this.isSelected;
+    this.selectFlight.emit(this);
   }
 
   getButtonClass() {
