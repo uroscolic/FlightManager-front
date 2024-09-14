@@ -4,7 +4,7 @@
     <span class="title">Choose a flight:</span>
     <div class="container-flight">
       <ng-container *ngFor="let flight of regularFlights">
-        <app-flight-card [flight]="flight" flightClass="Economy" [isReturnFlight]="false"
+        <app-flight-card [flight]="flight" [flightClass]="class" [isReturnFlight]="false"
           (selectFlight)="selectRegularFlight($event)">
 
         </app-flight-card>
@@ -15,7 +15,7 @@
 
     <div class="container-flight">
       <ng-container *ngFor="let flight of returnFlights">
-        <app-flight-card [flight]="flight" [isReturnFlight]="true" flightClass="Economy"
+        <app-flight-card [flight]="flight" [isReturnFlight]="true" [flightClass]="class"
           (selectFlight)="selectReturnFlight($event)">
 
         </app-flight-card>

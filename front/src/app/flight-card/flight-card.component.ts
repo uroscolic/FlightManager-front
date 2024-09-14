@@ -17,7 +17,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { CommonModule } from '@angular/common';
 import { MatCard } from '@angular/material/card';
-import { FlightViewModel } from '../shared/models/flight-booking.model';
+import { Class, FlightViewModel } from '../shared/models/flight-booking.model';
 
 @Component({
   selector: 'app-flight-card',
@@ -50,7 +50,7 @@ import { FlightViewModel } from '../shared/models/flight-booking.model';
 export class FlightCardComponent {
   
   @Input() flight: FlightViewModel;
-  @Input() flightClass: string;
+  @Input() flightClass: Class;
   @Input() isReturnFlight: boolean; 
 
   @Output() selectFlight = new EventEmitter<FlightCardComponent>();
