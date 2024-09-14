@@ -59,7 +59,6 @@ export class FilteredFlightsComponent implements OnInit{
   ownerFirstName: string = '';
   ownerLastName: string = '';
   ownerEmail: string = '';
-  ticket: TicketViewModel = new TicketViewModel();
   tickets: TicketViewModel[] = [];
   selectedFlights: FlightViewModel[] = [];
   seatNumbers: number[] = [];
@@ -93,6 +92,12 @@ export class FilteredFlightsComponent implements OnInit{
     this.getPackages();
     this.initializePassengerForms(this.passengerCount);
     this.groupFlights();
+
+    this.passengersArray.at(0).patchValue({
+      firstName: this.ownerFirstName,
+      lastName: this.ownerLastName,
+      email: this.ownerEmail
+    });
   }
 
   initializeForm() {
@@ -239,24 +244,32 @@ selectReturnFlight(flightCard: FlightCardComponent) {
     for (const flight of this.flights) {
       this.findSeats(flight);
     }
-    this.ticket.id = 0;
-    if(this.selectedRegularFlight !== null) {
-      this.ticket.flight = this.selectedRegularFlight;
-    }
-    this.ticket._return = this.flights[1] ? true : false;
-    this.ticket.owner = new PassengerViewModel(0, this.ownerFirstName, this.ownerLastName, this.ownerEmail);
-    this.ticket.passenger = new PassengerViewModel(0, this.ownerFirstName, this.ownerLastName, this.ownerEmail);
-    if(this.selectedReturnFlight !== null) {
-      this.ticket.returnFlight = this.selectedReturnFlight;
-      this.ticket.returnSeatNumber = this.seatNumbers[1];
-    }
-    this.ticket.ticketClass = this.class;
-    this.ticket.seatNumber = this.seatNumbers[0];
-    this.ticket._package = this.form.value.package;
-    this.ticket.totalPrice = this.form.value.package.price + this.ticket.flight.price + (this.ticket._return ? this.form.value.package.price + this.ticket.returnFlight?.price : 0);
+    for(let i = 0; i < this.passengerCount; i++) {
+      var ticket = new TicketViewModel();
+      ticket.id = 0;
+      if(this.selectedRegularFlight !== null) {
+        ticket.flight = this.selectedRegularFlight;
+      }
+      ticket._return = this.flights[1] ? true : false;
+      ticket.owner = new PassengerViewModel(0, this.ownerFirstName, this.ownerLastName, this.ownerEmail);
+      ticket._package = this.form.value.package;
+      if(this.selectedReturnFlight !== null) {
+        ticket.returnFlight = this.selectedReturnFlight;
+      }
+      ticket.totalPrice = this.form.value.package.price + ticket.flight.price + (ticket._return ? this.form.value.package.price + ticket.returnFlight?.price : 0);
+      ticket.ticketClass = this.class;
 
-    this.tickets.push(this.ticket);
+      // this is different for every ticket
+    
+      ticket.passenger = this.passengersArray.value[i];
+      ticket.seatNumber = this.seatNumbers[i];
+      if(ticket._return) {
+        ticket.returnSeatNumber = this.seatNumbers[this.seatNumbers.length / 2 + i];
+      }
+      this.tickets.push(ticket);
+    }
 
+    console.log('tickets:', this.tickets);
     this.router.navigate(['/book-flight'], { state: { tickets: this.tickets}, replaceUrl: true });
   }
 
@@ -271,8 +284,6 @@ selectReturnFlight(flightCard: FlightCardComponent) {
     }
   }
 
-  addPassengers() {
-    console.log('passengers:', this.passengersArray.value);
-  }
+ 
 
 }

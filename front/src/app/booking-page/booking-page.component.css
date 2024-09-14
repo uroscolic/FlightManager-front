@@ -58,6 +58,7 @@ mat-form-field {
 }
 
 .totalPrice {
+    margin-top: 20px;
     font-weight: bold;
     text-align: center;
 

@@ -150,32 +150,40 @@ export class BookingPageComponent implements OnInit {
       if (confirmed) {
         let ticketsProcessed = 0;
   
-        this.tickets.forEach(ticket => {
-          this.subscriptions.push(this.flightBookingService.addPassenger(ticket.passenger).subscribe(
+        // Pronađi kartu vlasnika (owner) na osnovu email adrese
+        const ownerTicket = this.tickets.find(ticket => ticket.owner.email === ticket.passenger.email);
+        
+        if (ownerTicket) {
+          // Prvo sačuvaj owner-a
+          this.subscriptions.push(this.flightBookingService.addPassenger(ownerTicket.passenger).subscribe(
             (passengerRes) => {
               if (passengerRes) {
-                ticket.passenger.id = passengerRes.id;
-                if(ticket.owner.email === ticket.passenger.email) {
-                  ticket.owner.id = ticket.passenger.id;
-                }
-                this.bookTicket(ticket, () => {
+                // Postavi ID za owner-a
+                ownerTicket.passenger.id = passengerRes.id;
+                this.tickets.forEach(t => {
+                  t.owner.id = ownerTicket.passenger.id;
+                });
+  
+                
+                this.processTickets(() => {
                   ticketsProcessed++;
                   this.checkAndNavigate(ticketsProcessed);
                 });
               }
             },
             (error) => {
-              const email = ticket.passenger.email;
+              const email = ownerTicket.passenger.email;
               if (email) {
                 this.subscriptions.push(this.flightBookingService.getPassengerByEmail(email).subscribe(
                   (res) => {
                     if (res) {
-                      ticket.passenger.id = res.id;
-                      if(ticket.owner.email === ticket.passenger.email) {
-                        ticket.owner.id = ticket.passenger.id;
-                      }
-
-                      this.bookTicket(ticket, () => {
+                      ownerTicket.passenger.id = res.id;
+                      this.tickets.forEach(t => {
+                        t.owner.id = ownerTicket.passenger.id;
+                      });
+  
+                      
+                      this.processTickets(() => {
                         ticketsProcessed++;
                         this.checkAndNavigate(ticketsProcessed);
                       });
@@ -185,13 +193,40 @@ export class BookingPageComponent implements OnInit {
               }
             }
           ));
-        });
+        }
       }
     });
   }
   
+  processTickets(callback: () => void) {
+    this.tickets.forEach(ticket => {
+  
+      this.subscriptions.push(this.flightBookingService.addPassenger(ticket.passenger).subscribe(
+        (passengerRes) => {
+          if (passengerRes) {
+            ticket.passenger.id = passengerRes.id;
+            this.bookTicket(ticket, callback);
+          }
+        },
+        (error) => {
+          const email = ticket.passenger.email;
+          if (email) {
+            this.subscriptions.push(this.flightBookingService.getPassengerByEmail(email).subscribe(
+              (res) => {
+                if (res) {
+                  ticket.passenger.id = res.id;
+                  this.bookTicket(ticket, callback);
+                }
+              }
+            ));
+          }
+        }
+      ));
+    });
+  }
+  
+  
   bookTicket(ticket: TicketViewModel, callback: () => void) {
-    console.log("ticket: ", ticket);
     this.subscriptions.push(this.flightBookingService.addTicket(ticket).subscribe(
       (res) => {
         if (res) {

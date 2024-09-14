@@ -1,87 +1,87 @@
 <app-navigation>
-    <div class="page">
+  <div class="page">
 
-        <span class="title">Choose a flight:</span>
-        <div class="container-flight">
-            <ng-container *ngFor="let flight of regularFlights">
-                <app-flight-card [flight]="flight" flightClass="Economy" [isReturnFlight]="false"
-                    (selectFlight)="selectRegularFlight($event)">
+    <span class="title">Choose a flight:</span>
+    <div class="container-flight">
+      <ng-container *ngFor="let flight of regularFlights">
+        <app-flight-card [flight]="flight" flightClass="Economy" [isReturnFlight]="false"
+          (selectFlight)="selectRegularFlight($event)">
 
-                </app-flight-card>
-            </ng-container>
-        </div>
-
-        <span class="title" *ngIf="returnFlights.length > 0">Choose a return flight:</span>
-
-        <div class="container-flight">
-            <ng-container *ngFor="let flight of returnFlights">
-                <app-flight-card [flight]="flight" [isReturnFlight]="true" flightClass="Economy"
-                    (selectFlight)="selectReturnFlight($event)">
-
-                </app-flight-card>
-            </ng-container>
-        </div>
-        <div class="container">
-            <div class="form-container add">
-
-                <form (ngSubmit)="addPassengers()" [formGroup]="form">
-
-                  <div class="lista">
-                    <span class="title">Select the package:</span>
-                    <mat-form-field>
-                        <mat-label>Packages</mat-label>
-                        
-                        <mat-select formControlName = "package" required>
-                            <mat-option *ngFor="let _package of packages" [value]="_package">
-                                {{ _package.name }} ({{getOptionsAsString(_package.id)}}) - {{ _package.price |
-                                currency }}
-                            </mat-option>
-                        </mat-select>
-                        <mat-error *ngIf="form.get('package')?.hasError('required')">
-                            Package is required.
-                        </mat-error>
-                    </mat-form-field>
-
-                </div>
-
-                    <div formArrayName="passengers">
-                      <div *ngFor="let passenger of passengersArray.controls; let i = index" [formGroupName]="i">
-                        <span class="title">
-                            {{ i === 0 ? 'Owner' : 'Passenger' }} 
-                            <ng-container *ngIf="i !== 0"> {{ i + 1 }} </ng-container>
-                          </span>                        
-                          <mat-form-field appearance="fill">
-                          <mat-label>First Name</mat-label>
-                          <input matInput formControlName="firstName" />
-                          <mat-error *ngIf="hasFirstNameError(i, 'required')">
-                            First name is required.
-                          </mat-error>
-                        </mat-form-field>
-                  
-                        <mat-form-field appearance="fill">
-                          <mat-label>Last Name</mat-label>
-                          <input matInput formControlName="lastName" />
-                          <mat-error *ngIf="hasLastNameError(i, 'required')">
-                            Last name is required.
-                          </mat-error>
-                        </mat-form-field>
-                  
-                        <mat-form-field appearance="fill">
-                          <mat-label>Email</mat-label>
-                          <input matInput formControlName="email" />
-                          <mat-error *ngIf="hasEmailError(i, 'required')">
-                            Email is required.
-                          </mat-error>
-                          <mat-error *ngIf="hasEmailError(i, 'email')">
-                            Invalid email format.
-                          </mat-error>
-                        </mat-form-field>
-                      </div>
-                    </div>
-                    <button mat-raised-button color="primary" type="submit">Confirm</button>
-                  </form>
-
-            </div>
-        </div>
+        </app-flight-card>
+      </ng-container>
     </div>
+
+    <span class="title" *ngIf="returnFlights.length > 0">Choose a return flight:</span>
+
+    <div class="container-flight">
+      <ng-container *ngFor="let flight of returnFlights">
+        <app-flight-card [flight]="flight" [isReturnFlight]="true" flightClass="Economy"
+          (selectFlight)="selectReturnFlight($event)">
+
+        </app-flight-card>
+      </ng-container>
+    </div>
+    <div class="container">
+      <div class="form-container add">
+
+        <form (ngSubmit)="addPackages()" [formGroup]="form">
+
+          <div class="lista">
+            <span class="title">Select the package:</span>
+            <mat-form-field>
+              <mat-label>Packages</mat-label>
+
+              <mat-select formControlName="package" required>
+                <mat-option *ngFor="let _package of packages" [value]="_package">
+                  {{ _package.name }} ({{getOptionsAsString(_package.id)}}) - {{ _package.price |
+                  currency }}
+                </mat-option>
+              </mat-select>
+              <mat-error *ngIf="form.get('package')?.hasError('required')">
+                Package is required.
+              </mat-error>
+            </mat-form-field>
+
+          </div>
+
+          <div formArrayName="passengers">
+            <div *ngFor="let passenger of passengersArray.controls; let i = index" [formGroupName]="i">
+              <span class="title">
+                {{ i === 0 ? 'Owner' : 'Passenger' }}
+                <ng-container *ngIf="i !== 0"> {{ i + 1 }} </ng-container>
+              </span>
+              <mat-form-field appearance="fill">
+                <mat-label>First Name</mat-label>
+                <input matInput formControlName="firstName" [readonly]="i === 0"/>
+                <mat-error *ngIf="hasFirstNameError(i, 'required')">
+                  First name is required.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="fill">
+                <mat-label>Last Name</mat-label>
+                <input matInput formControlName="lastName" [readonly]="i === 0"/>
+                <mat-error *ngIf="hasLastNameError(i, 'required')">
+                  Last name is required.
+                </mat-error>
+              </mat-form-field>
+
+              <mat-form-field appearance="fill">
+                <mat-label>Email</mat-label>
+                <input matInput formControlName="email" [readonly]="i === 0" />
+                <mat-error *ngIf="hasEmailError(i, 'required')">
+                  Email is required.
+                </mat-error>
+                <mat-error *ngIf="hasEmailError(i, 'email')">
+                  Invalid email format.
+                </mat-error>
+              </mat-form-field>
+            </div>
+          </div>
+          <button mat-raised-button color="primary" type="submit" [disabled]="!form.valid || selectedRegularFlight == null || (returnFlights[0] && selectedReturnFlight == null) ">Confirm</button>
+        </form>
+
+      </div>
+    </div>
+  </div>
 </app-navigation>
