@@ -117,7 +117,6 @@ export class HomePageComponent implements OnInit {
   getAirports() {
     this.subscriptions.push(this.flightBookingService.getAirports().subscribe(res => {
       this.airports = res.content;
-      console.log(this.airports);
     }));
   }
 

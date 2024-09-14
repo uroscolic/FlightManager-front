@@ -145,7 +145,6 @@ export class FilteredFlightsComponent implements OnInit{
             card.isSelected = false;
         }
     });
-    console.log('Selected regular flight:', this.selectedRegularFlight);
 }
 
 selectReturnFlight(flightCard: FlightCardComponent) {
@@ -157,7 +156,6 @@ selectReturnFlight(flightCard: FlightCardComponent) {
             card.isSelected = false;
         }
     });
-    console.log('Selected return flight:', this.selectedReturnFlight);
 }
 
 
@@ -169,7 +167,6 @@ selectReturnFlight(flightCard: FlightCardComponent) {
     // first flight is always the departure flight so we can just take the first flight and get the origin
     
     this.origin = this.flights[0].origin;
-    console.log(this.flights[0] + 'first flight');
     this.flights.forEach(flight => {
       if (flight.origin.location.shortName === this.origin.location.shortName) {
         this.regularFlights.push(flight);
@@ -178,8 +175,6 @@ selectReturnFlight(flightCard: FlightCardComponent) {
       }
      
     });
-    console.log(JSON.stringify(this.regularFlights, null, 2) + 'regular flights');
-    console.log('Return flights:', JSON.stringify(this.returnFlights, null, 2));
   }
 
 
@@ -269,7 +264,6 @@ selectReturnFlight(flightCard: FlightCardComponent) {
       this.tickets.push(ticket);
     }
 
-    console.log('tickets:', this.tickets);
     this.router.navigate(['/book-flight'], { state: { tickets: this.tickets}, replaceUrl: true });
   }
 

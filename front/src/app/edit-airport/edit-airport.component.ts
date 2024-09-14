@@ -101,7 +101,6 @@ export class EditAirportComponent implements OnInit {
     }
 
     this.newAirport.newName = this.airportForm.value.name;
-    console.log(this.newAirport);
 
     this.dialog.open(GenericConfirmDialogComponent, {
       data: {

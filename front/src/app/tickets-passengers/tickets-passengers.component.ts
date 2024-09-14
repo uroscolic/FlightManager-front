@@ -145,7 +145,6 @@ export class TicketsPassengersComponent implements OnInit {
 
       this.subscriptions.push(this.flightBookingService.allTickets().subscribe(res => {
         this.dataSourceTickets.data = res.content;
-        console.log(this.dataSourceTickets.data);
         this.dataSourceTickets.paginator = this.paginator;
         this.dataSourceTickets.sort = this.sort;
       }));

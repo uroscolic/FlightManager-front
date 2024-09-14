@@ -232,7 +232,6 @@ export class BookingPageComponent implements OnInit {
         if (res) {
           ticket.id = res.id;
           this.bookedTickets.push(ticket);
-          console.log("bookedTickets: ", this.bookedTickets); 
           callback();
         }
       }

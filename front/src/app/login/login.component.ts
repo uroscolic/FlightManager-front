@@ -132,7 +132,6 @@ export class LoginComponent implements OnInit, OnDestroy {
           if (response) {
             this.signUpFailed = false;
             this.signUpForm.reset();
-            console.log('Sign up successful:', response);
 
             // Check if loginAndRememberMe is selected
             if (this.loginAndRememberMe) {
@@ -159,8 +158,6 @@ export class LoginComponent implements OnInit, OnDestroy {
                   this.loginFailed = true;
                 }
               ));
-            } else {
-              console.log('User signed up but opted not to log in immediately.');
             }
           } else {
             this.signUpFailed = true;

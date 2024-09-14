@@ -257,8 +257,6 @@ export class AirportsPlanesComponent implements OnInit {
     }
     else {
       console.log("error");
-      console.log(this.newPlane);
-      console.log(this.planeForm.value);
       console.error('Invalid form');
     }
 
@@ -293,8 +291,6 @@ export class AirportsPlanesComponent implements OnInit {
       });
     }
     else {
-      console.log(this.newAirport);
-      console.log(this.airportForm);
       console.error('Invalid form');
     }
   }

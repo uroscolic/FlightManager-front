@@ -138,7 +138,6 @@ export class NavigationComponent {
     }).afterClosed().subscribe((confirmed) => {
 
       if (confirmed) {
-        console.log(this.rememberMeChecked);
         if (!this.rememberMeChecked) {
           sessionStorage.removeItem('roleType');
           sessionStorage.removeItem('lastName');

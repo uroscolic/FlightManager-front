@@ -209,7 +209,6 @@ export class FlightBookingService {
     const headers = this.utilityService.getHeaders();
 
     request.active = !request.active;
-    console.log(request);
 
     return this.http.put<CouponViewModel>(
       this.url + COUPON + `/${request.couponCode}`,

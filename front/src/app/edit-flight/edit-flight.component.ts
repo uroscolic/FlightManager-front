@@ -129,7 +129,6 @@ export class EditFlightComponent implements OnInit {
       return;
     }
 
-    console.log(this.newFlight);
 
     this.dialog.open(GenericConfirmDialogComponent, {
       data: {
