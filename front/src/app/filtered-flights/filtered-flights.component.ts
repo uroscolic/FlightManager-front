@@ -73,8 +73,7 @@ export class FilteredFlightsComponent implements OnInit{
   selectedRegularFlight: FlightViewModel | null = null; 
   selectedReturnFlight: FlightViewModel | null = null;
   packages: PackageViewModel[] = [];
-  packageForm: FormGroup;
-  passengerForm: FormGroup;
+  form: FormGroup;
   passengers: PassengerViewModel[] = [];
 
 
@@ -97,11 +96,8 @@ export class FilteredFlightsComponent implements OnInit{
   }
 
   initializeForm() {
-    this.packageForm = this.formBuilder.group({
-      package: ['', [Validators.required]]
-    });
-
-    this.passengerForm = this.formBuilder.group({
+    this.form = this.formBuilder.group({
+      package: ['', [Validators.required]],
       passengers: this.formBuilder.array([])  
     });
   }
@@ -131,7 +127,7 @@ export class FilteredFlightsComponent implements OnInit{
   }
 
   get passengersArray(): FormArray {
-    return this.passengerForm.get('passengers') as FormArray;
+    return this.form.get('passengers') as FormArray;
   }
   
 
@@ -237,7 +233,7 @@ selectReturnFlight(flightCard: FlightCardComponent) {
   }
 
   addPackages() {
-    if(this.packageForm.invalid) {
+    if(this.form.invalid) {
       return;
     }
     for (const flight of this.flights) {
@@ -256,8 +252,8 @@ selectReturnFlight(flightCard: FlightCardComponent) {
     }
     this.ticket.ticketClass = this.class;
     this.ticket.seatNumber = this.seatNumbers[0];
-    this.ticket._package = this.packageForm.value.package;
-    this.ticket.totalPrice = this.packageForm.value.package.price + this.ticket.flight.price + (this.ticket._return ? this.packageForm.value.package.price + this.ticket.returnFlight?.price : 0);
+    this.ticket._package = this.form.value.package;
+    this.ticket.totalPrice = this.form.value.package.price + this.ticket.flight.price + (this.ticket._return ? this.form.value.package.price + this.ticket.returnFlight?.price : 0);
 
     this.tickets.push(this.ticket);
 
@@ -276,6 +272,7 @@ selectReturnFlight(flightCard: FlightCardComponent) {
   }
 
   addPassengers() {
+    console.log('passengers:', this.passengersArray.value);
   }
 
 }

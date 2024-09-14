@@ -24,25 +24,26 @@
         <div class="container">
             <div class="form-container add">
 
-                <form (ngSubmit)="addPackages()" [formGroup]="packageForm">
-                    <div class="lista">
-                        <mat-form-field>
-                            <mat-label>Packages</mat-label>
-                            <mat-select formControlName = "package" required>
-                                <mat-option *ngFor="let _package of packages" [value]="_package">
-                                    {{ _package.name }} ({{getOptionsAsString(_package.id)}}) - {{ _package.price |
-                                    currency }}
-                                </mat-option>
-                            </mat-select>
-                            <mat-error *ngIf="packageForm.get('package')?.hasError('required')">
-                                Package is required.
-                            </mat-error>
-                        </mat-form-field>
+                <form (ngSubmit)="addPassengers()" [formGroup]="form">
 
-                    </div>
-                </form>
+                  <div class="lista">
+                    <span class="title">Select the package:</span>
+                    <mat-form-field>
+                        <mat-label>Packages</mat-label>
+                        
+                        <mat-select formControlName = "package" required>
+                            <mat-option *ngFor="let _package of packages" [value]="_package">
+                                {{ _package.name }} ({{getOptionsAsString(_package.id)}}) - {{ _package.price |
+                                currency }}
+                            </mat-option>
+                        </mat-select>
+                        <mat-error *ngIf="form.get('package')?.hasError('required')">
+                            Package is required.
+                        </mat-error>
+                    </mat-form-field>
 
-                <form (ngSubmit)="addPassengers()" [formGroup]="passengerForm">
+                </div>
+
                     <div formArrayName="passengers">
                       <div *ngFor="let passenger of passengersArray.controls; let i = index" [formGroupName]="i">
                         <span class="title">
