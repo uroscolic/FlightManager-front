@@ -86,15 +86,11 @@ export class LoginComponent implements OnInit, OnDestroy {
               this.loginFailed = false;
               this.loginForm.reset();
 
-              // Clear sessionStorage
               sessionStorage.clear();
 
-              // Handle Remember Me
               if (this.rememberMe) {
-                // Save to localStorage
                 this.saveUserDataToLocalStorage(response);
               } else {
-                // Save to sessionStorage
                 this.saveUserDataToSessionStorage(response);
               }
 
@@ -106,7 +102,7 @@ export class LoginComponent implements OnInit, OnDestroy {
           error => {
             console.error('Error during login:', error);
             if (error.status === 500) {
-              this.errorMessage = 'Account with provided email and password is banned.';
+              this.errorMessage = 'Invalid email or password. Please try again.';
             } else {
               this.errorMessage = 'An error occurred during log in. Please try again.';
             }

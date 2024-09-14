@@ -64,7 +64,6 @@ export class BookingPageComponent implements OnInit {
   subscriptions: Subscription[] = [];
   currentRole: string = '';
   tickets: TicketViewModel[] = [];
-  ticket: TicketViewModel = new TicketViewModel();
   applyCouponForm: FormGroup;
   discountPercentage: number;
 
@@ -85,20 +84,20 @@ export class BookingPageComponent implements OnInit {
 
     const receivedTickets = history.state.tickets;
     for(let receivedTicket of receivedTickets) {
-      this.ticket.id = receivedTicket.id;
-      this.ticket.totalPrice = receivedTicket.totalPrice;
-      this.ticket._return = receivedTicket._return;
-      this.ticket.owner = receivedTicket.owner;
-      this.ticket.passenger = receivedTicket.passenger;
-      this.ticket.seatNumber = receivedTicket.seatNumber;
-      this.ticket.returnSeatNumber = receivedTicket.returnSeatNumber;
-      this.ticket.ticketClass = receivedTicket.ticketClass;
-      this.ticket._package = receivedTicket._package;
-      this.ticket.flight = receivedTicket.flight;
-      this.ticket.returnFlight = receivedTicket.returnFlight;
-      this.tickets.push(this.ticket);
+      var ticket = new TicketViewModel();
+      ticket.id = receivedTicket.id;
+      ticket.totalPrice = receivedTicket.totalPrice;
+      ticket._return = receivedTicket._return;
+      ticket.owner = receivedTicket.owner;
+      ticket.passenger = receivedTicket.passenger;
+      ticket.seatNumber = receivedTicket.seatNumber;
+      ticket.returnSeatNumber = receivedTicket.returnSeatNumber;
+      ticket.ticketClass = receivedTicket.ticketClass;
+      ticket._package = receivedTicket._package;
+      ticket.flight = receivedTicket.flight;
+      ticket.returnFlight = receivedTicket.returnFlight;
+      this.tickets.push(ticket);
     }
-    
 
     this.initializeForm();
 
@@ -124,15 +123,17 @@ export class BookingPageComponent implements OnInit {
       (res) => {
         if (res) {
           this.discountPercentage = res.discount;
-          this.ticket.totalPrice = this.ticket.totalPrice - this.ticket.totalPrice * this.discountPercentage / 100;
+          ticket.totalPrice = ticket.totalPrice - ticket.totalPrice * this.discountPercentage / 100;
         }
       }
     ));
   }
 
-  applyCoupon(ticket: TicketViewModel) {
-    if (this.applyCouponForm.value.couponCode) {
-      this.getCouponFromCouponCode(this.applyCouponForm.value.couponCode, ticket);
+  applyCoupon() {
+    for(let ticket of this.tickets) {
+      if (this.applyCouponForm.value.couponCode) {
+        this.getCouponFromCouponCode(this.applyCouponForm.value.couponCode, ticket);
+      }
     }
     this.applyCouponForm.reset();
   }

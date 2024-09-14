@@ -158,7 +158,7 @@
     </div>
 
     <div class="totalPrice">
-        <h4>Total price for all travelers : {{ticket.totalPrice * tickets.length | currency}} </h4>
+        <h4>Total price for all travelers : {{tickets[0].totalPrice * tickets.length | currency}} </h4>
 
     </div>
     <div class="container">
@@ -172,7 +172,7 @@
                     </mat-error>
                 </mat-form-field>
 
-                <button mat-raised-button color="primary" (click)="applyCoupon(ticket)" [disabled]='discountPercentage'>
+                <button mat-raised-button color="primary" (click)="applyCoupon()" [disabled]='discountPercentage'>
                     Apply coupon
                 </button>
             </form>
